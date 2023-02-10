@@ -1,0 +1,26 @@
+@import '../common.scss';
+
+.btn {
+  border-radius: 100vh;
+  padding: 6px 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.primary-btn {
+  background-color: $blue1;
+  color: $text-color-alternate;
+
+  &:hover {
+    background-color: $blue2;
+  }
+}
+
+.secondary-btn {
+  background-color: $gray1;
+  color: $text-color;
+
+  &:hover {
+    background-color: $gray2;
+  }
+}

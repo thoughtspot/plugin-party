@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "lib",
+    "baseUrl": ".",
+    "rootDir": "./"
+  },
+  "include": ["*.tsx", "custom-typings/**/*.d.ts", "index.tsx"]
+}

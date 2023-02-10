@@ -1,0 +1,22 @@
+{
+  "name": "widgets",
+  "version": "0.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "copy-files": "copyfiles -u 1 src/**/*.scss src/*.scss lib/",
+    "build": "tsc -p . && npm run copy-files"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "classnames": "^2.3.2",
+    "react-flexview": "^6.0.1",
+    "topbar": "^2.0.1"
+  },
+  "devDependencies": {
+    "copyfiles": "^2.4.1"
+  }
+}

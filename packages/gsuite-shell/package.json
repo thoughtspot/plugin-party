@@ -1,0 +1,14 @@
+{
+  "name": "gsuite-shell",
+  "version": "0.0.0",
+  "description": "",
+  "main": "lib/shell-context.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p ."
+  },
+  "bin": "scripts/copy-index-manifest.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

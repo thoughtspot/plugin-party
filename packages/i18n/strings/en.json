@@ -1,0 +1,11 @@
+{
+  "THOUGHTSPOT_INSTANCE": "ThoughtSpot instance",
+  "CONTINUE": "Continue",
+  "START_FREE_TRIAL": "Do not have a ThoughtSpot account? Start a <a href=\"https://www.thoughtspot.com/trial\" target=\"_blank\"> free trial </a>.",
+  "SIGN_IN_SSO": "Sign in with SSO",
+  "OR": "OR",
+  "USERNAME": "Username",
+  "PASSWORD": "Password",
+  "INCORRECT_PASSWORD": "Either your username or password is incorrect. Your account may lock out after multiple successive incorrect attempts.",
+  "SIGN_IN": "Sign in"
+}

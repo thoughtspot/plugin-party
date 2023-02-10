@@ -1,0 +1,101 @@
+@import '../common.scss';
+
+@mixin horizontal-spacing($spacing) {
+  margin-right: $spacing;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+@mixin vertical-spacing($spacing) {
+  margin-bottom: $spacing;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.horizontal {
+  &.spacing-a > * {
+    @include horizontal-spacing($spacing--a);
+  }
+
+  &.spacing-b > * {
+    @include horizontal-spacing($spacing--b);
+  }
+
+  &.spacing-c > * {
+    @include horizontal-spacing($spacing--c);
+  }
+
+  &.spacing-d > * {
+    @include horizontal-spacing($spacing--d);
+  }
+
+  &.spacing-e > * {
+    @include horizontal-spacing($spacing--e);
+  }
+
+  &.spacing-f > * {
+    @include horizontal-spacing($spacing--f);
+  }
+
+  &.spacing-g > * {
+    @include horizontal-spacing($spacing--g);
+  }
+
+  &.spacing-h > * {
+    @include horizontal-spacing($spacing--h);
+  }
+
+  &.spacing-i > * {
+    @include horizontal-spacing($spacing--i);
+  }
+
+  &.spacing-j > * {
+    @include horizontal-spacing($spacing--j);
+  }
+}
+
+.vertical {
+  &.spacing-a > * {
+    @include vertical-spacing($spacing--a);
+  }
+
+  &.spacing-b > * {
+    @include vertical-spacing($spacing--b);
+  }
+
+  &.spacing-c > * {
+    @include vertical-spacing($spacing--c);
+  }
+
+  &.spacing-d > * {
+    @include vertical-spacing($spacing--d);
+  }
+
+  &.spacing-e > * {
+    @include vertical-spacing($spacing--e);
+  }
+
+  &.spacing-f > * {
+    @include vertical-spacing($spacing--f);
+  }
+
+  &.spacing-g > * {
+    @include vertical-spacing($spacing--g);
+  }
+
+  &.spacing-h > * {
+    @include vertical-spacing($spacing--h);
+  }
+
+  &.spacing-i > * {
+    @include vertical-spacing($spacing--i);
+  }
+
+  &.spacing-j > * {
+    @include vertical-spacing($spacing--j);
+  }
+}

@@ -1,0 +1,17 @@
+@import '../common.scss';
+
+.input {
+  background-color: $gray0;
+  height: 32px;
+  border: none;
+  border-bottom: 1px solid $gray3;
+  color: $text-color;
+  font-size: 14px;
+  padding: 6px 8px;
+  box-sizing: border-box;
+
+  &:focus-visible {
+    outline: none;
+    border-bottom: 2px solid $blue1;
+  }
+}

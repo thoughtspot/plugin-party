@@ -4,6 +4,8 @@
 dist
 tmp
 /out-tsc
+lib
+build
 
 # dependencies
 node_modules
@@ -16,6 +18,7 @@ node_modules
 *.launch
 .settings/
 *.sublime-workspace
+.clasp.json
 
 # IDE - VSCode
 .vscode/*
