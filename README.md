@@ -4,6 +4,7 @@
 
 ```
 $ npm i
+$ npm i -g nx
 ```
 
 Then navigate to the `packages/<packageName>` you want to develop in.
