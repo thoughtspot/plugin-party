@@ -15,10 +15,13 @@
   "scripts": {
     "build": "vite build",
     "tsw": "tsc -p . -w",
+    "tsc": "tsc -p .",
     "claspw": "clasp push -w",
-    "dist:dev": "NODE_ENV=development npm-run-all -p tsw copy-index claspw",
+    "clasp": "clasp push",
+    "dist:dev": "npm-run-all -p tsw copy-index claspw",
+    "dist": "npm-run-all -s tsc copy-index",
     "lint": "eslint src/**",
-    "start": "npm-run-all -p dist:dev vite",
+    "start": "HOST=https://localhost:5173 npm-run-all -p dist:dev vite",
     "vite": "vite",
     "copy-index": "gsuite-shell"
   },

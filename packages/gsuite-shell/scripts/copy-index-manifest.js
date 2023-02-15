@@ -7,17 +7,12 @@ const _ = require('lodash');
 const indexHtmlPath = require.resolve('gsuite-shell/index.html');
 const indexHtml = fs.readFileSync(indexHtmlPath, { encoding: 'utf-8' });
 const tpl = _.template(indexHtml);
-let targetIndexHtml;
 
-if (process.env.NODE_ENV === 'development') {
-  targetIndexHtml = tpl({ appUrl: 'https://localhost:5173' });
-} else {
-  const host = process.argv[2];
-  if (!host) {
-    throw new Error('Please provide script hostname');
-  }
-  targetIndexHtml = tpl({ appUrl: host });
+const host = process.env.HOST;
+if (!host) {
+  throw new Error('Please provide script hostname');
 }
+const targetIndexHtml = tpl({ appUrl: host });
 
 const targetDir = path.join(process.cwd(), 'dist');
 if (!fs.existsSync(targetDir)) {
