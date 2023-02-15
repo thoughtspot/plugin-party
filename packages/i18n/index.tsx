@@ -32,7 +32,7 @@ export const I18N = ({ children }) => {
         ..._translations,
       });
     });
-  }, [locale]);
+  }, [locale, translations]);
   return (
     <I18NContext.Provider value={{ t: translations }}>
       {children}

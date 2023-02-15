@@ -5,6 +5,9 @@ import basicSsl from '@vitejs/plugin-basic-ssl';
 import path from 'path';
 
 function getPort(host) {
+  if (!host) {
+    return 5173;
+  }
   return Number.parseInt(new URL(host).port, 10);
 }
 
@@ -14,7 +17,7 @@ export default defineConfig({
   root: 'src/ui',
   server: {
     https: true,
-    port: getPort(process.env.host),
+    port: getPort(process.env.HOST),
   },
   build: {
     outDir: path.join(__dirname, 'build'),

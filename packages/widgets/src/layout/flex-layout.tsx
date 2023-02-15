@@ -37,6 +37,14 @@ function fixProps<T extends AnyLayoutProps>(props: T): T {
   return fixedProps;
 }
 
+export const View: FunctionComponent<LayoutProps> = (props) => {
+  const { spacing, className, ...flexProps } = fixProps(props);
+  const spacingClassName = spacing ? `spacing-${spacing}` : '';
+  return (
+    <FlexView className={cx(className, spacingClassName)} {...flexProps} />
+  );
+};
+
 export const Horizontal: FunctionComponent<HorizontalLayoutProps> = (
   props: HorizontalLayoutProps
 ) => {
@@ -59,13 +67,5 @@ export const Vertical: FunctionComponent<VerticalLayoutProps> = (props) => {
       column
       style={{ alignItems: hAlignContent, minHeight }}
     />
-  );
-};
-
-export const View: FunctionComponent<LayoutProps> = (props) => {
-  const { spacing, className, ...flexProps } = fixProps(props);
-  const spacingClassName = spacing ? `spacing-${spacing}` : '';
-  return (
-    <FlexView className={cx(className, spacingClassName)} {...flexProps} />
   );
 };
