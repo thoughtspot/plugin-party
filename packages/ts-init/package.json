@@ -11,8 +11,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "peerDependencies": {
+    "preact": "^10.11.13"
+  },
   "dependencies": {
-    "@thoughtspot/visual-embed-sdk": "^1.19.0-alpha.4"
+    "@thoughtspot/visual-embed-sdk": "^1.19.0-alpha.4",
+    "widgets": "*",
+    "i18n": "*"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1"
