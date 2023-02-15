@@ -9,7 +9,7 @@
     "jsxImportSource": "preact",
     "allowJs": true,
     "rootDir": "./",
-    "outDir": "dist",
+    "outDir": "build",
     "declaration": true,
     "declarationMap": true,
     "moduleResolution": "node",

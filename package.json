@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint --ext .tsx,.ts packages/**"
+    "lint": "eslint --ext .tsx,.ts packages/**",
+    "clean": "rm -rf packages/**/lib packages/**/dist packages/**/build",
+    "build-all": "nx run-many --target=build"
   },
   "private": true,
   "devDependencies": {
