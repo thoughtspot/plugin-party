@@ -1,0 +1,62 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Push code to Plugins
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the main branch
+on:
+  push:
+    branches: [ main ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a job called "push_to_plugins"
+  push_to_plugins:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Use NodeJS v16.19.0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.19.0'
+
+      # Run npm install
+      - name: Run npm install
+        run: npm install
+
+      # Runs linter
+      - name: Run linter
+        run: npm run lint
+
+      # Runs the build for all sub projects
+      - name: Run build
+        run: npm run build-all
+
+      #Pushing App script code to sheets plugin
+      - name: Updating sheets plugin
+        uses: daikikatsuragawa/clasp-action@v1.1.0
+        with:
+            idToken: ${{ secrets.ID_TOKEN }}
+            refreshToken: ${{ secrets.REFRESH_TOKEN }}
+            clientId: ${{ secrets.CLIENT_ID }}
+            clientSecret: ${{ secrets.CLIENT_SECRET }}
+            scriptId: ${{ secrets.SCRIPT_ID_SHEETS }}
+            rootDir: 'packages/sheets/dist'
+            command: 'push'
+
+      #Pushing App script code to slides plugin
+      - name: Updating slides plugin
+        uses: daikikatsuragawa/clasp-action@v1.1.0
+        with:
+            idToken: ${{ secrets.ID_TOKEN }}
+            refreshToken: ${{ secrets.REFRESH_TOKEN }}
+            clientId: ${{ secrets.CLIENT_ID }}
+            clientSecret: ${{ secrets.CLIENT_SECRET }}
+            scriptId: ${{ secrets.SCRIPT_ID_SLIDES }}
+            rootDir: 'packages/slides/dist'
+            command: 'push'
