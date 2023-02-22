@@ -6,7 +6,7 @@ name: Push code to Plugins
 # events but only for the main branch
 on:
   push:
-    branches: [ main ]
+    branches: [ workflow_test ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -36,6 +36,7 @@ jobs:
       # Runs the build for all sub projects
       - name: Run build
         run: npm run build-all
+      - uses: actions/checkout@v3
 
       #Pushing App script code to sheets plugin
       - name: Updating sheets plugin
