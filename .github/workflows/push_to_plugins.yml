@@ -34,7 +34,7 @@ jobs:
 #         run: npm run lint
       
       - name: $GITHUB_ENV ${{ env.HOST }}
-        run: echo "The operating system on the runner is ${{ HOST }} $env.HOST ${{ env.HOST }}."
+        run: echo "The operating system on the runner is $env.HOST ${{ env.HOST }}."
 #       # Runs the build for all sub projects
 #       - name: Run build
 #         run: npm run build-all && npm run build-dist-all
