@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <base target="_top" />
+    <style>
+      iframe {
+        height: 100vh;
+        width: 100vw;
+        border: 0;
+        overflow: hidden;
+      }
+
+      body {
+        margin: 0;
+        height: 100vh;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe src="https://plugin-party-sheets.vercel.app/"></iframe>
+
+    <script>
+      window.addEventListener('message', function (event) {
+        if (event.data.type === 'HOST_RUN') {
+          const methodName = event.data.methodName;
+          const args = event.data.args;
+          const port = event.ports[0];
+          google.script.run
+            .withSuccessHandler(function (arg) {
+              port.postMessage({ type: 'SUCCESS', arg });
+            })
+            .withFailureHandler(function (arg) {
+              port.postMessage({ type: 'FAILURE', arg });
+            })
+            [methodName](...args);
+        }
+      });
+    </script>
+  </body>
+</html>
