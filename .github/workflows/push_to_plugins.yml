@@ -54,25 +54,25 @@ jobs:
             !dist/**/*.md
 
       #Pushing App script code to sheets plugin
-      - name: Updating sheets plugin
-        uses: daikikatsuragawa/clasp-action@v1.1.0
-        with:
-            idToken: ${{ secrets.ID_TOKEN }}
-            refreshToken: ${{ secrets.REFRESH_TOKEN }}
-            clientId: ${{ secrets.CLIENT_ID }}
-            clientSecret: ${{ secrets.CLIENT_SECRET }}
-            scriptId: ${{ secrets.SCRIPT_ID_SHEETS }}
-            rootDir: 'packages/sheets/dist'
-            command: 'push'
+#       - name: Updating sheets plugin
+#         uses: daikikatsuragawa/clasp-action@v1.1.0
+#         with:
+#             idToken: ${{ secrets.ID_TOKEN }}
+#             refreshToken: ${{ secrets.REFRESH_TOKEN }}
+#             clientId: ${{ secrets.CLIENT_ID }}
+#             clientSecret: ${{ secrets.CLIENT_SECRET }}
+#             scriptId: ${{ secrets.SCRIPT_ID_SHEETS }}
+#             rootDir: 'packages/sheets/dist'
+#             command: 'push'
 
       #Pushing App script code to slides plugin
-      - name: Updating slides plugin
-        uses: daikikatsuragawa/clasp-action@v1.1.0
-        with:
-            idToken: ${{ secrets.ID_TOKEN }}
-            refreshToken: ${{ secrets.REFRESH_TOKEN }}
-            clientId: ${{ secrets.CLIENT_ID }}
-            clientSecret: ${{ secrets.CLIENT_SECRET }}
-            scriptId: ${{ secrets.SCRIPT_ID_SLIDES }}
-            rootDir: 'packages/slides/dist'
-            command: 'push'
+#       - name: Updating slides plugin
+#         uses: daikikatsuragawa/clasp-action@v1.1.0
+#         with:
+#             idToken: ${{ secrets.ID_TOKEN }}
+#             refreshToken: ${{ secrets.REFRESH_TOKEN }}
+#             clientId: ${{ secrets.CLIENT_ID }}
+#             clientSecret: ${{ secrets.CLIENT_SECRET }}
+#             scriptId: ${{ secrets.SCRIPT_ID_SLIDES }}
+#             rootDir: 'packages/slides/dist'
+#             command: 'push'
