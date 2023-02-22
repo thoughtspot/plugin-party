@@ -38,6 +38,13 @@ jobs:
         run: npm run build-all
       - uses: actions/checkout@v3
       - uses: EndBug/add-and-commit@v9
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v8
+        with:
+          author_name: Your Name
+          author_email: mail@example.com
+          message: 'Your commit message'
+          add: 'Code.js'
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
