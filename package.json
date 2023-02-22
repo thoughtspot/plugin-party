@@ -6,6 +6,7 @@
     "lint": "eslint --ext .tsx,.ts packages/**",
     "clean": "rm -rf packages/**/lib packages/**/dist packages/**/build",
     "build-all": "nx run-many --target=build",
+    "dist-all":"nx run-many --target=dist",
     "syncpack:check": "syncpack list-mismatches"
   },
   "private": true,

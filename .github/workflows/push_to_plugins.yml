@@ -32,10 +32,10 @@ jobs:
       # Runs linter
       - name: Run linter
         run: npm run lint
-
+      
       # Runs the build for all sub projects
       - name: Run build
-        run: npm run build-all
+        run: npm run build-all && HOST=${{ vars.HOST }} npm run build-dist-all
 
       #Pushing App script code to sheets plugin
       - name: Updating sheets plugin
