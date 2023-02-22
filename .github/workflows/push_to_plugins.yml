@@ -38,7 +38,7 @@ jobs:
           HOST: ${{ env.HOST }}
         run: echo $HOST
       - name: Print them all
-        run: env
+        run: vars
 #       # Runs the build for all sub projects
 #       - name: Run build
 #         run: npm run build-all && npm run build-dist-all
