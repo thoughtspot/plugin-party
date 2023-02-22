@@ -35,7 +35,7 @@ jobs:
       
       - name: $GITHUB_ENV ${{ env.HOST }}
         env:
-          HOST: ${{env.HOST}}
+          HOST: ${{ env.HOST }}
         run: echo $HOST
 #       # Runs the build for all sub projects
 #       - name: Run build
