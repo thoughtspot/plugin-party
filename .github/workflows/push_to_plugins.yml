@@ -27,7 +27,7 @@ jobs:
 
       # Run npm install
       - name: Run npm install
-        run: npm install && npm i nx
+        run: npm install
 
       # Runs linter
       - name: Run linter
@@ -35,7 +35,7 @@ jobs:
       
       # Runs the build for all sub projects
       - name: Run build
-        run: npm run build-all && HOST=${{ vars.HOST }} nx run-many --target=dist
+        run: npm run build-all && HOST=${{ vars.HOST }} npm run build-dist-all
 
       #Pushing App script code to sheets plugin
       - name: Updating sheets plugin
