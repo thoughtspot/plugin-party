@@ -33,7 +33,7 @@ jobs:
       - name: Run linter
         run: npm run lint
       
-      - run$: GITHUB_ENV
+      - name: $GITHUB_ENV ${{ env.HOST }}
       # Runs the build for all sub projects
       - name: Run build
         run: npm run build-all && npm run build-dist-all
