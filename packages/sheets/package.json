@@ -14,6 +14,7 @@
   },
   "scripts": {
     "build": "vite build",
+    "prod-dist": "HOST=https://plugin-party-sheets.vercel.app/ npm run dist",
     "tsw": "tsc -p . -w",
     "tsc": "tsc -p .",
     "claspw": "clasp push -w",

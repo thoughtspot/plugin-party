@@ -5,7 +5,8 @@
   "scripts": {
     "lint": "eslint --ext .tsx,.ts packages/**",
     "clean": "rm -rf packages/**/lib packages/**/dist packages/**/build",
-    "build-all": "nx run-many --target=build"
+    "build-all": "nx run-many --target=build",
+    "build-dist-all":"nx run-many --target=prod-dist"
   },
   "private": true,
   "devDependencies": {
