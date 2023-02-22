@@ -25,44 +25,38 @@ jobs:
         with:
           node-version: '16.19.0'
 
-#       # Run npm install
-#       - name: Run npm install
-#         run: npm install
+      # Run npm install
+      - name: Run npm install
+        run: npm install
 
-#       # Runs linter
-#       - name: Run linter
-#         run: npm run lint
+      # Runs linter
+      - name: Run linter
+        run: npm run lint
       
-      - name: $GITHUB_ENV ${{ vars.HOST }}
-        env:
-          HOST: ${{ vars.HOST }}
-        run: echo $HOST
-      - name: Print them all
-        run: vars
-#       # Runs the build for all sub projects
-#       - name: Run build
-#         run: npm run build-all && npm run build-dist-all
+      # Runs the build for all sub projects
+      - name: Run build
+        run: npm run build-all && npm run HOST=${{ vars.HOST }} nx run-many --target=dist
 
-#       #Pushing App script code to sheets plugin
-#       - name: Updating sheets plugin
-#         uses: daikikatsuragawa/clasp-action@v1.1.0
-#         with:
-#             idToken: ${{ secrets.ID_TOKEN }}
-#             refreshToken: ${{ secrets.REFRESH_TOKEN }}
-#             clientId: ${{ secrets.CLIENT_ID }}
-#             clientSecret: ${{ secrets.CLIENT_SECRET }}
-#             scriptId: ${{ secrets.SCRIPT_ID_SHEETS }}
-#             rootDir: 'packages/sheets/dist'
-#             command: 'push'
+      #Pushing App script code to sheets plugin
+      - name: Updating sheets plugin
+        uses: daikikatsuragawa/clasp-action@v1.1.0
+        with:
+            idToken: ${{ secrets.ID_TOKEN }}
+            refreshToken: ${{ secrets.REFRESH_TOKEN }}
+            clientId: ${{ secrets.CLIENT_ID }}
+            clientSecret: ${{ secrets.CLIENT_SECRET }}
+            scriptId: ${{ secrets.SCRIPT_ID_SHEETS }}
+            rootDir: 'packages/sheets/dist'
+            command: 'push'
 
-#       #Pushing App script code to slides plugin
-#       - name: Updating slides plugin
-#         uses: daikikatsuragawa/clasp-action@v1.1.0
-#         with:
-#             idToken: ${{ secrets.ID_TOKEN }}
-#             refreshToken: ${{ secrets.REFRESH_TOKEN }}
-#             clientId: ${{ secrets.CLIENT_ID }}
-#             clientSecret: ${{ secrets.CLIENT_SECRET }}
-#             scriptId: ${{ secrets.SCRIPT_ID_SLIDES }}
-#             rootDir: 'packages/slides/dist'
-#             command: 'push'
+      #Pushing App script code to slides plugin
+      - name: Updating slides plugin
+        uses: daikikatsuragawa/clasp-action@v1.1.0
+        with:
+            idToken: ${{ secrets.ID_TOKEN }}
+            refreshToken: ${{ secrets.REFRESH_TOKEN }}
+            clientId: ${{ secrets.CLIENT_ID }}
+            clientSecret: ${{ secrets.CLIENT_SECRET }}
+            scriptId: ${{ secrets.SCRIPT_ID_SLIDES }}
+            rootDir: 'packages/slides/dist'
+            command: 'push'
