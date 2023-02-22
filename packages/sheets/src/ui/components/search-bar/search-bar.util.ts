@@ -1,3 +1,5 @@
+import { getInitConfig } from '@thoughtspot/visual-embed-sdk';
+
 const dateFormatter = Intl.DateTimeFormat();
 function formatDate(column, dateVal) {
   const value = dateVal.v.s;
@@ -26,7 +28,17 @@ export function parseHeaderAndRows(payload) {
       : dataByColId[id];
   });
 
-  console.log(colData);
   const rows = transpose(colData);
+  console.log(colNames, rows);
   return { colNames, rows };
+}
+
+export function debounce(func, timeout = 100) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, timeout);
+  };
 }

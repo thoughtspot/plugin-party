@@ -26,10 +26,10 @@
     "copy-index": "gsuite-shell"
   },
   "dependencies": {
-    "@thoughtspot/visual-embed-sdk": "^1.19.0-alpha.4",
+    "@thoughtspot/visual-embed-sdk": "^1.19.0-alpha.6",
     "gsuite-shell": "*",
     "i18n": "*",
-    "preact": "^10.11.3",
+    "preact": "^10.11.13",
     "ts-init": "*",
     "widgets": "*"
   }
