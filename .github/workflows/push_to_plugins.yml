@@ -42,7 +42,7 @@ jobs:
         with:
           name: dist-without-markdown
           path: |
-            plugin-party/packages/sheets/dist
+            plugin-party/packages/sheets/dist/Code.js
             !dist/**/*.md
 
       #Pushing App script code to sheets plugin
