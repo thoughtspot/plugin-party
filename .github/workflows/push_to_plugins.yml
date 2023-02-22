@@ -37,6 +37,13 @@ jobs:
       - name: Run build
         run: npm run build-all
       - uses: actions/checkout@v3
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-without-markdown
+          path: |
+            packages/sheets/dist
+            !dist/**/*.md
 
       #Pushing App script code to sheets plugin
       - name: Updating sheets plugin
