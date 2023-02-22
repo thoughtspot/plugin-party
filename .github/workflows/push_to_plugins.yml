@@ -27,7 +27,7 @@ jobs:
 
       # Run npm install
       - name: Run npm install
-        run: npm install
+        run: npm install && npm i nx
 
       # Runs linter
       - name: Run linter
