@@ -35,7 +35,7 @@ jobs:
       
       # Runs the build for all sub projects
       - name: Run build
-        run: npm run build-all && HOST=${{ vars.HOST }} npm run nx run-many --target=dist
+        run: npm run build-all && HOST=${{ vars.HOST }} nx run-many --target=dist
 
       #Pushing App script code to sheets plugin
       - name: Updating sheets plugin
