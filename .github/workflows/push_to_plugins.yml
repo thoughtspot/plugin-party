@@ -33,9 +33,9 @@ jobs:
 #       - name: Run linter
 #         run: npm run lint
       
-      - name: $GITHUB_ENV ${{ env.HOST }}
+      - name: $GITHUB_ENV ${{ vars.HOST }}
         env:
-          HOST: ${{ env.HOST }}
+          HOST: ${{ vars.HOST }}
         run: echo $HOST
       - name: Print them all
         run: vars
