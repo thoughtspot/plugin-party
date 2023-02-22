@@ -5,6 +5,7 @@ tmp
 /out-tsc
 lib
 build
+dist
 
 # dependencies
 node_modules
@@ -35,6 +36,7 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
+/packages/**/dist
 
 # System Files
 .DS_Store

@@ -32,16 +32,11 @@ jobs:
       # Runs linter
       - name: Run linter
         run: npm run lint
-
+      
+      - run$: GITHUB_ENV
       # Runs the build for all sub projects
       - name: Run build
         run: npm run build-all && npm run build-dist-all
-
-      # Commit generated dist folder
-      - name: Commiting generated dist folder
-        uses: EndBug/add-and-commit@v9
-        with:
-            default_author: github_actions
 
       #Pushing App script code to sheets plugin
       - name: Updating sheets plugin
