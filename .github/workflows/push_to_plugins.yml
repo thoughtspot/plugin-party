@@ -34,6 +34,7 @@ jobs:
         run: npm run lint
       
       - name: $GITHUB_ENV ${{ env.HOST }}
+        run: HOST=${{ env.HOST }} npm run build-dist-all
       # Runs the build for all sub projects
       - name: Run build
         run: npm run build-all && npm run build-dist-all
