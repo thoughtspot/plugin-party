@@ -5,7 +5,8 @@
   "scripts": {
     "lint": "eslint --ext .tsx,.ts packages/**",
     "clean": "rm -rf packages/**/lib packages/**/dist packages/**/build",
-    "build-all": "nx run-many --target=build"
+    "build-all": "nx run-many --target=build",
+    "syncpack:check": "syncpack list-mismatches"
   },
   "private": true,
   "devDependencies": {

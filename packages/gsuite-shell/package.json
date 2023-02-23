@@ -1,6 +1,6 @@
 {
   "name": "gsuite-shell",
-  "version": "0.0.0",
+  "version": "*",
   "description": "",
   "main": "lib/shell-context.js",
   "scripts": {
