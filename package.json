@@ -30,7 +30,8 @@
     "vite": "^4.1.0"
   },
   "dependencies": {
-    "preact": "^10.11.13"
+    "preact": "^10.11.13",
+    "@thoughtspot/visual-embed-sdk": "^1.19.0-alpha.9"
   },
   "workspaces": [
     "packages/*"
