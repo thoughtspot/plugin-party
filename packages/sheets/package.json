@@ -26,7 +26,6 @@
     "copy-index": "gsuite-shell"
   },
   "dependencies": {
-    "@thoughtspot/visual-embed-sdk": "^1.19.0-alpha.8",
     "gsuite-shell": "*",
     "i18n": "*",
     "preact": "^10.11.13",

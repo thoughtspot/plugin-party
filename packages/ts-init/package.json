@@ -15,7 +15,6 @@
     "preact": "^10.11.13"
   },
   "dependencies": {
-    "@thoughtspot/visual-embed-sdk": "^1.19.0-alpha.8",
     "widgets": "*",
     "i18n": "*"
   },
