@@ -39,11 +39,23 @@ export const TSSearchBar = () => {
       loader.hide();
     });
   }, 100);
+  const customization = {
+    style: {
+      customCSS: {
+        rules_UNSTABLE: {
+          '.data-panel-module__headerToggleBtn': {
+            display: 'none !important',
+          },
+        },
+      },
+    },
+  };
   return (
     <Vertical className="search-bar">
       <SearchBarEmbed
         onData={onData}
         ref={embed}
+        customizations={customization}
         onLoad={() => loader.hide()}
         onGetDataClick={() => {
           loader.show();

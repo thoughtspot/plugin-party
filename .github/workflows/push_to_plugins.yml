@@ -37,6 +37,10 @@ jobs:
       - name: Run build
         run: npm run build-all
 
+      # Builds dist folder for all sub projects
+      - name: Run dist
+        run: HOST=${{ vars.HOST }} npm run dist-all
+
       #Pushing App script code to sheets plugin
       - name: Updating sheets plugin
         uses: daikikatsuragawa/clasp-action@v1.1.0
