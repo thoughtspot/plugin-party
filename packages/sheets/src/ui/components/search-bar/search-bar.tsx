@@ -19,7 +19,9 @@ export const TSSearchBar = () => {
   const onData = (event) => {
     const payload = event.data.embedAnswerData;
     const { colNames, rows } = parseHeaderAndRows(payload);
-    run('updateData', colNames, rows);
+    run('updateData', colNames, rows).then(() => {
+      loader.hide();
+    });
   };
   const onGetDataClick = debounce(() => {
     // TODO(Ashish): Remove short circuit once the GetData non memo
