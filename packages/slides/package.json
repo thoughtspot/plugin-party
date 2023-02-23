@@ -1,6 +1,6 @@
 {
   "name": "slides",
-  "version": "0.0.0",
+  "version": "*",
   "main": "lib/index.js",
   "devDependencies": {},
   "scripts": {
