@@ -22,6 +22,9 @@ export const TSSearchBar = () => {
     run('updateData', colNames, rows);
   };
   const onGetDataClick = debounce(() => {
+    // TODO(Ashish): Remove short circuit once the GetData non memo
+    // bug is fixed.
+    return;
     embed.current.trigger(HostEvent.GetTML).then(async (data) => {
       const query = data.answer.search_query;
       if (!query) {
@@ -37,6 +40,7 @@ export const TSSearchBar = () => {
   return (
     <Vertical className="search-bar">
       <SearchBarEmbed
+        onData={onData}
         ref={embed}
         onLoad={() => loader.hide()}
         onGetDataClick={() => {
