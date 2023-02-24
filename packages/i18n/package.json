@@ -1,6 +1,6 @@
 {
   "name": "i18n",
-  "version": "*",
+  "version": "0.0.0",
   "description": "",
   "main": "lib/index.js",
   "scripts": {

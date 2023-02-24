@@ -6,7 +6,7 @@
     "lint": "eslint --ext .tsx,.ts packages/**",
     "clean": "rm -rf packages/**/lib packages/**/dist packages/**/build",
     "build-all": "nx run-many --target=build",
-    "dist-all":"nx run-many --target=dist",
+    "dist-all": "nx run-many --target=dist",
     "syncpack:check": "syncpack list-mismatches"
   },
   "private": true,
@@ -31,8 +31,8 @@
     "vite": "^4.1.0"
   },
   "dependencies": {
-    "preact": "^10.11.13",
-    "@thoughtspot/visual-embed-sdk": "^1.19.0-alpha.9"
+    "@thoughtspot/visual-embed-sdk": "^1.19.0-alpha.9",
+    "preact": "^10.11.13"
   },
   "workspaces": [
     "packages/*"
