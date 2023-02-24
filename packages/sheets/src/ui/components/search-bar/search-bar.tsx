@@ -46,6 +46,12 @@ export const TSSearchBar = () => {
           '.data-panel-module__headerToggleBtn': {
             display: 'none !important',
           },
+          '.accordion-module__accordionItem:nth-child(2)': {
+            display: 'none !important',
+          },
+          '.accordion-module__accordionItem:nth-child(3)': {
+            display: 'none !important',
+          },
         },
       },
     },
