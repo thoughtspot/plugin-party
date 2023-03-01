@@ -1,6 +1,6 @@
 {
   "name": "sheets",
-  "version": "*",
+  "version": "0.0.0",
   "main": "dist/index.js",
   "devDependencies": {
     "@google/clasp": "^2.4.2",
@@ -26,10 +26,10 @@
     "copy-index": "gsuite-shell"
   },
   "dependencies": {
-    "gsuite-shell": "*",
-    "i18n": "*",
+    "gsuite-shell": "0.0.0",
+    "i18n": "0.0.0",
     "preact": "^10.11.13",
-    "ts-init": "*",
-    "widgets": "*"
+    "ts-init": "0.0.0",
+    "widgets": "0.0.0"
   }
 }

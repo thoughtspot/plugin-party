@@ -1,9 +1,14 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "lib",
+    "outDir": "dist",
     "baseUrl": ".",
-    "rootDir": "./src"
+    "rootDir": "./src/server",
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "target": "ES5",
+    "preserveWatchOutput": true
   },
-  "include": ["src/**/*.tsx", "custom-typings/**/*.d.ts", "index.tsx"]
+  "include": ["src/server/Code.ts"]
 }

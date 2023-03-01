@@ -7,5 +7,6 @@
   "USERNAME": "Username",
   "PASSWORD": "Password",
   "INCORRECT_PASSWORD": "Either your username or password is incorrect. Your account may lock out after multiple successive incorrect attempts.",
-  "SIGN_IN": "Sign in"
+  "SIGN_IN": "Sign in",
+  "BROWSE_TS": "Browse ThoughtSpot"
 }
