@@ -1,0 +1,37 @@
+@import '../common.scss';
+
+.cardWrapper {
+    display: flex;
+    flex-direction: column;
+
+    position: relative;
+    border: 1px solid $gray2;
+    border-radius: $spacing--b;
+    outline: none;
+    cursor: pointer;
+}
+
+.cardWrapper:hover {
+    border: 1px solid #2E75F0;
+}
+
+.cardWrapper:focus {
+    border: 1px solid #2E75F0;
+}
+
+.actionItems {
+    margin-top: $spacing--d;
+    margin-bottom: $spacing--d;
+}
+
+.selected {
+    border: 1px solid rd-color('blue', '60');
+}
+
+.cardSectionWrapper {
+    padding: $spacing--c;
+}
+
+.bodyWidthAdjust {
+    width: calc(100% - 28px);
+}

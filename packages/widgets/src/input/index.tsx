@@ -1,8 +1,8 @@
 import { FunctionComponent, RefObject } from 'preact';
 import { forwardRef } from 'preact/compat';
-import './input.scss';
 import cx from 'classnames';
 import { JSXInternal } from 'preact/src/jsx';
+import styles from './input.module.scss';
 
 export interface InputProps
   extends JSXInternal.HTMLAttributes<HTMLInputElement> {
@@ -18,7 +18,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     { placeholder, className, id, type, initialValue, ...rest }: InputProps,
     ref
   ) => {
-    const classes = cx('input', className);
+    const classes = cx(styles.input, className);
     return (
       <input
         value={initialValue}

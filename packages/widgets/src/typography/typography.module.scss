@@ -1,0 +1,95 @@
+@import '../common.scss';
+
+p {
+    font-variant-ligatures: none;
+
+    b {
+        font-variant-ligatures: none;
+    }
+}
+
+.p {
+    @include rd-font--p;
+}
+
+.hero {
+    @include rd-font--h0;
+}
+
+.h1 {
+    @include rd-font--h1;
+}
+
+.h2 {
+    @include rd-font--h2;
+}
+
+.h3 {
+    @include rd-font--h3;
+}
+
+.h4 {
+    @include rd-font--h4;
+}
+
+.h5 {
+    @include rd-font--h5;
+}
+
+.h6 {
+    @include rd-font--h6;
+
+    text-transform: none !important;
+}
+
+.base {
+    color: $text-color;
+}
+
+.gray {
+    color: $gray5;
+}
+
+.grayLight {
+    color: $gray4;
+}
+
+.accent {
+    color: $blue1;
+}
+
+.warning {
+    color: $text-warning;
+}
+
+.success {
+    color: $text-success;
+}
+
+.failure {
+    color: $text-failure;
+}
+
+.white {
+    color: $white;
+}
+
+.whiteSpace {
+    white-space: pre-line;
+}
+
+.noMargin {
+    margin: 0 !important;
+}
+
+.ellipsis {
+    // @include rd-font--truncate-multi(1);
+
+    // Padding doesnt work with -webkit-line-clamp. If you need padding/margin create a wrapper around
+    // Typography and add the required styles.
+    padding: 0 !important;
+}
+
+.wrapContent {
+    word-break: break-all;
+}

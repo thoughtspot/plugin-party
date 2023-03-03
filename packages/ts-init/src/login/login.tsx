@@ -1,6 +1,7 @@
 import { Vertical, Horizontal } from 'widgets/lib/layout/flex-layout';
 import { Button } from 'widgets/lib/button';
 import { Input } from 'widgets/lib/input';
+import { Colors, Typography } from 'widgets/lib/typography';
 import { useTranslations } from 'i18n';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import './login.scss';
@@ -41,7 +42,11 @@ export const Login = ({ onBack, onSSO, onCredSubmit, isCredFailed }) => {
           ref={passRef}
           required
         />
-        {showCredError && <p className="auth-fail">{t.INCORRECT_PASSWORD}</p>}
+        {showCredError && (
+          <Typography variant="h6" color={Colors.failure}>
+            {t.INCORRECT_PASSWORD}
+          </Typography>
+        )}
         <Button
           id="submit"
           type="PRIMARY"

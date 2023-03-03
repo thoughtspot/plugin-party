@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import { FunctionComponent } from 'preact';
 import FlexView from 'react-flexview';
-import './flex-layout.scss';
+import styles from './flex-layout.module.scss';
 
 /**
  * These are the Design System spacing symbols.
@@ -39,7 +39,7 @@ function fixProps<T extends AnyLayoutProps>(props: T): T {
 
 export const View: FunctionComponent<LayoutProps> = (props) => {
   const { spacing, className, ...flexProps } = fixProps(props);
-  const spacingClassName = spacing ? `spacing-${spacing}` : '';
+  const spacingClassName = spacing ? styles[`spacing-${spacing}`] : '';
   return (
     <FlexView className={cx(className, spacingClassName)} {...flexProps} />
   );
@@ -52,7 +52,7 @@ export const Horizontal: FunctionComponent<HorizontalLayoutProps> = (
   return (
     <View
       {...rest}
-      className={cx(props.className, 'horizontal')}
+      className={cx(props.className, styles.horizontal)}
       style={{ alignItems: vAlignContent, minHeight }}
     />
   );
@@ -63,7 +63,7 @@ export const Vertical: FunctionComponent<VerticalLayoutProps> = (props) => {
   return (
     <View
       {...rest}
-      className={cx(props.className, 'vertical')}
+      className={cx(props.className, styles.vertical)}
       column
       style={{ alignItems: hAlignContent, minHeight }}
     />

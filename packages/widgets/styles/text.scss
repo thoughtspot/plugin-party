@@ -1,0 +1,72 @@
+//   ========================================================================
+//   TEXT TYPES
+//   ========================================================================
+$rd-font--size-h0:  48px !default;
+$rd-font--size-h1:  32px !default;
+$rd-font--size-h2:  24px !default;
+$rd-font--size-h3:  20px !default;
+$rd-font--size-h4:  18px !default;
+$rd-font--size-h5:  16px !default;
+$rd-font--size-h6:  12px !default;
+$rd-font--size-p:   14px !default;
+
+//   ========================================================================
+//   #FONT VARS
+//   ========================================================================
+
+$rd-font--family-regular: optimo-plain,       helvetica neue, helvetica, arial, sans-serif;
+$rd-font--family-mono: bb-roller-regular,          courrier, sans-serif;
+
+
+@mixin rd-font--p {
+    font-size: $rd-font--size-p;
+    }
+    
+    @mixin rd-font--h0 {
+    font-size: $rd-font--size-h0;
+    font-weight: 500;
+    font-variant-ligatures: none;
+    
+    }
+    
+    @mixin rd-font--h1 {
+    font-size: $rd-font--size-h0;
+    font-weight: 500;
+    font-variant-ligatures: none;
+    
+    }
+    
+    @mixin rd-font--h2 {
+    font-size: $rd-font--size-h2;
+    font-weight: 500;
+    font-variant-ligatures: none;
+    
+    }
+    
+    @mixin rd-font--h3 {
+    font-size: $rd-font--size-h3;
+    font-weight: 500;
+    font-variant-ligatures: none;
+    
+    }
+    
+    @mixin rd-font--h4 {
+    font-size: $rd-font--size-h4;
+    font-weight: 400;
+    font-variant-ligatures: none;
+    
+    }
+    
+    @mixin rd-font--h5 {
+    font-size: $rd-font--size-h5;
+    font-weight: 400;
+    font-variant-ligatures: none;
+    
+    }
+    
+    @mixin rd-font--h6 {
+    font-size: $rd-font--size-h6;
+    font-family: $rd-font--family-mono;
+    font-weight: 400;
+    text-transform: uppercase;
+    }

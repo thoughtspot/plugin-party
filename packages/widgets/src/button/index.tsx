@@ -1,5 +1,5 @@
-import './button.scss';
 import cx from 'classnames';
+import styles from './button.module.scss';
 
 export interface ButtonProps {
   type?: 'PRIMARY' | 'SECONDARY';
@@ -7,6 +7,7 @@ export interface ButtonProps {
   text: string;
   onClick: (e) => void;
   id?: string;
+  isDisabled?: boolean;
 }
 
 export const Button = ({
@@ -15,13 +16,20 @@ export const Button = ({
   text,
   onClick,
   id,
+  isDisabled,
 }: ButtonProps) => {
-  const classnames = cx(className, 'btn', {
-    'primary-btn': type === 'PRIMARY',
-    'secondary-btn': type === 'SECONDARY',
-  });
+  const classnames = cx(
+    className,
+    styles.btn,
+    styles[`${type.toLowerCase()}-btn`]
+  );
   return (
-    <button id={id} className={classnames} onClick={onClick}>
+    <button
+      id={id}
+      className={classnames}
+      onClick={onClick}
+      disabled={isDisabled}
+    >
       {text}
     </button>
   );
