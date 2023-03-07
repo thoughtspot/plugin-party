@@ -10,8 +10,6 @@ function onOpen() {
     .createMenu('ThoughtSpot')
     .addItem('Get data from ThoughtSpot', 'showTSSidebar')
     .addSeparator()
-    .addItem('Analyze this sheet', 'showTSDialog')
-    .addSeparator()
     .addItem('Reset instance url', 'resetTSInstance')
     .addToUi();
 }
