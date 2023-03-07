@@ -14,8 +14,8 @@
   },
   "scripts": {
     "build": "vite build",
-    "tsw": "tsc -p . -w",
     "tsc": "tsc -p .",
+    "tsw": "tsc -p . -w",
     "claspw": "clasp push -w",
     "clasp": "clasp push",
     "dist:dev": "npm-run-all -p tsw copy-index claspw",
