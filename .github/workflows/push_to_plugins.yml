@@ -39,7 +39,7 @@ jobs:
 
       # Builds dist folder for all sub projects
       - name: Run dist
-        run: HOST=${{ vars.HOST }} npm run dist-all
+        run: HOST=${{ vars.HOST }} npm run dist-all -- --skip-nx-cache
 
       #Pushing App script code to sheets plugin
       - name: Updating sheets plugin
