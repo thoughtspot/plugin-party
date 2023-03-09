@@ -1,0 +1,102 @@
+@import '../common.scss';
+
+.segmentedControl {
+    position: relative;
+    padding: $spacing--a / 2;
+    width: 100%;
+    height: 28px;
+    overflow: hidden;
+
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: $spacing--a;
+    background-color: $gray1;
+
+    .segmentedItem {
+        position: relative;
+        text-decoration: none;
+        color: $gray6;
+        border-radius: $spacing--a;
+        z-index: 1;
+        width: inherit;
+        height: inherit;
+
+        display: inline-flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+        transition: color 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+        border: none;
+        outline: none !important;
+        background-color: transparent;
+        cursor: pointer;
+
+        .innerText {
+            pointer-events: none;
+            color: $gray6;
+        }
+
+        &.selected {
+
+            .innerText {
+                font-weight: 600;
+            }
+
+            & ~ .selectedHighlight {
+                display: block;
+            }
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            left: $spacing--a / 2;
+            top: $spacing--a / 2;
+            right: $spacing--a / 2;
+            bottom: $spacing--a / 2;
+            opacity: 0;
+            // border-radius: $rd-spacing--scaled-d;
+            transition: opacity 0.25s ease;
+            pointer-events: none;
+        }
+
+        &:hover .innerText {
+            color: $text-color;
+        }
+
+        &:focus {
+            outline: none;
+            box-shadow: 0 0 0 1px $gray1;
+
+            &:not( .disabled ) {
+
+                &::after {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+}
+
+.selectedHighlight {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: $spacing--a / 2;
+    bottom: $spacing--a / 2;
+    background-color: $white;
+    border-radius: $spacing--a;
+    z-index: 0;
+    transition:
+        transform 0.25s ease,
+        width 0.25s ease;
+    will-change: width, transform;
+    pointer-events: none;
+
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25),
+}
