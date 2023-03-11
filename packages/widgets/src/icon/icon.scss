@@ -1,0 +1,39 @@
+@import '../common.scss';
+.icon {
+  transition: fill $animation--promptly ease;
+
+  &.xs {
+    min-width: $spacing--c;
+    width: $spacing--c;
+    min-height: $spacing--c;
+    height: $spacing--c;
+  }
+
+  &.s {
+    min-width: $spacing--e;
+    width: $spacing--e;
+    min-height: $spacing--e;
+    height: $spacing--e;
+  }
+
+  &.m {
+    min-width: $spacing--f;
+    width: $spacing--f;
+    min-height: $spacing--f;
+    height: $spacing--f;
+  }
+
+  &.l {
+    min-width: $spacing--h;
+    width: $spacing--h;
+    min-height: $spacing--h;
+    height: $spacing--h;
+  }
+
+  &.xl {
+    min-width: $spacing--j;
+    width: $spacing--j;
+    min-height: $spacing--j;
+    height: $spacing--j;
+  }
+}

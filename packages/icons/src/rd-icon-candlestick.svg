@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg focusable="false" width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.1 (78136) - https://sketchapp.com -->
+    <title>Icons/Chart/Candlestick</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icons/Chart/Candlestick" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <polyline id="Shape" stroke="#47515F" points="4.5 4 4.5 43.5 44 43.5"></polyline>
+        <g id="Group" transform="translate(9.000000, 7.000000)" fill-rule="nonzero">
+            <polygon id="Mask-Copy-3" fill="#2E75F0" points="0 3 8 3 8 23 0 23"></polygon>
+            <polygon id="Path-Copy" fill="#E0E0E0" transform="translate(4.000000, 24.500000) rotate(-90.000000) translate(-4.000000, -24.500000) " points="2.5 23.5 5.5 23.5 5.5 25.5 2.5 25.5"></polygon>
+            <polygon id="Path-Copy-3" fill="#E0E0E0" transform="translate(4.000000, 1.500000) rotate(-90.000000) translate(-4.000000, -1.500000) " points="2.5 0.5 5.5 0.5 5.5 2.5 2.5 2.5"></polygon>
+        </g>
+        <g id="Group-Copy-2" transform="translate(21.000000, 18.000000)" fill-rule="nonzero">
+            <polygon id="Mask-Copy-3" fill="#06BF7F" points="0 3 8 3 8 18 0 18"></polygon>
+            <polygon id="Path-Copy" fill="#E0E0E0" transform="translate(4.000000, 19.500000) rotate(-90.000000) translate(-4.000000, -19.500000) " points="2.5 18.5 5.5 18.5 5.5 20.5 2.5 20.5"></polygon>
+            <polygon id="Path-Copy-3" fill="#E0E0E0" transform="translate(4.000000, 1.500000) rotate(-90.000000) translate(-4.000000, -1.500000) " points="2.5 0.5 5.5 0.5 5.5 2.5 2.5 2.5"></polygon>
+        </g>
+        <g id="Group-Copy" transform="translate(33.000000, 7.000000)" fill-rule="nonzero">
+            <polygon id="Mask-Copy-3" fill="#2E75F0" points="0 3 8 3 8 23 0 23"></polygon>
+            <polygon id="Path-Copy" fill="#E0E0E0" transform="translate(4.000000, 24.500000) rotate(-90.000000) translate(-4.000000, -24.500000) " points="2.5 23.5 5.5 23.5 5.5 25.5 2.5 25.5"></polygon>
+            <polygon id="Path-Copy-3" fill="#E0E0E0" transform="translate(4.000000, 1.500000) rotate(-90.000000) translate(-4.000000, -1.500000) " points="2.5 0.5 5.5 0.5 5.5 2.5 2.5 2.5"></polygon>
+        </g>
+    </g>
+</svg>
