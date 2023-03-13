@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint --ext .tsx,.ts packages/**",
+    "lint": "eslint --ext .tsx,.ts packages/** --no-error-on-unmatched-pattern",
     "clean": "rm -rf packages/**/lib packages/**/dist packages/**/build",
     "build-all": "nx run-many --target=build",
     "dist-all": "nx run-many --target=dist",
@@ -26,9 +26,11 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "nx": "15.6.3",
     "prettier": "^2.6.2",
+    "svgstore": "^3.0.1",
     "syncpack": "^9.1.2",
     "typescript": "^4.9.5",
-    "vite": "^4.1.0"
+    "vite": "^4.1.0",
+    "vite-plugin-html": "^3.2.0"
   },
   "dependencies": {
     "@thoughtspot/visual-embed-sdk": "^1.19.0-alpha.9",

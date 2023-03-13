@@ -14,7 +14,8 @@
   "dependencies": {
     "classnames": "^2.3.2",
     "react-flexview": "^6.0.1",
-    "topbar": "^2.0.1"
+    "topbar": "^2.0.1",
+    "icons": "0.0.0"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1"
