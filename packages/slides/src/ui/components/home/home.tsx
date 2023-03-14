@@ -1,20 +1,17 @@
+import { route } from 'preact-router';
 import { useLoader } from 'widgets/lib/loader';
 import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { useTranslations } from 'i18n';
 import { Colors, Typography } from 'widgets/lib/typography';
 import { Card } from 'widgets/lib/card';
 import { useShellContext } from 'gsuite-shell';
+import { Routes } from '../../routes';
 import './home.scss';
-import React from 'preact/compat';
-import { ListPage } from '../listPage/listPage';
 
 export const Home = () => {
   const loader = useLoader();
   const { run } = useShellContext();
   const { t } = useTranslations();
-  const [browse, setTest] = React.useState(false);
-
-  if (browse) return <ListPage setTest={setTest} />;
 
   return (
     <Vertical className="home" spacing="f">
@@ -24,7 +21,7 @@ export const Home = () => {
         subTitle={t.INSERT_TS_VIZ_DESCRIPTION}
         firstButton={t.BROWSE_TS}
         firstButtonType={'PRIMARY'}
-        onFirstButtonClick={() => setTest(true)}
+        onFirstButtonClick={() => route(Routes.LIST)}
       />
       <Card
         id={1}
