@@ -74,7 +74,7 @@ export const Avatar: FC<AvatarProps> = ({
     return (
       showName &&
       name && (
-        <Typography variant="h5" className={cx(styles.name)}>
+        <Typography variant="h6" className={cx(styles.name)}>
           {name}
         </Typography>
       )
