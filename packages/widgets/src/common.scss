@@ -1,28 +1,4 @@
-$blue1: #2770ef;
-$blue2: #2359b6;
+@import '../styles/colors.scss';
+@import '../styles/text.scss';
+@import '../styles/other.scss';
 
-$gray0: #f6f8fa;
-$gray1: #eaedf2;
-$gray2: #dbdfe7;
-$gray3: #c2c8d1;
-$gray4: #a4abb8;
-$gray5: #4a515e;
-$gray6: #1d232f;
-
-$white: #ffffff;
-
-$text-color: $gray6;
-$text-color-alternate: $white;
-
-$spacing--a: 4px;
-$spacing--b: 8px;
-$spacing--c: 12px;
-$spacing--d: 16px;
-$spacing--e: 20px;
-$spacing--f: 24px;
-$spacing--g: 28px;
-$spacing--h: 32px;
-$spacing--i: 40px;
-$spacing--j: 48px;
-
-$animation--promptly: 0.2s !default;

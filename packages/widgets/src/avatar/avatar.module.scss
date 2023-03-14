@@ -1,0 +1,135 @@
+@import '../common.scss';
+
+.root {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.avatarContainer {
+    width: $spacing--h;
+    height: $spacing--h;
+    position: relative;
+    border-radius: $layout--radius-round;
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    overflow: hidden;
+    position: relative;
+}
+.initial {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    @include rd-font--p;
+
+    color: $white;
+    text-transform: uppercase;
+
+    // Show initial while image gets loaded
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.avatarImage {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+
+    &.loaded {
+        opacity: 1;
+        transition: opacity $animation--slowly ease;
+    }
+}
+
+.name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    margin-bottom: 0;
+}
+
+// Name position
+
+.nameRight {
+    display: flex;
+    flex-direction: row;
+
+    .name {
+        margin-top: 0;
+        margin-left: $spacing--c;
+    }
+}
+
+// Sizes
+
+.size-xs {
+
+    .avatarContainer {
+        width: $spacing--e;
+        height: $spacing--e;
+    }
+
+    .name {
+        margin-left: $spacing--b;
+    }
+
+    .initial {
+        @include rd-font--h6;
+
+        line-height: 1;
+    }
+}
+
+.size-s {
+
+    .avatarContainer {
+        width: $spacing--f;
+        height: $spacing--f;
+    }
+
+    .name {
+        margin-left: $spacing--b;
+    }
+
+    .initial {
+        @include rd-font--h6;
+    }
+}
+
+// Background colors
+
+.bgBlueBase {
+    background-color: $blue1;
+}
+
+.bgTealBase {
+    background-color: $teal1;
+}
+
+.bgOrangeBase {
+    background-color: $yellow1;
+}
+
+.bgPurpleBase {
+    background-color: $purple1;
+}
+
+.bgGrayBase {
+    background-color: $text-color;
+}
+
+.bgGreenBase {
+    background-color: $green1;
+}
