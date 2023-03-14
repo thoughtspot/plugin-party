@@ -13,7 +13,6 @@ export interface ListPageProps {
   currentTab?: string;
   onChangeTab?: (tab: string) => void;
   onChangePattern?: (pattern: string) => void;
-  setTest?: any;
 }
 
 export const ListPage = (props: ListPageProps) => {
@@ -28,7 +27,7 @@ export const ListPage = (props: ListPageProps) => {
     <Vertical spacing="j">
       <Tab selectedTabId="test-tab" className="tabHeader">
         <TabItem id={'test-tab'} name={'Test Tab'}>
-          <LiveboardList setTest={props.setTest} data={data.liveboardList} />
+          <LiveboardList data={data.liveboardList} />
         </TabItem>
         <TabItem
           id={'test-tab1'}
