@@ -1,6 +1,8 @@
 export enum Routes {
   HOME = '/',
-  LIST = '/list',
+  LIST = '/list/:selectedTab',
+  ANSWERLIST = '/list/answers',
+  LIVEBOARDLIST = '/list/liveboards',
   LIVEBOARD = '/liveboard/:id',
   ANSWER = '/answer/:id',
 }

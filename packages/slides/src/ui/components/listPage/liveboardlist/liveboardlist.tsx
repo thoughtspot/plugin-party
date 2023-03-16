@@ -1,30 +1,43 @@
-import React from 'preact/hooks';
+import React, { useEffect, useRef, useState } from 'preact/hooks';
+import { Vertical } from 'widgets/lib/layout/flex-layout';
+import { List } from 'widgets/lib/list/list';
+import { useTranslations } from 'i18n';
 import { route } from 'preact-router';
-import { Author } from 'widgets/lib/author';
-import { Button } from 'widgets/lib/button';
-import { Vertical, Horizontal } from 'widgets/lib/layout/flex-layout';
-import './liveboardlist.scss';
-import { Routes } from '../../../routes';
+import _ from 'lodash';
+import { useGetEmptyLBListMessageMap } from './liveboardlist.util';
+import { getPath, Routes } from '../../../routes';
+import { useAppContext } from '../../app.context';
 
-export interface LiveboardListProps {
-  data?: any;
-  pattern?: string;
-  currentSegment?: string;
-  onSegmentChange?: any;
-  onChangePattern?: (pattern: string) => void;
-}
+export const LiveboardList = (props: any) => {
+  const { t } = useTranslations();
+  const { segmentIndex, searchPattern, setSearchPattern } = useAppContext();
 
-export const LiveboardList = (props: LiveboardListProps) => {
+  const emptyLBListMessageMap = useGetEmptyLBListMessageMap();
+
+  const onRowClick = (row) => {
+    route(
+      getPath(Routes.LIVEBOARD, {
+        id: row.id,
+      })
+    );
+  };
   return (
-    <Vertical spacing="b" className={'liveboardlist-container'}>
-      <Button text={'Home'} onClick={() => route(Routes.HOME)}></Button>
-      {props.data?.map((object) => {
-        const authorName = object.metadata_header.authorDisplayName;
-        const authorId = object.metadata_header.author;
-        return (
-          authorName && <Author authorName={authorName} authorId={authorId} />
-        );
-      })}
+    <Vertical>
+      <List
+        data={props.data}
+        onRowClick={onRowClick}
+        refetchData={props.refetchData}
+        emptyIcon={emptyLBListMessageMap[segmentIndex].emptyIcon}
+        emptyMessageTile={emptyLBListMessageMap[segmentIndex].emptyMessageTile}
+        emptyMessageDescription={
+          emptyLBListMessageMap[segmentIndex].emptyMessageDescription
+        }
+        searchPlaceholder={t.LB_SEARCH_PLACEHOLDER}
+        isLoading={props.loading}
+        searchValue={searchPattern}
+        setSearchValue={setSearchPattern}
+        isLastBatch={props.isLastBatch}
+      ></List>
     </Vertical>
   );
 };

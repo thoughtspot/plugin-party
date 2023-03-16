@@ -49,14 +49,18 @@ export const SegmentControl: FunctionComponent<SegmentControlProps> = (
   const isItemSelected = (index: number): boolean =>
     index === currentSelectedIndex[currentSelectedIndex.indexOf(index)];
 
-  const onSelectHandler = (index: number, { width, offsetX }: any) => {
+  const onSelectHandler = (
+    index: number,
+    { width, offsetX }: any,
+    userClick: boolean
+  ) => {
     const selectedStyle = {
       width: `${width}px`,
       transform: `translateX(${offsetX}px)`,
     };
     setSelectedItemStyle(selectedStyle);
     setCurrentSelectedIndex([index]);
-    onSelect!(index as any);
+    if (userClick) onSelect!(index as any);
   };
 
   return (

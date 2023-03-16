@@ -4,7 +4,7 @@ import {
 } from '@thoughtspot/visual-embed-sdk/react';
 import { Action, EmbedEvent } from '@thoughtspot/visual-embed-sdk';
 import { useRouter } from 'preact-router';
-import { useEffect } from 'react';
+import { useEffect } from 'preact/hooks';
 
 export const Liveboard = () => {
   const [router] = useRouter();
@@ -30,6 +30,10 @@ export const Liveboard = () => {
             rules_UNSTABLE: {
               body: {
                 zoom: '0.6',
+                height: '100% !important',
+              },
+              '.pinboard-header-module__pinboardHeader': {
+                display: 'none !important',
               },
             },
           },
