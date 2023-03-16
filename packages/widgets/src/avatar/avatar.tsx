@@ -5,7 +5,7 @@
 import cx from 'classnames';
 import _ from 'lodash';
 import React, { FC, useEffect } from 'preact/compat';
-import { Typography } from '../typography/typography';
+import { Colors, Typography } from '../typography/typography';
 import styles from './avatar.module.scss';
 import { getRandomBgClassNameFromName } from './avatar-util';
 
@@ -74,7 +74,11 @@ export const Avatar: FC<AvatarProps> = ({
     return (
       showName &&
       name && (
-        <Typography variant="h5" className={cx(styles.name)}>
+        <Typography
+          variant="h6"
+          className={cx(styles.name)}
+          color={Colors.gray}
+        >
           {name}
         </Typography>
       )
