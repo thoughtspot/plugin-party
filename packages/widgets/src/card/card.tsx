@@ -45,14 +45,15 @@ export const Card: React.FC<CardProps> = ({
     >
       <Horizontal spacing="e">
         <Vertical>
-          <Typography variant="h5" data-testid={`card-title-testid${id}`}>
+          <div className={styles.title} data-testid={`card-title-testid${id}`}>
             {title}
-          </Typography>
+          </div>
 
           {subTitle !== '' && (
-            <Typography variant="p" noMargin>
-              {subTitle}
-            </Typography>
+            <p
+              className={styles.subtitle}
+              dangerouslySetInnerHTML={{ __html: subTitle }}
+            ></p>
           )}
 
           <Horizontal spacing="d" className={styles.actionItems}>
