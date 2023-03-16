@@ -2,9 +2,10 @@ import cx from 'classnames';
 import styles from './button.module.scss';
 
 export interface ButtonProps {
-  type?: 'PRIMARY' | 'SECONDARY';
+  type?: 'PRIMARY' | 'SECONDARY' | 'ICON';
   className?: string;
-  text: string;
+  children?: any[];
+  text?: string;
   onClick: (e) => void;
   id?: string;
   isDisabled?: boolean;
@@ -13,6 +14,7 @@ export interface ButtonProps {
 export const Button = ({
   type = 'PRIMARY',
   className,
+  children,
   text,
   onClick,
   id,
@@ -30,7 +32,7 @@ export const Button = ({
       onClick={onClick}
       disabled={isDisabled}
     >
-      {text}
+      {text || children}
     </button>
   );
 };

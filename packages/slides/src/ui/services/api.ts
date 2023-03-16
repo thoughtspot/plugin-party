@@ -16,6 +16,18 @@ export const getUserInfo = async () => {
   };
 };
 
+function blobToBase64(blob) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result: string = reader.result as string;
+      const base64data = result.substring(result.indexOf(',') + 1);
+      resolve(base64data);
+    };
+    reader.readAsDataURL(blob);
+  });
+}
+
 export const getTSObjectList = async () => {
   const baseUrl = getInitConfig().thoughtSpotHost;
   const res = await fetch(`${baseUrl}/api/rest/2.0/metadata/search`, {
@@ -41,5 +53,38 @@ export const getTSObjectList = async () => {
   return {
     liveboardList: groupedData.LIVEBOARD,
     answerList: groupedData.ANSWER,
+  };
+};
+
+export const exportAnswer = async (answerId) => {
+  const baseUrl = getInitConfig().thoughtSpotHost;
+  const res = await fetch(`${baseUrl}/api/rest/2.0/report/answer`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      metadata_identifier: answerId,
+      file_format: 'PNG',
+    }),
+    credentials: 'include',
+  });
+  const blob = await res.blob();
+  return blobToBase64(blob);
+};
+
+export const getToken = async () => {
+  const baseUrl = getInitConfig().thoughtSpotHost;
+  const res = await fetch(`${baseUrl}/callosum/v1/session/v2/gettoken`, {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+    },
+    credentials: 'include',
+  });
+  const data = await res.json();
+  return {
+    token: data.token,
+    ttl: (data.tokenExpiryDuration - data.tokenCreatedTime) / 1000,
   };
 };

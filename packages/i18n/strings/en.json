@@ -9,10 +9,10 @@
   "INCORRECT_PASSWORD": "Either your username or password is incorrect. Your account may lock out after multiple successive incorrect attempts.",
   "SIGN_IN": "Sign in",
   "BROWSE_TS": "Browse ThoughtSpot",
-  "INSERT_TS_VIZ": "Insert Thoughtspot Visualizations",
-  "INSERT_TS_VIZ_DESCRIPTION": "Insert Thoughtspot Visualizations or answers in your slide",
-  "UPDATE_VIZ": "Update Visualizations",
-  "UPDATE_VIZ_DESCRIPTION": "Update all ThoughtSpot visualizations on this slide / presentation with the latest data.",
+  "INSERT_TS_VIZ": "Insert visualizations",
+  "INSERT_TS_VIZ_DESCRIPTION": "Click the <b>Browse ThoughtSpot</b> button below to select from your ThoughtSpot Liveboards and Answers.",
+  "UPDATE_VIZ": "Update visualizations",
+  "UPDATE_VIZ_DESCRIPTION": "Click the <b>Update</b> button(s) below to generate updated image snapshots for all of your ThoughtSpot visualizations.",
   "UPDATE_ALL_VIZ": "Update all",
   "UPDATE_VIZ_IN_SLIDE": "Update Slide"
 }

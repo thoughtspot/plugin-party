@@ -5,6 +5,11 @@
   padding: 6px 24px;
   border: none;
   cursor: pointer;
+  font-size: 14px;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 }
 
 .primary-btn {
@@ -20,7 +25,15 @@
   background-color: $gray1;
   color: $text-color;
 
-  &:hover {
+  &:hover(:not(:disabled)) {
     background-color: $gray2;
   }
+
+  &:disabled {
+    background-color: $gray0;
+  }
+}
+
+.icon-btn {
+  padding: 9px 9px 6px 9px;
 }
