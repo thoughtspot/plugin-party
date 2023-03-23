@@ -10,5 +10,5 @@
     "target": "ES5",
     "preserveWatchOutput": true
   },
-  "include": ["src/server/Code.ts"]
+  "include": ["src/server/*.ts"]
 }
