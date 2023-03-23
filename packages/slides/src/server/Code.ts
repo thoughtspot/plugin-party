@@ -244,15 +244,15 @@ function serializeBlob(blob) {
 }
 
 function getImages(links, skipCache = false) {
-  const cache = CacheService.getUserCache();
-  const linksToFetch = [];
+  const cache = new BlobCache(CacheService.getScriptCache());
+  const linksToFetch: string[] = [];
   const linkToFetchHash = {};
 
   // This map has side effects :)
   const linkRefs = links.map((link) => {
-    if (!skipCache && cache.get(link)) {
+    if (!skipCache && cache.has(link)) {
       console.log('cache hit', link);
-      return [link, deserializeToBlob(cache.get(link))];
+      return [link, cache.getBlob(link)];
     }
     if (linkToFetchHash[link]) {
       return [link, linkToFetchHash[link]];
@@ -270,7 +270,7 @@ function getImages(links, skipCache = false) {
     const ref = linkRef[1];
     if (typeof ref === 'number') {
       const blob = blobs[ref];
-      cache.put(link, serializeBlob(blob));
+      cache.putBlob(link, blob);
       return blob;
     }
     return ref;

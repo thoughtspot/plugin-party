@@ -30,15 +30,6 @@ export const Home = () => {
         firstButton={t.BROWSE_TS}
         firstButtonType={'PRIMARY'}
         onFirstButtonClick={() => route(Routes.LIST)}
-        secondButton="A"
-        secondButtonType="SECONDARY"
-        onSecondButtonClick={() =>
-          route(
-            getPath(Routes.ANSWER, {
-              id: '0fb54198-868d-45de-8929-139b0089e964',
-            })
-          )
-        }
       />
       <Card
         id={1}
