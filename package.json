@@ -7,6 +7,7 @@
     "clean": "rm -rf packages/**/lib packages/**/dist packages/**/build",
     "build-all": "nx run-many --target=build",
     "dist-all": "nx run-many --target=dist",
+    "deploy-all": "nx run-many --target=deploy",
     "syncpack:check": "syncpack list-mismatches"
   },
   "private": true,

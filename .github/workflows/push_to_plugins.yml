@@ -6,7 +6,7 @@ name: Push code to Plugins
 # events but only for the main branch
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -33,34 +33,30 @@ jobs:
       - name: Run linter
         run: npm run lint
 
-      # Runs the build for all sub projects
-      - name: Run build
-        run: npm run build-all
-
       # Builds dist folder for all sub projects
       - name: Run dist
-        run: HOST=${{ vars.HOST }} npm run dist-all -- --skip-nx-cache
+        run: SHEETS_HOST=${{ vars.SHEETS_HOST }} SLIDES_HOST=${{ vars.SLIDES_HOST }} npm run deploy-all -- --skip-nx-cache
 
       #Pushing App script code to sheets plugin
       - name: Updating sheets plugin
         uses: daikikatsuragawa/clasp-action@v1.1.0
         with:
-            idToken: ${{ secrets.ID_TOKEN }}
-            refreshToken: ${{ secrets.REFRESH_TOKEN }}
-            clientId: ${{ secrets.CLIENT_ID }}
-            clientSecret: ${{ secrets.CLIENT_SECRET }}
-            scriptId: ${{ secrets.SCRIPT_ID_SHEETS }}
-            rootDir: 'packages/sheets/dist'
-            command: 'push'
+          idToken: ${{ secrets.ID_TOKEN }}
+          refreshToken: ${{ secrets.REFRESH_TOKEN }}
+          clientId: ${{ secrets.CLIENT_ID }}
+          clientSecret: ${{ secrets.CLIENT_SECRET }}
+          scriptId: ${{ secrets.SCRIPT_ID_SHEETS }}
+          rootDir: 'packages/sheets/dist'
+          command: 'push'
 
       #Pushing App script code to slides plugin
       - name: Updating slides plugin
         uses: daikikatsuragawa/clasp-action@v1.1.0
         with:
-            idToken: ${{ secrets.ID_TOKEN }}
-            refreshToken: ${{ secrets.REFRESH_TOKEN }}
-            clientId: ${{ secrets.CLIENT_ID }}
-            clientSecret: ${{ secrets.CLIENT_SECRET }}
-            scriptId: ${{ secrets.SCRIPT_ID_SLIDES }}
-            rootDir: 'packages/slides/dist'
-            command: 'push'
+          idToken: ${{ secrets.ID_TOKEN }}
+          refreshToken: ${{ secrets.REFRESH_TOKEN }}
+          clientId: ${{ secrets.CLIENT_ID }}
+          clientSecret: ${{ secrets.CLIENT_SECRET }}
+          scriptId: ${{ secrets.SCRIPT_ID_SLIDES }}
+          rootDir: 'packages/slides/dist'
+          command: 'push'

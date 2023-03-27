@@ -20,6 +20,7 @@
     "clasp": "clasp push",
     "dist:dev": "npm-run-all -p tsw copy-index claspw",
     "dist": "npm-run-all -s tsc copy-index",
+    "deploy": "HOST=$SLIDES_HOST npm-run-all -p build dist",
     "lint": "eslint src/**",
     "start": "HOST=https://localhost:5173 npm-run-all -p dist:dev vite",
     "vite": "vite",
