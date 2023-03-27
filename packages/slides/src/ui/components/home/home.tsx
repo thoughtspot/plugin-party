@@ -1,19 +1,25 @@
 import { useEffect } from 'preact/hooks';
 import { route } from 'preact-router';
 import { useLoader } from 'widgets/lib/loader';
-import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
+import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { useTranslations } from 'i18n';
-import { Colors, Typography } from 'widgets/lib/typography';
 import { Card } from 'widgets/lib/card';
 import { useShellContext } from 'gsuite-shell';
 import { getPath, Routes } from '../../routes';
-import './home.scss';
-import { getToken } from '../../services/api';
+import styles from './home.module.scss';
+import { getToken, useGetUserInfo } from '../../services/api';
+import { useAppContext } from '../app.context';
 
 export const Home = () => {
   const loader = useLoader();
   const { run } = useShellContext();
   const { t } = useTranslations();
+  const { data: userInfo, loading } = useGetUserInfo();
+  const { setUserID } = useAppContext();
+
+  useEffect(() => {
+    setUserID(userInfo?.id);
+  }, [userInfo?.id]);
 
   useEffect(() => {
     getToken().then((token) => {
@@ -21,15 +27,16 @@ export const Home = () => {
     });
     loader.hide();
   }, []);
+
   return (
-    <Vertical className="home" spacing="c">
+    <Vertical className={styles.home} spacing="c">
       <Card
         id={0}
         title={t.INSERT_TS_VIZ}
         subTitle={t.INSERT_TS_VIZ_DESCRIPTION}
         firstButton={t.BROWSE_TS}
         firstButtonType={'PRIMARY'}
-        onFirstButtonClick={() => route(Routes.LIST)}
+        onFirstButtonClick={() => route(Routes.LIVEBOARDLIST)}
       />
       <Card
         id={1}

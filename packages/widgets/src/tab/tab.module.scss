@@ -6,8 +6,11 @@
     flex-grow: 1;
     flex-shrink: 1;
     flex-basis: auto;
+    flex-wrap: wrap;
+    justify-content: center;
 
     min-height: 0;
+    border-top: 1px solid $gray2;
 
     & > ul {
         margin-left: 0;
@@ -54,6 +57,7 @@
 
             .headerText {
                 @include rd-font--p;
+                color: $blue1;
             }
         }
 

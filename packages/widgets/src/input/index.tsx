@@ -9,13 +9,22 @@ export interface InputProps
   placeholder?: string;
   className?: string;
   id?: string;
+  onChange?: any;
   type?: 'TEXT' | 'PASSWORD';
   initialValue?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
-    { placeholder, className, id, type, initialValue, ...rest }: InputProps,
+    {
+      placeholder,
+      className,
+      id,
+      type,
+      initialValue,
+      onChange,
+      ...rest
+    }: InputProps,
     ref
   ) => {
     const classes = cx(styles.input, className);
@@ -27,6 +36,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         placeholder={placeholder}
         className={classes}
         type={type}
+        onChange={onChange}
         {...rest}
       />
     );

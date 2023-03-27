@@ -1,0 +1,23 @@
+@import 'widgets/lib/common.scss';
+
+.listPage {
+    height: 100%;
+}
+
+.tabHeader{
+    background-color: $white;
+}
+.tabIcon{
+    filter: grayscale(1);
+    color: $gray4;
+    &:hover{
+        filter: grayscale(0);
+        color: $blue1;
+    }
+}
+
+.segment {
+    background-color: $gray0;
+    padding: 16px;
+    padding-bottom: 0px;
+  }

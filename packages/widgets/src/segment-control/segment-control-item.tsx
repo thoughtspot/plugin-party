@@ -18,21 +18,21 @@ export const SegmentedControlItem: React.FC<SegmentedControlItemProps> = ({
   });
 
   const onSelectHandler = useCallback(
-    (target: HTMLElement) => {
+    (target: HTMLElement, userClick: boolean) => {
       const position = getElementPosition(target as HTMLElement);
-      onSelect!(index!, position);
+      onSelect!(index!, position, userClick);
     },
     [index, onSelect]
   );
 
   useEffect(() => {
     if (isSelected && itemRef.current) {
-      onSelectHandler(itemRef.current);
+      onSelectHandler(itemRef.current, false);
     }
   }, [isSelected]);
 
   const onClickHandler = (event: MouseEvent) => {
-    onSelectHandler(event.target as HTMLElement);
+    onSelectHandler(event.target as HTMLElement, true);
   };
 
   return (

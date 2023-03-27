@@ -1,7 +1,7 @@
 import { SearchEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
 import { Action, EmbedEvent } from '@thoughtspot/visual-embed-sdk';
 import { useRouter } from 'preact-router';
-import { useEffect } from 'react';
+import { useEffect } from 'preact/hooks';
 import { useShellContext } from 'gsuite-shell';
 import { useLoader } from 'widgets/lib/loader';
 import { exportAnswer } from '../../services/api';
@@ -44,6 +44,7 @@ export const Answer = () => {
               },
               '.app-module__blink': {
                 width: '100% !important',
+                height: '100% !important',
               },
               '.sage-search-bar-module__undoRedoResetWrapper': {
                 display: 'none !important',

@@ -1,5 +1,6 @@
 import { getInitConfig } from '@thoughtspot/visual-embed-sdk';
 import _ from 'lodash';
+import { useEffect, useState } from 'preact/compat';
 
 export const getUserInfo = async () => {
   const baseUrl = getInitConfig().thoughtSpotHost;
@@ -12,7 +13,8 @@ export const getUserInfo = async () => {
   });
   const data = await r.json();
   return {
-    data,
+    id: data.id,
+    name: data.name,
   };
 };
 
@@ -87,4 +89,25 @@ export const getToken = async () => {
     token: data.token,
     ttl: (data.tokenExpiryDuration - data.tokenCreatedTime) / 1000,
   };
+};
+
+export const useGetUserInfo = () => {
+  const [data, setData] = useState<any>();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const fetchData = async () => {
+    try {
+      const info = await getUserInfo();
+      setData(info);
+      setLoading(false);
+    } catch (err) {
+      setError(err);
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    setLoading(true);
+    fetchData();
+  }, []);
+  return { data, error, loading };
 };

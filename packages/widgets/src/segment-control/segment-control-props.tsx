@@ -25,7 +25,8 @@ export interface SegmentedControlItemProps {
   /** handler on selecting an item */
   onSelect?: (
     index: number,
-    position: { offsetX: number; width: number }
+    position: { offsetX: number; width: number },
+    userClick: boolean
   ) => void;
 
   /** current index of item
