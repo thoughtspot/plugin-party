@@ -20,6 +20,9 @@
         "{projectRoot}/public",
         "{projectRoot}/lib"
       ]
+    },
+    "deploy": {
+      "dependsOn": ["^build"]
     }
   }
 }
