@@ -35,7 +35,7 @@ export const AnswerList = (props: any) => {
       isLoading={props.loading}
       searchValue={searchPattern}
       setSearchValue={setSearchPattern}
-      isLastBatch={props.isLastbatch}
+      isLastBatch={props.isLastBatch}
     ></List>
   );
 };
