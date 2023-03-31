@@ -1,116 +1,115 @@
 @import '../common.scss';
 
 .tabHorizontal {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 10px;
+
+  min-height: 0;
+  border-top: 1px solid $gray2;
+
+  & > ul {
+    margin-left: 0;
+    margin-bottom: 0;
+  }
+
+  .tabHeader {
     display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    flex-shrink: 1;
+    flex-direction: row;
+    flex-grow: 0;
+    flex-shrink: 0;
     flex-basis: auto;
-    flex-wrap: wrap;
+    align-items: stretch;
+
+    padding: 0;
+    margin: 0;
+
+    // tab header background color
+
+    &.background-transparent {
+      background-color: transparent;
+    }
+
+    &.background-white {
+      background-color: $white;
+    }
+
+    &.background-gray {
+      background-color: $gray0;
+    }
+
+    // tab header size
+    &.medium {
+      flex-grow: 0;
+      flex-shrink: 0;
+      flex-basis: $spacing--j;
+
+      .headerItem {
+        &::after {
+          height: 2px;
+        }
+      }
+
+      .headerText {
+        @include rd-font--p;
+        color: $blue1;
+      }
+    }
+
+    // tab header horizontal alignment
+    &.center {
+      justify-content: center;
+    }
+  }
+
+  .headerItem {
+    display: flex;
+    flex-direction: row;
     justify-content: center;
+    align-items: center;
 
-    min-height: 0;
-    border-top: 1px solid $gray2;
+    cursor: pointer;
+    position: relative;
 
-    & > ul {
-        margin-left: 0;
-        margin-bottom: 0;
+    width: 100%;
+
+    &.headerItemSelected {
+      .headerText {
+        color: $blue1;
+      }
+
+      &::after {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
-    .tabHeader {
-        display: flex;
-        flex-direction: row;
-        flex-grow: 0;
-        flex-shrink: 0;
-        flex-basis: auto;
-        align-items: stretch;
+    &:hover,
+    &:focus {
+      outline: none;
 
-        padding: 0;
-        margin: 0;
+      .headerText {
+        color: $blue1;
+      }
+    }
+  }
 
-        // tab header background color
+  .tabPanel {
+    align-items: stretch;
 
-        &.background-transparent {
-            background-color: transparent;
-        }
+    margin-left: 0;
 
-        &.background-white {
-            background-color: $white;
-        }
-
-        &.background-gray {
-            background-color: $gray0;
-        }
-
-        // tab header size
-        &.medium {
-            flex-grow: 0;
-            flex-shrink: 0;
-            flex-basis: $spacing--j;
-
-            .headerItem {
-
-                &::after {
-                    height: 2px;
-                }
-            }
-
-            .headerText {
-                @include rd-font--p;
-                color: $blue1;
-            }
-        }
-
-        // tab header horizontal alignment
-        &.center {
-            justify-content: center;
-        }
+    &[aria-hidden='true'] {
+      display: none !important;
     }
 
-    .headerItem {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-
-        cursor: pointer;
-        position: relative;
-
-        width: 100%;
-
-        &.headerItemSelected {
-
-            .headerText {
-                color: $blue1;
-            }
-
-            &::after {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        &:hover,
-        &:focus {
-            outline: none;
-
-            .headerText {
-                color: $blue1;
-            }
-        }
+    &:focus {
+      outline: none;
     }
-
-    .tabPanel {
-        align-items: stretch;
-
-        margin-left: 0;
-
-        &[ aria-hidden = 'true' ] {
-            display: none !important;
-        }
-
-        &:focus {
-            outline: none;
-        }
-    }
+  }
 }

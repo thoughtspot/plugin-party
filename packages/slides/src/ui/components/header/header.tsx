@@ -4,11 +4,10 @@ import { useRouter, route } from 'preact-router';
 import styles from './header.module.scss';
 import { Routes } from '../../routes';
 
-export const Header = () => {
+export const Header = ({ history }) => {
   const [router] = useRouter();
   const onBack = () => {
-    window.history.back();
-    console.log(router);
+    history.back();
   };
 
   const onTSLogoClick = () => {

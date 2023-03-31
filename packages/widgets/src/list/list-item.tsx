@@ -1,7 +1,7 @@
 import React from 'preact/compat';
 import { Icon } from '../icon';
 import { Horizontal, Vertical } from '../layout/flex-layout';
-import styles from './list-item.module.scss';
+import styles from './list.module.scss';
 import { Colors, Typography } from '../typography';
 import { Author } from '../author';
 

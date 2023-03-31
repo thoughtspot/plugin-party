@@ -34,7 +34,7 @@
     "vite-plugin-html": "^3.2.0"
   },
   "dependencies": {
-    "@thoughtspot/visual-embed-sdk": "^1.20.0-alpha.1",
+    "@thoughtspot/visual-embed-sdk": "1.20.0-prerender.5",
     "preact": "^10.11.13"
   },
   "workspaces": [

@@ -22,22 +22,20 @@ export const LiveboardList = (props: any) => {
     );
   };
   return (
-    <Vertical>
-      <List
-        data={props.data}
-        onRowClick={onRowClick}
-        refetchData={props.refetchData}
-        emptyIcon={emptyLBListMessageMap[segmentIndex].emptyIcon}
-        emptyMessageTile={emptyLBListMessageMap[segmentIndex].emptyMessageTile}
-        emptyMessageDescription={
-          emptyLBListMessageMap[segmentIndex].emptyMessageDescription
-        }
-        searchPlaceholder={t.LB_SEARCH_PLACEHOLDER}
-        isLoading={props.loading}
-        searchValue={searchPattern}
-        setSearchValue={setSearchPattern}
-        isLastBatch={props.isLastBatch}
-      ></List>
-    </Vertical>
+    <List
+      data={props.data}
+      onRowClick={onRowClick}
+      refetchData={props.refetchData}
+      emptyIcon={emptyLBListMessageMap[segmentIndex].emptyIcon}
+      emptyMessageTile={emptyLBListMessageMap[segmentIndex].emptyMessageTile}
+      emptyMessageDescription={
+        emptyLBListMessageMap[segmentIndex].emptyMessageDescription
+      }
+      searchPlaceholder={t.LB_SEARCH_PLACEHOLDER}
+      isLoading={props.loading}
+      searchValue={searchPattern}
+      setSearchValue={setSearchPattern}
+      isLastBatch={props.isLastBatch}
+    ></List>
   );
 };

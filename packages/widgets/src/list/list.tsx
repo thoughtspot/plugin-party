@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import React, { useRef } from 'preact/compat';
-import styles from './list-item.module.scss';
+import styles from './list.module.scss';
 import { MemoListItem } from './list-item';
 import { Vertical } from '../layout/flex-layout';
 import { Icon } from '../icon';
@@ -139,7 +139,7 @@ export const List: React.FC<ListProps> = ({
         onSearchChange={onSearchChange}
         className={styles.listSearchBar}
       ></SearchBar>
-      <div class={styles.listWrapper} onScroll={onScroll}>
+      <div class={styles.listContent} onScroll={onScroll}>
         {data?.length > 0 && renderList(data)}
         {!data?.length && !isLoading && (
           <Vertical hAlignContent="center" className={styles.emptyData}>
