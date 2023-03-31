@@ -22,22 +22,20 @@ export const AnswerList = (props: any) => {
   };
 
   return (
-    <Vertical>
-      <List
-        data={props.data}
-        onRowClick={onRowClick}
-        refetchData={props.refetchData}
-        emptyIcon={emptyListMessageMap[segmentIndex].emptyIcon}
-        emptyMessageTile={emptyListMessageMap[segmentIndex].emptyMessageTile}
-        emptyMessageDescription={
-          emptyListMessageMap[segmentIndex].emptyMessageDescription
-        }
-        searchPlaceholder={t.ANSWER_SEARCH_PLACEHOLDER}
-        isLoading={props.loading}
-        searchValue={searchPattern}
-        setSearchValue={setSearchPattern}
-        isLastBatch={props.isLastbatch}
-      ></List>
-    </Vertical>
+    <List
+      data={props.data}
+      onRowClick={onRowClick}
+      refetchData={props.refetchData}
+      emptyIcon={emptyListMessageMap[segmentIndex].emptyIcon}
+      emptyMessageTile={emptyListMessageMap[segmentIndex].emptyMessageTile}
+      emptyMessageDescription={
+        emptyListMessageMap[segmentIndex].emptyMessageDescription
+      }
+      searchPlaceholder={t.ANSWER_SEARCH_PLACEHOLDER}
+      isLoading={props.loading}
+      searchValue={searchPattern}
+      setSearchValue={setSearchPattern}
+      isLastBatch={props.isLastbatch}
+    ></List>
   );
 };

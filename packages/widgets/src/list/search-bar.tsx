@@ -3,7 +3,7 @@ import React, { ChangeEvent, useCallback } from 'preact/compat';
 import { Icon } from '../icon';
 import { Horizontal, Vertical, View } from '../layout/flex-layout';
 import { Input } from '../input';
-import styles from './list-item.module.scss';
+import styles from './list.module.scss';
 
 export interface SearchBarProps {
   searchValue: string;

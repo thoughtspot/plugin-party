@@ -106,21 +106,21 @@ export const ListPage = () => {
       {renderList(selectedTabId)}
       <Tab selectedTabId={selectedTabId} className={styles.tabHeader}>
         <TabItem
-          id={listType.LIVEBOARD}
-          onTabItemClick={onLiveboardTabClick}
-          customHeader={renderTabHeader(
-            listType.LIVEBOARD,
-            t.LIVEBOARDS,
-            tabHeaderIcon.LIVEBOARD_ICON
-          )}
-        ></TabItem>
-        <TabItem
           id={listType.ANSWER}
           onTabItemClick={onAnswerTabClick}
           customHeader={renderTabHeader(
             listType.ANSWER,
             t.ANSWERS,
             tabHeaderIcon.ANSWER_ICON
+          )}
+        ></TabItem>
+        <TabItem
+          id={listType.LIVEBOARD}
+          onTabItemClick={onLiveboardTabClick}
+          customHeader={renderTabHeader(
+            listType.LIVEBOARD,
+            t.LIVEBOARDS,
+            tabHeaderIcon.LIVEBOARD_ICON
           )}
         ></TabItem>
       </Tab>
