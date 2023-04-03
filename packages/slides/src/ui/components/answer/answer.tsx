@@ -6,6 +6,7 @@ import { useShellContext } from 'gsuite-shell';
 import { useLoader } from 'widgets/lib/loader';
 import { exportAnswer } from '../../services/api';
 import { getTSAnswerLink } from '../../utils';
+import styles from './answer.module.scss';
 
 export const Answer = () => {
   const [router] = useRouter();
@@ -35,6 +36,7 @@ export const Answer = () => {
       insertInToSlide={true}
       hideDataSources={true}
       visibleActions={[Action.InsertInToSlide]}
+      className={styles.answerIframe}
       customizations={{
         style: {
           customCSS: {

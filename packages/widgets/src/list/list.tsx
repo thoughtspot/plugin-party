@@ -89,12 +89,24 @@ export const List: React.FC<ListProps> = ({
     loader.hide();
   }
   const offset = useRef(0);
+  const listRef = useRef(null);
+
+  // Reset offset when fetching data for new list type.
+  if (data.length <= 10 && !isLoading) {
+    offset.current = 0;
+  }
+  const listViewPortHeight = listRef?.current?.clientHeight;
+  const listScrollHeight = 85 * (offset.current + 10);
+  if (listViewPortHeight > listScrollHeight && !isLoading && !isLastBatch) {
+    offset.current += 10;
+    refetchData(offset.current);
+  }
   const onScroll = (v) => {
     const scrollTop = v.target.scrollTop;
     const scrollHeight = v.target.scrollHeight;
     const clientHeight = v.target.clientHeight;
     if (
-      scrollTop + clientHeight >= scrollHeight &&
+      scrollTop + clientHeight + 1 >= scrollHeight &&
       !isLoading &&
       data.length > 0 &&
       !isLastBatch
@@ -139,7 +151,7 @@ export const List: React.FC<ListProps> = ({
         onSearchChange={onSearchChange}
         className={styles.listSearchBar}
       ></SearchBar>
-      <div class={styles.listContent} onScroll={onScroll}>
+      <div class={styles.listContent} onScroll={onScroll} ref={listRef}>
         {data?.length > 0 && renderList(data)}
         {!data?.length && !isLoading && (
           <Vertical hAlignContent="center" className={styles.emptyData}>

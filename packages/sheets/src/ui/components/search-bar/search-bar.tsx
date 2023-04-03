@@ -52,6 +52,9 @@ export const TSSearchBar = () => {
           '.accordion-module__accordionItem:nth-child(3)': {
             display: 'none !important',
           },
+          '.modal-module__footer': {
+            'padding-left': '0px !important',
+          },
         },
       },
     },
@@ -67,6 +70,7 @@ export const TSSearchBar = () => {
           loader.show();
           return onGetDataClick();
         }}
+        className={'search-bar-iframe'}
       ></SearchBarEmbed>
     </Vertical>
   );
