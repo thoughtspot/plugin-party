@@ -2,8 +2,11 @@ import { getInitConfig } from '@thoughtspot/visual-embed-sdk';
 
 const dateFormatter = Intl.DateTimeFormat();
 function formatDate(column, dateVal) {
-  const value = dateVal.v.s;
-  return dateFormatter.format(value * 1000);
+  if (dateVal) {
+    const value = dateVal.v.s;
+    return dateFormatter.format(value * 1000);
+  }
+  return '';
 }
 
 function transpose(matrix) {
