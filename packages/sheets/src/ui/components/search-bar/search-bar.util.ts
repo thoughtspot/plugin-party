@@ -3,7 +3,7 @@ import { getInitConfig } from '@thoughtspot/visual-embed-sdk';
 const dateFormatter = Intl.DateTimeFormat();
 function formatDate(column, dateVal) {
   if (dateVal) {
-    const value = dateVal.v.s;
+    const value = dateVal.v ? dateVal.v.s : dateVal;
     return dateFormatter.format(value * 1000);
   }
   return '';

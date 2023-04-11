@@ -25,7 +25,7 @@
   background-color: $gray1;
   color: $text-color;
 
-  &:hover(:not(:disabled)) {
+  &:hover:enabled {
     background-color: $gray2;
   }
 

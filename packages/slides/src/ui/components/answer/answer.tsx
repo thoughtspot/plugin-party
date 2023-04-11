@@ -57,6 +57,10 @@ export const Answer = () => {
               '.answer-actions-container-module__insertToSlideBtn': {
                 zoom: '1.5',
               },
+              '.authenticated-app-view-module__blink': {
+                width: '100% !important',
+                height: '100% !important',
+              },
             },
           },
         },
