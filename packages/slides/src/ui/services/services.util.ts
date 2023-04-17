@@ -24,40 +24,40 @@ export const listType = {
 };
 
 export const getIconType = (data) => {
-  const metadataType = data.metadata_type;
+  const metadataType = data?.metadata_type;
   let resolvedObject;
 
   if (metadataType === 'LIVEBOARD') {
-    const resolvedObjects = data.metadata_header.resolvedObjects;
+    const resolvedObjects = data?.metadata_detail?.header?.resolvedObjects;
     if (_.isEmpty(resolvedObjects)) return 'no-pinboards';
     resolvedObject = Object.values(resolvedObjects)[0];
   } else {
-    resolvedObject = data.metadata_detail;
+    resolvedObject = data?.metadata_detail;
   }
-  const sheet = resolvedObject.reportContent.sheets[0];
-  const displayMode = sheet.sheetContent.displayMode;
-  const viz = sheet.sheetContent.visualizations;
+  const sheet = resolvedObject?.reportContent?.sheets[0];
+  const displayMode = sheet?.sheetContent?.displayMode;
+  const viz = sheet?.sheetContent?.visualizations;
   let chartType = 'table';
   if (displayMode === 'TABLE_MODE') {
     return chartType;
   }
   viz.map((object) => {
-    if (object.vizContent.chartType) chartType = object.vizContent.chartType;
+    if (object?.vizContent?.chartType)
+      chartType = object?.vizContent?.chartType;
     return chartType;
   });
-
-  const icon = chartType?.toLowerCase().replace('_', '-');
+  const icon = chartType?.toLowerCase().replaceAll('_', '-');
   return icon;
 };
 
-export const getParsedListData = (data: any[]) => {
+export const getParsedListData = (data: any) => {
   const mappedData = data.map((object) => {
     const icon = getIconType(object);
-    const authorName = object.metadata_header.authorDisplayName;
-    const authorId = object.metadata_header.author;
-    const resolvedObjects = object.metadata_header?.resolvedObjects;
-    const views = object?.stats?.views || 10;
-    const vizCount = resolvedObjects ? Object.keys(resolvedObjects).length : 0;
+    const authorName = object?.metadata_header?.authorDisplayName;
+    const authorId = object?.metadata_header?.author;
+    const resolvedObjects = object?.metadata_detail?.header?.resolvedObjects;
+    const views = object?.stats?.views >= 0 ? object?.stats?.views : '-';
+    const vizCount = resolvedObjects ? Object.keys(resolvedObjects)?.length : 0;
     return {
       id: object.metadata_id,
       title: object.metadata_name,

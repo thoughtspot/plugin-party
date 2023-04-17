@@ -38,28 +38,23 @@ export const getList = async ({
     currentListFetch.controller.abort();
   }
 
-  const fetchList = fetch(`${baseUrl}/api/rest/2.0/metadata/search`, {
+  const fetchList = fetch(`${baseUrl}/callosum/v1/v2/metadata/search`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: JSON.stringify({
-      metadata: [
-        {
-          name_pattern: pattern || '',
-          type,
-        },
-      ],
-      favorite_object_options: {
-        include: includeFavorite[category] || false,
-      },
-      created_by_user_identifiers: userID[category] || [],
-      record_offset: recordOffset || 0,
-      record_size: 10,
-      include_details: type !== listType.LIVEBOARD,
-      // TODO: Uncomment below line and also add sort by views once it is available
-      //   incude_stats: true,
-    }),
+    body: new URLSearchParams({
+      metadata: `[{"type":"${type}", "name_pattern":"${pattern || ''}"}]`,
+      favorite_object_options: `{"include": ${
+        includeFavorite[category] || false
+      }}`,
+      created_by_user_identifiers: JSON.stringify(userID[category] || []),
+      record_offset: `${recordOffset || 0}`,
+      record_size: '10',
+      include_details: 'true',
+      include_stats: 'true',
+      sort_options: '{"field_name":"NAME","order":"ASC"}',
+    }).toString(),
     credentials: 'include',
     signal,
   });
@@ -90,7 +85,7 @@ export function useMetadataSearch(userId: string) {
   ) {
     setLoading(true);
     try {
-      const items = await getList({
+      const { data: items } = await getList({
         type,
         category: fetchCategory,
         pattern: searchTerm,
