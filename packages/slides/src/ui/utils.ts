@@ -5,6 +5,11 @@ export function getTSAnswerLink(answerId) {
   return `${baseUrl}/#/saved-answer/${answerId}`;
 }
 
+export function getTSLBVizLink(liveboardId, vizId) {
+  const baseUrl = getInitConfig().thoughtSpotHost;
+  return `${baseUrl}/#/pinboard/${liveboardId}/${vizId}`;
+}
+
 export function getOffset(el) {
   let _x = 0;
   let _y = 0;

@@ -22,7 +22,7 @@ export const Answer = () => {
     run('preCacheImage', link);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    ref.current.on('insertInToSlide', (e) => {
+    ref.current.on(Action.InsertInToSlide, (e) => {
       loader.show();
       run('addImage', link).then(() => {
         loader.hide();

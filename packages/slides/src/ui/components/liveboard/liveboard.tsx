@@ -3,11 +3,12 @@ import {
   Action,
   EmbedEvent,
 } from '@thoughtspot/visual-embed-sdk';
+import { useShellContext } from 'gsuite-shell';
 import { createContext } from 'preact';
 import { useRouter } from 'preact-router';
 import { useEffect, useContext, useRef, useState } from 'preact/hooks';
 import { useLoader } from 'widgets/lib/loader';
-import { getOffset } from '../../utils';
+import { getOffset, getTSLBVizLink } from '../../utils';
 import styles from './liveboard.module.scss';
 
 const prerenderdLiveboardContext = createContext<any>({});
@@ -68,6 +69,8 @@ const PrerenderedLiveboardShell = () => {
   const { isVisible, liveboardId, coords, lbRef } = useContext(
     prerenderdLiveboardContext
   );
+  const { run } = useShellContext();
+  const loader = useLoader();
   useEffect(() => {
     if (!ref.current) {
       return;
@@ -76,6 +79,9 @@ const PrerenderedLiveboardShell = () => {
       visibleActions: [Action.InsertInToSlide],
       frameParams: {
         height: '100%',
+      },
+      additionalFlags: {
+        isLiveboardHeaderSticky: false,
       },
       insertInToSlide: true,
       customizations: {
@@ -96,6 +102,13 @@ const PrerenderedLiveboardShell = () => {
     });
     lbRef.current.prerenderGeneric();
     lbRef.current.on(EmbedEvent.ALL, (e) => console.log(e));
+    lbRef.current.on(Action.InsertInToSlide, (e) => {
+      const link = getTSLBVizLink(e.data.pinboardId, e.data.vizId);
+      loader.show();
+      run('addImage', link).then(() => {
+        loader.hide();
+      });
+    });
   }, []);
   useEffect(() => {
     if (!liveboardId) {
