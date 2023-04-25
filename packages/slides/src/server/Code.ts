@@ -64,7 +64,7 @@ function setClusterUrl(url) {
   const userProps = PropertiesService.getUserProperties();
   userProps.setProperty(
     'ts-cluster-url',
-    url.replace('https://', '').replace('#', '').replace(/\/$/, '')
+    url.replace('https://', '').replace('#', '').replaceAll(/\/$/, '')
   );
 }
 
@@ -179,7 +179,9 @@ function getLiveboardImageRequest({ liveboardId, vizId }) {
   const token = userCache.get('ts-auth-token');
   const clusterUrl = getClusterUrl().url;
   const url = `https://${clusterUrl}/api/rest/2.0/report/liveboard`;
-  return UrlFetchApp.getRequest(url, {
+  return {
+    url,
+    method: 'post',
     contentType: 'application/json',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -189,7 +191,7 @@ function getLiveboardImageRequest({ liveboardId, vizId }) {
       visualization_identifiers: [vizId],
       file_format: 'PNG',
     }),
-  });
+  };
 }
 
 function getImageMetadata(link) {
@@ -217,19 +219,20 @@ function getImageMetadata(link) {
 
 function getImagesRaw(links) {
   const metadatas = links.map(getImageMetadata);
-  const answerIds = metadatas
-    .filter((metadata) => metadata.type === 'ANSWER')
-    .map((metadata) => metadata.id);
-  const liveboardIds = metadatas
-    .filter((metadata) => metadata.type === 'LIVEBOARD')
-    .map((metadata) => ({ id: metadata.id, vizId: metadata.vizId }));
+  const fetchRequests = metadatas.map((metadata) => {
+    if (metadata.type === 'ANSWER') {
+      return getAnswerImageRequest(metadata.id);
+    }
+    if (metadata.type === 'LIVEBOARD') {
+      return getLiveboardImageRequest({
+        liveboardId: metadata.id,
+        vizId: metadata.vizId,
+      });
+    }
+    return null;
+  });
 
-  const answerImageRequests = answerIds.map(getAnswerImageRequest);
-  const liveboardImageRequests = liveboardIds.map(getLiveboardImageRequest);
-
-  const responses = UrlFetchApp.fetchAll(
-    answerImageRequests.concat(liveboardImageRequests)
-  );
+  const responses = UrlFetchApp.fetchAll(fetchRequests);
 
   return responses.map((response) => response.getBlob());
 }
@@ -294,11 +297,14 @@ function preCacheImage(link) {
 
 function reloadImages(images) {
   const errorImageLinks = [];
-  const tsImages = images.filter(
-    (image) =>
-      image.getLink().getUrl().indexOf('/pinboard/') > -1 ||
-      image.getLink().getUrl().indexOf('/saved-answer/') > -1
-  );
+  const currentCluster = getClusterUrl().url;
+  const tsImages = images.filter((image) => {
+    return (
+      (image.getLink().getUrl().indexOf('/pinboard/') > -1 ||
+        image.getLink().getUrl().indexOf('/saved-answer/') > -1) &&
+      image.getLink().getUrl().indexOf(currentCluster) > -1
+    );
+  });
   const tsImageLinks = tsImages.map((image) => image.getLink().getUrl());
   const blobs = getImages(tsImageLinks, true);
   tsImages.forEach((image) => {
