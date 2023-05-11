@@ -10,6 +10,15 @@ export const Login = ({ onBack, onSSO, onCredSubmit, isCredFailed }) => {
   const { t } = useTranslations();
   const userRef = useRef<HTMLInputElement>(null);
   const passRef = useRef<HTMLInputElement>(null);
+  const onEnterPress = (e) => {
+    if (e.code === 'Enter') {
+      onCredSubmit(userRef.current?.value, passRef.current?.value);
+    }
+  };
+  useEffect(() => {
+    passRef?.current?.addEventListener('keydown', onEnterPress);
+    return () => passRef?.current?.removeEventListener('keydown', onEnterPress);
+  });
   const [showCredError, setShowCredError] = useState(isCredFailed);
   useEffect(() => setShowCredError(isCredFailed), [isCredFailed]);
   return (
