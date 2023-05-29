@@ -64,7 +64,7 @@ function setClusterUrl(url) {
   const userProps = PropertiesService.getUserProperties();
   userProps.setProperty(
     'ts-cluster-url',
-    url.replace('https://', '').replace('#', '').replaceAll(/\/$/, '')
+    url.replace('https://', '').replace('#', '').replace(/\/+$/, '')
   );
 }
 
@@ -246,7 +246,7 @@ function serializeBlob(blob) {
   return Utilities.base64Encode(blob.getBytes());
 }
 
-function getImages(links, skipCache = false) {
+function getImages(links, skipCache = true) {
   const cache = new BlobCache(CacheService.getScriptCache());
   const linksToFetch: string[] = [];
   const linkToFetchHash = {};
