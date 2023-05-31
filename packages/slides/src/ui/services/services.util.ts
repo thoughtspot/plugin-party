@@ -46,15 +46,15 @@ export const getIconType = (data) => {
       chartType = object?.vizContent?.chartType;
     return chartType;
   });
-  const icon = chartType?.toLowerCase().replaceAll('_', '-');
+  const icon = chartType?.toLowerCase().replace(/_/g, '-');
   return icon;
 };
 
 export const getParsedListData = (data: any) => {
   const mappedData = data.map((object) => {
     const icon = getIconType(object);
-    const authorName = object?.metadata_header?.authorDisplayName;
-    const authorId = object?.metadata_header?.author;
+    const authorName = object?.metadata_detail?.header?.authorDisplayName;
+    const authorId = object?.metadata_detail?.header.author;
     const resolvedObjects = object?.metadata_detail?.header?.resolvedObjects;
     const views = object?.stats?.views >= 0 ? object?.stats?.views : '-';
     const vizCount = resolvedObjects ? Object.keys(resolvedObjects)?.length : 0;

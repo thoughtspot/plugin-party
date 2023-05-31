@@ -16,17 +16,7 @@ export const TSSearchBar = () => {
   const { run } = useShellContext();
   const embed = useEmbedRef();
 
-  const onData = (event) => {
-    const payload = event.data.embedAnswerData;
-    const { colNames, rows } = parseHeaderAndRows(payload);
-    run('updateData', colNames, rows).then(() => {
-      loader.hide();
-    });
-  };
   const onGetDataClick = debounce(() => {
-    // TODO(Ashish): Remove short circuit once the GetData non memo
-    // bug is fixed.
-    return;
     embed.current.trigger(HostEvent.GetTML).then(async (data) => {
       const query = data.answer.search_query;
       if (!query) {
@@ -62,7 +52,6 @@ export const TSSearchBar = () => {
   return (
     <Vertical className="search-bar">
       <SearchBarEmbed
-        onData={onData}
         ref={embed}
         customizations={customization}
         onLoad={() => loader.hide()}
