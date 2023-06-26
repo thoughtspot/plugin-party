@@ -15,7 +15,7 @@ import {
   resetTSInstance,
   setClusterUrl,
   setToken,
-} from './Code';
+} from '../../dist/Code';
 
 const LIVEBOARD_LINK =
   'https://test.thoughtspotdev.cloud/#/pinboard/eb467552-2876-4ad7-905f-da6a09d7d4ba/2a55264e-2c6a-464f-af61-887991bd46e8';

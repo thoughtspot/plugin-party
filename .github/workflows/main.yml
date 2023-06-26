@@ -42,6 +42,10 @@ jobs:
       # Runs the build for all sub projects
       - name: Run build
         run: npm run build-all -- --skip-nx-cache
+      
+      # Builds dist folder for all sub projects
+      - name: Run dist
+        run: SHEETS_HOST=${{ vars.SHEETS_HOST }} SLIDES_HOST=${{ vars.SLIDES_HOST }} npm run deploy-all -- --skip-nx-cache
 
       #Runs tests for all sub projects
       - name: Run tests
