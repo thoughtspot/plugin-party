@@ -23,12 +23,12 @@ function showTSDialog() {
   SlidesApp.getUi().showModalDialog(widget, 'Thoughtspot');
 }
 
-function resetTSInstance() {
+export function resetTSInstance() {
   const userProps = PropertiesService.getUserProperties();
   userProps.deleteProperty('ts-cluster-url');
 }
 
-function getCandidateClusterUrl() {
+export function getCandidateClusterUrl() {
   console.log('Hu0');
   const email = Session.getActiveUser().getEmail();
   const domain = email.substring(email.indexOf('@') + 1);
@@ -46,7 +46,7 @@ function getCandidateClusterUrl() {
   return `${clusterName}.${environment}.cloud`;
 }
 
-function getClusterUrl() {
+export function getClusterUrl() {
   const userProps = PropertiesService.getUserProperties();
   if (userProps.getProperty('ts-cluster-url')) {
     return {
@@ -60,7 +60,7 @@ function getClusterUrl() {
   };
 }
 
-function setClusterUrl(url) {
+export function setClusterUrl(url) {
   const userProps = PropertiesService.getUserProperties();
   userProps.setProperty(
     'ts-cluster-url',
@@ -68,94 +68,12 @@ function setClusterUrl(url) {
   );
 }
 
-function addImageTest() {
-  const slide = SlidesApp.getActivePresentation().getSlides()[0];
-  const images = slide.getImages().length;
-  console.log('rifnirfnrf', images);
-  const slideimage = slide.getImages()[0];
-  const currentslide = SlidesApp.getActivePresentation()
-    .getSelection()
-    .getCurrentPage();
-  const currentslideimages = currentslide.getImages().length;
-  const currentslideimage = currentslide.getImages();
-  if (currentslideimages === 0) {
-    console.log('in', slide, slideimage, currentslide);
-    // slide.insertImage('https://upload.wikimedia.org/wikipedia/commons/5/56/Wiki_Eagle_Public_Domain.png', 250, 37, 350 , 350);
-    // slide.insertTextBox('Eagle');
-    currentslide.insertImage(
-      'https://upload.wikimedia.org/wikipedia/commons/5/56/Wiki_Eagle_Public_Domain.png',
-      250,
-      37,
-      350,
-      350
-    );
-    currentslide.insertTextBox('Eagle');
-  } else {
-    SlidesApp.getUi().alert('Already added');
-  }
-  // currentslide.insertImage('https://upload.wikimedia.org/wikipedia/commons/5/56/Wiki_Eagle_Public_Domain.png', 250, 37, 350 , 350);
-  // currentslide.insertTextBox('Eagle');
-}
-
-function updateImage() {
-  const slide = SlidesApp.getActivePresentation().getSlides()[0];
-  const images = slide.getImages().length;
-  console.log('rifnirfnrf', images);
-  const slideimage = slide.getImages()[0];
-  const currentslide = SlidesApp.getActivePresentation()
-    .getSelection()
-    .getCurrentPage();
-  const currentslideimages = currentslide.getImages().length;
-  const currentslideimage = currentslide.getImages()[0];
-  if (currentslideimages === 0) {
-    SlidesApp.getUi().alert('Add LB first');
-  } else {
-    console.log('ierfrefn', slide, slideimage, currentslide);
-    // slideimage.remove();
-    // slide.insertImage('https://amymhaddad.s3.amazonaws.com/morocco-blue.png', 250, 37, 350 , 350);
-    currentslide.replaceAllText('Eagle', 'blue');
-    currentslideimage.replace(
-      'https://amymhaddad.s3.amazonaws.com/morocco-blue.png',
-      true
-    );
-    // slide.replaceAllText('Eagle','blue');
-  }
-  // currentslide.insertImage('https://upload.wikimedia.org/wikipedia/commons/5/56/Wiki_Eagle_Public_Domain.png', 250, 37, 350 , 350);
-  // currentslide.insertTextBox('Eagle');
-}
-
-function clearSlide() {
-  const currentslideelements = SlidesApp.getActivePresentation()
-    .getSelection()
-    .getCurrentPage()
-    .getPageElements();
-  // console.log(currentslideelements);
-  // currentslideelements[0].remove();
-  // currentslideelements[1].remove();
-  currentslideelements.forEach(function (element) {
-    console.log(element);
-    element.remove();
-  });
-  // currentslideelements.forEach((s) => {console.log(s)});
-}
-
-function settext(text) {
-  const currentslide = SlidesApp.getActivePresentation()
-    .getSelection()
-    .getCurrentPage();
-  const elements = currentslide.getPageElements();
-  console.log('Elements found', elements);
-  // await clearSlide();
-  console.log('cleared');
-  currentslide.insertTextBox(text, 0, 0, 400, 400);
-}
-
-function setToken(token, ttl) {
+export function setToken(token, ttl) {
   const userCache = CacheService.getUserCache();
   userCache.put('ts-auth-token', token, ttl);
 }
 
-function getAnswerImageRequest(answerId) {
+export function getAnswerImageRequest(answerId) {
   const userCache = CacheService.getUserCache();
   const token = userCache.get('ts-auth-token');
   const clusterUrl = getClusterUrl().url;
@@ -174,7 +92,7 @@ function getAnswerImageRequest(answerId) {
   };
 }
 
-function getLiveboardImageRequest({ liveboardId, vizId }) {
+export function getLiveboardImageRequest({ liveboardId, vizId }) {
   const userCache = CacheService.getUserCache();
   const token = userCache.get('ts-auth-token');
   const clusterUrl = getClusterUrl().url;
@@ -194,7 +112,7 @@ function getLiveboardImageRequest({ liveboardId, vizId }) {
   };
 }
 
-function getImageMetadata(link) {
+export function getImageMetadata(link) {
   if (link.indexOf('saved-answer') > -1) {
     const answerId = link.split('/').pop();
     return {
@@ -217,7 +135,7 @@ function getImageMetadata(link) {
   };
 }
 
-function getImagesRaw(links) {
+export function getImagesRaw(links) {
   const metadatas = links.map(getImageMetadata);
   const fetchRequests = metadatas.map((metadata) => {
     if (metadata.type === 'ANSWER') {

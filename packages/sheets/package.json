@@ -24,7 +24,8 @@
     "lint": "eslint src/**",
     "start": "HOST=https://localhost:5173 npm-run-all -p dist:dev vite",
     "vite": "vite",
-    "copy-index": "gsuite-shell"
+    "copy-index": "gsuite-shell",
+    "test": "vitest run"
   },
   "dependencies": {
     "gsuite-shell": "0.0.0",

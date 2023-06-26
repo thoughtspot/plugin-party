@@ -42,3 +42,7 @@ jobs:
       # Runs the build for all sub projects
       - name: Run build
         run: npm run build-all -- --skip-nx-cache
+
+      #Runs tests for all sub projects
+      - name: Run tests
+        run: npm run test
