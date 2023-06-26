@@ -17,7 +17,7 @@ export const Header = ({ history }) => {
   return (
     <div className={styles.header}>
       <Icon name="TS-logo-black-no-bg" size="m" onClick={onTSLogoClick}></Icon>
-      {router.path !== Routes.HOME && (
+      {router.url !== Routes.HOME && (
         <Button type="ICON" onClick={onBack}>
           <Icon name="rd-icon-arrow-left" size="xs"></Icon>
         </Button>

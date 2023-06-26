@@ -2,6 +2,9 @@
  * @OnlyCurrentDoc
  */
 
+/* eslint no-var: 0 */
+var module;
+
 function onOpen() {
   SlidesApp.getUi()
     .createMenu('ThoughtSpot Connected Slides')
@@ -23,12 +26,12 @@ function showTSDialog() {
   SlidesApp.getUi().showModalDialog(widget, 'Thoughtspot');
 }
 
-export function resetTSInstance() {
+function resetTSInstance() {
   const userProps = PropertiesService.getUserProperties();
   userProps.deleteProperty('ts-cluster-url');
 }
 
-export function getCandidateClusterUrl() {
+function getCandidateClusterUrl() {
   console.log('Hu0');
   const email = Session.getActiveUser().getEmail();
   const domain = email.substring(email.indexOf('@') + 1);
@@ -46,7 +49,7 @@ export function getCandidateClusterUrl() {
   return `${clusterName}.${environment}.cloud`;
 }
 
-export function getClusterUrl() {
+function getClusterUrl() {
   const userProps = PropertiesService.getUserProperties();
   if (userProps.getProperty('ts-cluster-url')) {
     return {
@@ -60,7 +63,7 @@ export function getClusterUrl() {
   };
 }
 
-export function setClusterUrl(url) {
+function setClusterUrl(url) {
   const userProps = PropertiesService.getUserProperties();
   userProps.setProperty(
     'ts-cluster-url',
@@ -68,12 +71,12 @@ export function setClusterUrl(url) {
   );
 }
 
-export function setToken(token, ttl) {
+function setToken(token, ttl) {
   const userCache = CacheService.getUserCache();
   userCache.put('ts-auth-token', token, ttl);
 }
 
-export function getAnswerImageRequest(answerId) {
+function getAnswerImageRequest(answerId) {
   const userCache = CacheService.getUserCache();
   const token = userCache.get('ts-auth-token');
   const clusterUrl = getClusterUrl().url;
@@ -92,7 +95,7 @@ export function getAnswerImageRequest(answerId) {
   };
 }
 
-export function getLiveboardImageRequest({ liveboardId, vizId }) {
+function getLiveboardImageRequest({ liveboardId, vizId }) {
   const userCache = CacheService.getUserCache();
   const token = userCache.get('ts-auth-token');
   const clusterUrl = getClusterUrl().url;
@@ -112,7 +115,7 @@ export function getLiveboardImageRequest({ liveboardId, vizId }) {
   };
 }
 
-export function getImageMetadata(link) {
+function getImageMetadata(link) {
   if (link.indexOf('saved-answer') > -1) {
     const answerId = link.split('/').pop();
     return {
@@ -135,7 +138,7 @@ export function getImageMetadata(link) {
   };
 }
 
-export function getImagesRaw(links) {
+function getImagesRaw(links) {
   const metadatas = links.map(getImageMetadata);
   const fetchRequests = metadatas.map((metadata) => {
     if (metadata.type === 'ANSWER') {
@@ -253,4 +256,15 @@ function reloadImagesInPresentation() {
     return imgs.concat(images);
   }, []);
   return reloadImages(slideImages);
+}
+if (module?.exports) {
+  module.exports.resetTSInstance = resetTSInstance;
+  module.exports.getCandidateClusterUrl = getCandidateClusterUrl;
+  module.exports.getClusterUrl = getClusterUrl;
+  module.exports.setClusterUrl = setClusterUrl;
+  module.exports.setToken = setToken;
+  module.exports.getAnswerImageRequest = getAnswerImageRequest;
+  module.exports.getLiveboardImageRequest = getLiveboardImageRequest;
+  module.exports.getImageMetadata = getImageMetadata;
+  module.exports.getImagesRaw = getImagesRaw;
 }
