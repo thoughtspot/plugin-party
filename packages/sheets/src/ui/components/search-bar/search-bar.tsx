@@ -2,7 +2,7 @@ import {
   SearchBarEmbed,
   useEmbedRef,
 } from '@thoughtspot/visual-embed-sdk/react';
-import { HostEvent } from '@thoughtspot/visual-embed-sdk';
+import { Action, HostEvent } from '@thoughtspot/visual-embed-sdk';
 import { useEffect } from 'preact/hooks';
 import { useLoader } from 'widgets/lib/loader';
 import { Vertical } from 'widgets/lib/layout/flex-layout';
@@ -28,20 +28,11 @@ export const TSSearchBar = () => {
       await run('updateData', colNames, rows);
       loader.hide();
     });
-  }, 100);
+  }, 0);
   const customization = {
     style: {
       customCSS: {
         rules_UNSTABLE: {
-          '.data-panel-module__headerToggleBtn': {
-            display: 'none !important',
-          },
-          '.accordion-module__accordionItem:nth-child(2)': {
-            display: 'none !important',
-          },
-          '.accordion-module__accordionItem:nth-child(3)': {
-            display: 'none !important',
-          },
           '.modal-module__footer': {
             'padding-left': '0px !important',
           },
@@ -53,9 +44,14 @@ export const TSSearchBar = () => {
     <Vertical className="search-bar">
       <SearchBarEmbed
         ref={embed}
+        hiddenActions={[
+          Action.AddFormula,
+          Action.AddParameter,
+          Action.CollapseDataSources,
+        ]}
         customizations={customization}
         onLoad={() => loader.hide()}
-        onGetDataClick={() => {
+        onData={() => {
           loader.show();
           return onGetDataClick();
         }}
