@@ -113,5 +113,16 @@ export function useMetadataSearch(userId: string) {
     }
   }
 
-  return { data, error, loading, refetchData: fetchData, isLastBatch };
+  function resetData() {
+    setData([]);
+  }
+
+  return {
+    data,
+    error,
+    loading,
+    refetchData: fetchData,
+    resetData,
+    isLastBatch,
+  };
 }
