@@ -70,3 +70,49 @@ export const getParsedListData = (data: any) => {
   });
   return mappedData;
 };
+
+export const getIconTypeV1 = (detail) => {
+  let visualization;
+  if (detail[0]?.type === 'QUESTION_ANSWER_BOOK') {
+    visualization = detail[0];
+  } else {
+    visualization = detail[0]?.answers[0];
+  }
+
+  let chartType = 'table';
+  if (
+    visualization.vizType === 'TABLE' ||
+    visualization.vizType === 'HEADLINE'
+  ) {
+    return chartType;
+  }
+  chartType = visualization.chartType;
+  const icon = chartType?.toLowerCase().replace(/_/g, '-');
+  return icon;
+};
+
+export const getStructuredData = (header, details) => {
+  console.log(header);
+  const sparseDetailsArray = details?.objects;
+  const sparseDetail = sparseDetailsArray?.filter(
+    (object) => object.header.id === header.id
+  );
+  const viewCount = sparseDetail?.[0]?.stats?.views;
+  let answers = [];
+  if (sparseDetail?.[0]?.answers) {
+    answers = sparseDetail?.[0]?.answers.filter(
+      (answer) => answer.vizType !== 'FILTER'
+    );
+  }
+  const dataItem = {
+    id: header.id,
+    title: header.name,
+    authorId: header.author,
+    authorName: header.authorDisplayName,
+    views: `${viewCount} views`,
+    icon: getIconTypeV1(sparseDetail),
+    vizCount: answers.length,
+  };
+
+  return dataItem;
+};

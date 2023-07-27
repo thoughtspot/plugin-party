@@ -2,34 +2,49 @@ import { getInitConfig } from '@thoughtspot/visual-embed-sdk';
 import { useState } from 'preact/hooks';
 import {
   errorMessages,
-  getParsedListData,
+  getStructuredData,
   listCategory,
   listInput,
   listType,
 } from './services.util';
 
 let currentListFetch: any = null;
+const listTypeMap = {
+  [listType.ANSWER]: 'QUESTION_ANSWER_BOOK',
+  [listType.LIVEBOARD]: 'PINBOARD_ANSWER_BOOK',
+};
+
+const categoryMap = {
+  [listCategory.FAVORITES]: 'FAVORITE',
+  [listCategory.ALL]: 'ALL',
+  [listCategory.YOURS]: 'MY',
+};
+
+export const fetchSparseDetails = async (type: string, idsArray: []) => {
+  const baseUrl = getInitConfig().thoughtSpotHost;
+  const fecthDetails = fetch(
+    `${baseUrl}/callosum/v1/metadata/sparsedetails?type=${
+      listTypeMap[type]
+    }&ids=${encodeURIComponent(JSON.stringify(idsArray))}`,
+    {
+      method: 'get',
+      headers: {
+        Accept: 'application/json',
+      },
+      credentials: 'include',
+    }
+  );
+  const itemDetails = await fecthDetails.then((res) => res.json());
+  return itemDetails;
+};
 
 export const getList = async ({
   type,
   category,
   pattern,
   recordOffset,
-  ids,
 }: listInput) => {
   const baseUrl = getInitConfig().thoughtSpotHost;
-
-  const includeFavorite = {
-    [listCategory.FAVORITES]: true,
-    [listCategory.ALL]: false,
-    [listCategory.YOURS]: false,
-  };
-
-  const userID = {
-    [listCategory.FAVORITES]: [],
-    [listCategory.ALL]: [],
-    [listCategory.YOURS]: ids,
-  };
 
   const controller = new AbortController();
   const signal = controller.signal;
@@ -38,33 +53,32 @@ export const getList = async ({
     currentListFetch.controller.abort();
   }
 
-  const fetchList = fetch(`${baseUrl}/callosum/v1/v2/metadata/search`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
-      metadata: `[{"type":"${type}", "name_pattern":"${pattern || ''}"}]`,
-      favorite_object_options: `{"include": ${
-        includeFavorite[category] || false
-      }}`,
-      created_by_user_identifiers: JSON.stringify(userID[category] || []),
-      record_offset: `${recordOffset || 0}`,
-      record_size: '10',
-      include_headers: 'false',
-      include_details: 'true',
-      include_stats: 'true',
-      sort_options: '{"field_name":"MODIFIED","order":"DESC"}',
-    }).toString(),
-    credentials: 'include',
-    signal,
-  });
+  const fetchList = fetch(
+    `${baseUrl}/callosum/v1/metadata/list?type=${listTypeMap[type]}&category=${categoryMap[category]}&sort=MODIFIED&sortascending=false&offset=${recordOffset}&batchsize=10&pattern=${pattern}&showhidden=false`,
+    {
+      method: 'get',
+      headers: {
+        Accept: 'application/json',
+      },
+      credentials: 'include',
+      signal,
+    }
+  );
   currentListFetch = {
     controller,
     promise: fetchList,
   };
   const itemList = await fetchList
-    .then((res) => res.json())
+    .then(async (res) => {
+      const response = await res.json();
+      const pinboardHeaders = response?.headers;
+      const ids = pinboardHeaders.map((h) => h.id);
+      const details = await fetchSparseDetails(type, ids);
+      const listItems = pinboardHeaders.map((header) => {
+        return getStructuredData(header, details);
+      });
+      return listItems;
+    })
     .catch((err) => {
       if (signal.aborted)
         throw new Error(errorMessages.REQUEST_CANCELLED_MESSAGE);
@@ -86,7 +100,7 @@ export function useMetadataSearch(userId: string) {
   ) {
     setLoading(true);
     try {
-      const { data: items } = await getList({
+      const items = await getList({
         type,
         category: fetchCategory,
         pattern: searchTerm,
@@ -99,11 +113,11 @@ export function useMetadataSearch(userId: string) {
         setLastBatch(false);
       }
 
-      const parsedListData = getParsedListData(items);
+      const fectedListData = items;
       if (offset > 0) {
-        setData([...data, ...parsedListData]);
+        setData([...data, ...fectedListData]);
       } else {
-        setData(parsedListData);
+        setData(fectedListData);
       }
       setLoading(false);
     } catch (e) {
