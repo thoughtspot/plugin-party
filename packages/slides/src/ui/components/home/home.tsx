@@ -5,21 +5,25 @@ import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { useTranslations } from 'i18n';
 import { Card } from 'widgets/lib/card';
 import { useShellContext } from 'gsuite-shell';
+import { getSessionInfo } from '@thoughtspot/visual-embed-sdk';
 import { getPath, Routes } from '../../routes';
 import styles from './home.module.scss';
-import { getToken, useGetUserInfo } from '../../services/api';
+import { getToken } from '../../services/api';
 import { useAppContext } from '../app.context';
 
 export const Home = () => {
   const loader = useLoader();
   const { run } = useShellContext();
   const { t } = useTranslations();
-  const { data: userInfo, loading } = useGetUserInfo();
-  const { setUserID } = useAppContext();
+  const { setUserID, userID } = useAppContext();
 
   useEffect(() => {
-    setUserID(userInfo?.id);
-  }, [userInfo?.id]);
+    const getUserInfo = async () => {
+      const userInfo = await getSessionInfo();
+      setUserID(userInfo?.userGUID);
+    };
+    getUserInfo();
+  }, []);
 
   useEffect(() => {
     getToken().then((token) => {
@@ -37,6 +41,7 @@ export const Home = () => {
         firstButton={t.BROWSE_TS}
         firstButtonType={'PRIMARY'}
         onFirstButtonClick={() => route(Routes.ANSWERLIST)}
+        isFirstButtonDisabled={userID === ''}
       />
       <Card
         id={1}

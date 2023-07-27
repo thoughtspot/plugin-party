@@ -56,10 +56,11 @@ export const ListPage = () => {
   const { segmentIndex, setSegmentIndex, searchPattern, userID } =
     useAppContext();
 
-  const { data, error, loading, refetchData, isLastBatch } =
+  const { data, error, loading, refetchData, resetData, isLastBatch } =
     useMetadataSearch(userID);
 
   useEffect(() => {
+    resetData();
     refetchData(selectedTabId, searchPattern, segmentIndex, 0);
   }, [searchPattern, segmentIndex, selectedTabId]);
 

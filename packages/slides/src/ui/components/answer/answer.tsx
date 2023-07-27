@@ -61,6 +61,19 @@ export const Answer = () => {
                 width: '100% !important',
                 height: '100% !important',
               },
+              '.sage-search-bar-with-error-bar-module__sageSearchBarWithErrorBarContainerWithDataPanelV2':
+                {
+                  display: 'none !important',
+                },
+              '.sage-search-bar-module__sageSearchBar': {
+                display: 'none !important',
+              },
+              '.request-access-module__requestAccessBtn': {
+                display: 'none !important',
+              },
+              '.filter-panel-module__droppableFilterList': {
+                display: 'none !important',
+              },
             },
           },
         },
