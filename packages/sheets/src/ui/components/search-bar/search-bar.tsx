@@ -3,11 +3,10 @@ import {
   useEmbedRef,
 } from '@thoughtspot/visual-embed-sdk/react';
 import { Action, HostEvent } from '@thoughtspot/visual-embed-sdk';
-import { useEffect } from 'preact/hooks';
 import { useLoader } from 'widgets/lib/loader';
 import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { useShellContext } from 'gsuite-shell';
-import { parseHeaderAndRows, debounce } from './search-bar.util';
+import { debounce, formatDate } from './search-bar.util';
 import { getQueryResult } from '../../services/api';
 import './search-bar.scss';
 
@@ -16,7 +15,7 @@ export const TSSearchBar = () => {
   const { run } = useShellContext();
   const embed = useEmbedRef();
 
-  const onGetDataClick = debounce(() => {
+  const onGetDataClick = debounce((fetchedData) => {
     embed.current.trigger(HostEvent.GetTML).then(async (data) => {
       const query = data.answer.search_query;
       if (!query) {
@@ -24,8 +23,25 @@ export const TSSearchBar = () => {
       }
       const source = data.answer.tables[0].id;
       const { colNames, rows } = await getQueryResult(query, source);
+      const ifColumnIsDate = fetchedData.columns.map(
+        (col) =>
+          col.column.dataType === 'DATE' || col.column.dataType === 'DATE_TIME'
+      );
+
+      const formattedRows = rows.map((row) => {
+        const modifiedData = row.map((value, index) => {
+          if (ifColumnIsDate[index]) {
+            return formatDate(colNames[index], value);
+          }
+          if (value.v) {
+            return value.v?.s;
+          }
+          return value;
+        });
+        return modifiedData;
+      });
       loader.show();
-      await run('updateData', colNames, rows);
+      await run('updateData', colNames, formattedRows);
       loader.hide();
     });
   }, 0);
@@ -51,9 +67,9 @@ export const TSSearchBar = () => {
         ]}
         customizations={customization}
         onLoad={() => loader.hide()}
-        onData={() => {
+        onData={(data) => {
           loader.show();
-          return onGetDataClick();
+          return onGetDataClick(data.data.embedAnswerData);
         }}
         className={'search-bar-iframe'}
       ></SearchBarEmbed>

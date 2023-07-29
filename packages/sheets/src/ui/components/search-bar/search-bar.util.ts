@@ -1,7 +1,10 @@
 import { getInitConfig } from '@thoughtspot/visual-embed-sdk';
 
-const dateFormatter = Intl.DateTimeFormat();
-function formatDate(column, dateVal) {
+const dateFormatter = Intl.DateTimeFormat('en-US', {
+  dateStyle: 'short',
+  timeStyle: 'short',
+});
+export function formatDate(column, dateVal) {
   if (dateVal) {
     const value = dateVal.v ? dateVal.v.s : dateVal;
     return dateFormatter.format(value * 1000);
