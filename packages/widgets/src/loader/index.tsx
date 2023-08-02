@@ -1,6 +1,7 @@
 import topbar from 'topbar';
 import { createContext } from 'preact';
 import { useContext } from 'preact/hooks';
+import { showLoaderOnFetch } from './loader-util';
 
 topbar.config({
   barThickness: 5,
@@ -8,7 +9,9 @@ topbar.config({
 
 const origFetch = window.fetch;
 window.fetch = (...args) => {
-  topbar.show();
+  if (showLoaderOnFetch(args[0])) {
+    topbar.show();
+  }
   return origFetch(...args).then(
     (resp) => {
       topbar.hide();

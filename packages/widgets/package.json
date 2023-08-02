@@ -13,9 +13,10 @@
   "license": "ISC",
   "dependencies": {
     "classnames": "^2.3.2",
+    "icons": "0.0.0",
     "react-flexview": "^6.0.1",
-    "topbar": "^2.0.1",
-    "icons": "0.0.0"
+    "react-loader-spinner": "^5.3.4",
+    "topbar": "^2.0.1"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1"

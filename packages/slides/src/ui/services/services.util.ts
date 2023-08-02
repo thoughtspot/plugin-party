@@ -92,7 +92,6 @@ export const getIconTypeV1 = (detail) => {
 };
 
 export const getStructuredData = (header, details) => {
-  console.log(header);
   const sparseDetailsArray = details?.objects;
   const sparseDetail = sparseDetailsArray?.filter(
     (object) => object.header.id === header.id
