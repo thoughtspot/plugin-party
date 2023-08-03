@@ -1,11 +1,11 @@
 import cx from 'classnames';
 import React, { useRef } from 'preact/compat';
+import { Grid, ThreeDots } from 'react-loader-spinner';
 import styles from './list.module.scss';
 import { MemoListItem } from './list-item';
 import { Vertical } from '../layout/flex-layout';
 import { Icon } from '../icon';
 import { Colors, Typography } from '../typography';
-import { useLoader } from '../loader';
 import { SearchBar } from './search-bar';
 
 export interface RowDataProps {
@@ -67,6 +67,11 @@ export interface ListProps {
    * True if lastBatch of the list is received
    */
   isLastBatch?: boolean;
+
+  /**
+   * Flag to show loading grid on List
+   */
+  showListLoader?: boolean;
 }
 
 export const List: React.FC<ListProps> = ({
@@ -81,13 +86,8 @@ export const List: React.FC<ListProps> = ({
   refetchData,
   setSearchValue,
   isLastBatch,
+  showListLoader = true,
 }: ListProps) => {
-  const loader = useLoader();
-  if (isLoading) {
-    loader.show();
-  } else {
-    loader.hide();
-  }
   const offset = useRef(0);
   const listRef = useRef(null);
 
@@ -153,6 +153,15 @@ export const List: React.FC<ListProps> = ({
       ></SearchBar>
       <div class={styles.listContent} onScroll={onScroll} ref={listRef}>
         {data?.length > 0 && renderList(data)}
+        <ThreeDots
+          height="50"
+          width="50"
+          radius="9"
+          color="#1d232f"
+          ariaLabel="three-dots-loading"
+          wrapperClass={data?.length > 0 ? styles.refetchLoader : styles.loader}
+          visible={showListLoader && isLoading}
+        />
         {!data?.length && !isLoading && (
           <Vertical hAlignContent="center" className={styles.emptyData}>
             <Icon name={emptyIcon} size="xl" />

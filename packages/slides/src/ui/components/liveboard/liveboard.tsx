@@ -8,8 +8,12 @@ import { createContext } from 'preact';
 import { useRouter } from 'preact-router';
 import { useEffect, useContext, useRef, useState } from 'preact/hooks';
 import { useLoader } from 'widgets/lib/loader';
-import { getOffset, getTSLBVizLink } from '../../utils';
+import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
+import { Colors, Typography } from 'widgets/lib/typography';
+import { Button } from 'widgets/lib/button';
+import { Icon } from 'widgets/lib/icon';
 import styles from './liveboard.module.scss';
+import { getOffset, getTSLBVizLink } from '../../utils';
 
 const prerenderdLiveboardContext = createContext<any>({});
 
@@ -17,6 +21,9 @@ export const Liveboard = () => {
   const [router] = useRouter();
   const { show: showLoader, hide: hideLoader } = useLoader();
   const liveboardId = router?.matches?.id;
+  const loader = useLoader();
+  const { run } = useShellContext();
+  const [showError, setShowError] = useState(false);
   const ref = useRef<HTMLElement | null>(null);
   const {
     setIsVisible,
@@ -25,11 +32,11 @@ export const Liveboard = () => {
     lbRef,
     liveboardId: prevLiveboardId,
   } = useContext(prerenderdLiveboardContext);
+
   useEffect(() => {
     if (!ref.current) {
       return;
     }
-    showLoader();
     setLiveboardId(liveboardId);
     const coords = ref.current.getBoundingClientRect();
     const offset = getOffset(ref.current);
@@ -39,11 +46,33 @@ export const Liveboard = () => {
       top: offset.top,
       left: offset.left,
     });
+  }, [showError]);
+
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+    showLoader();
     const makeLiveboardVisible = () => {
       setIsVisible(true);
       hideLoader();
     };
+    const insertIntoSlide = (e) => {
+      const link = getTSLBVizLink(e.data.pinboardId, e.data.vizId);
+      loader.show();
+      setShowError(false);
+      run('addImage', link)
+        .then(() => {
+          loader.hide();
+        })
+        .catch((error) => {
+          loader.hide();
+          setShowError(true);
+        });
+    };
     const lbEmbed = lbRef.current;
+    // We will subscribe to Insert into slide embed event
+    lbEmbed.on(Action.InsertInToSlide, (e) => insertIntoSlide(e));
     // If we are going to a different liveboard,
     // we need to wait for the new liveboard to render
     if (liveboardId !== prevLiveboardId) {
@@ -59,9 +88,32 @@ export const Liveboard = () => {
         width: 0,
       });
       lbEmbed.off(EmbedEvent.LiveboardRendered, makeLiveboardVisible);
+      lbEmbed.off(Action.InsertInToSlide, (e) => insertIntoSlide(e));
     };
   }, []);
-  return <div className={styles.liveboardContainer} ref={ref}></div>;
+  return (
+    <Vertical className={styles.liveboardContainer}>
+      {showError && (
+        <Horizontal
+          vAlignContent="center"
+          spacing="e"
+          className={styles.errorBanner}
+        >
+          <Typography variant="h6" noMargin color={Colors.failure}>
+            Insert Failed Please Try again
+          </Typography>
+          <Button
+            type="ICON"
+            className={styles.errorButton}
+            onClick={() => setShowError(false)}
+          >
+            <Icon name="rd-icon-cross" size="xs"></Icon>
+          </Button>
+        </Horizontal>
+      )}
+      <div className={styles.liveboardContainer} ref={ref}></div>
+    </Vertical>
+  );
 };
 
 const PrerenderedLiveboardShell = () => {
@@ -69,8 +121,6 @@ const PrerenderedLiveboardShell = () => {
   const { isVisible, liveboardId, coords, lbRef } = useContext(
     prerenderdLiveboardContext
   );
-  const { run } = useShellContext();
-  const loader = useLoader();
   useEffect(() => {
     if (!ref.current) {
       return;
@@ -95,6 +145,12 @@ const PrerenderedLiveboardShell = () => {
               '.pinboard-header-module__pinboardHeader': {
                 display: 'none !important',
               },
+              '.ag-header': {
+                'pointer-events': 'none !important',
+              },
+              '.answer-content-module__answerContent': {
+                'pointer-events': 'none !important',
+              },
             },
           },
         },
@@ -102,13 +158,6 @@ const PrerenderedLiveboardShell = () => {
     });
     lbRef.current.prerenderGeneric();
     lbRef.current.on(EmbedEvent.ALL, (e) => console.log(e));
-    lbRef.current.on(Action.InsertInToSlide, (e) => {
-      const link = getTSLBVizLink(e.data.pinboardId, e.data.vizId);
-      loader.show();
-      run('addImage', link).then(() => {
-        loader.hide();
-      });
-    });
   }, []);
   useEffect(() => {
     if (!liveboardId) {
