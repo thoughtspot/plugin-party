@@ -8,6 +8,7 @@ import { Typography, Colors } from 'widgets/lib/typography';
 import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { Button } from 'widgets/lib/button';
 import { Icon } from 'widgets/lib/icon';
+import { useTranslations } from 'i18n';
 import styles from './answer.module.scss';
 import { getTSAnswerLink } from '../../utils';
 import { exportAnswer } from '../../services/api';
@@ -16,6 +17,7 @@ import { customCSSProperties } from './answer.util';
 export const Answer = () => {
   const [router] = useRouter();
   const [showError, setShowError] = useState(false);
+  const { t } = useTranslations();
   const loader = useLoader();
   const answerId = router?.matches?.id;
   const ref = useEmbedRef();
@@ -50,14 +52,14 @@ export const Answer = () => {
           className={styles.errorBanner}
         >
           <Typography variant="h6" noMargin color={Colors.failure}>
-            Insert Failed Please Try again
+            {t.INSERT_FAILURE_MESSAGE}
           </Typography>
           <Button
             type="ICON"
             className={styles.errorButton}
             onClick={() => setShowError(false)}
           >
-            <Icon name="rd-icon-column" size="xs"></Icon>
+            <Icon name="rd-icon-cross" size="xs"></Icon>
           </Button>
         </Horizontal>
       )}

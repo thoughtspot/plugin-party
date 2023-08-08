@@ -12,6 +12,7 @@ import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { Colors, Typography } from 'widgets/lib/typography';
 import { Button } from 'widgets/lib/button';
 import { Icon } from 'widgets/lib/icon';
+import { useTranslations } from 'i18n';
 import styles from './liveboard.module.scss';
 import { getOffset, getTSLBVizLink } from '../../utils';
 
@@ -20,6 +21,7 @@ const prerenderdLiveboardContext = createContext<any>({});
 export const Liveboard = () => {
   const [router] = useRouter();
   const { show: showLoader, hide: hideLoader } = useLoader();
+  const { t } = useTranslations();
   const liveboardId = router?.matches?.id;
   const loader = useLoader();
   const { run } = useShellContext();
@@ -72,7 +74,7 @@ export const Liveboard = () => {
     };
     const lbEmbed = lbRef.current;
     // We will subscribe to Insert into slide embed event
-    lbEmbed.on(Action.InsertInToSlide, (e) => insertIntoSlide(e));
+    lbEmbed.on(Action.InsertInToSlide, insertIntoSlide);
     // If we are going to a different liveboard,
     // we need to wait for the new liveboard to render
     if (liveboardId !== prevLiveboardId) {
@@ -88,7 +90,7 @@ export const Liveboard = () => {
         width: 0,
       });
       lbEmbed.off(EmbedEvent.LiveboardRendered, makeLiveboardVisible);
-      lbEmbed.off(Action.InsertInToSlide, (e) => insertIntoSlide(e));
+      lbEmbed.off(Action.InsertInToSlide, insertIntoSlide);
     };
   }, []);
   return (
@@ -100,7 +102,7 @@ export const Liveboard = () => {
           className={styles.errorBanner}
         >
           <Typography variant="h6" noMargin color={Colors.failure}>
-            Insert Failed Please Try again
+            {t.INSERT_FAILURE_MESSAGE}
           </Typography>
           <Button
             type="ICON"
