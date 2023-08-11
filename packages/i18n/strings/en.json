@@ -33,5 +33,8 @@
   "ALL": "All",
   "YOURS": "Yours",
   "ANSWERS": "Answers",
-  "LIVEBOARDS": "Liveboards"
+  "LIVEBOARDS": "Liveboards",
+  "INSERT_FAILURE_MESSAGE":"Insert failed, please try again",
+  "BROSWER_NOT_SUPPORTED": "Browser not supported",
+  "BROSER_RECCOMENDATION":"This plugin is only supported on Google Chrome."
 }

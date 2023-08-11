@@ -81,12 +81,12 @@ export const getIconTypeV1 = (detail) => {
 
   let chartType = 'table';
   if (
-    visualization.vizType === 'TABLE' ||
-    visualization.vizType === 'HEADLINE'
+    visualization?.vizType === 'TABLE' ||
+    visualization?.vizType === 'HEADLINE'
   ) {
     return chartType;
   }
-  chartType = visualization.chartType;
+  chartType = visualization?.chartType;
   const icon = chartType?.toLowerCase().replace(/_/g, '-');
   return icon;
 };

@@ -54,7 +54,7 @@ export const getList = async ({
   }
 
   const fetchList = fetch(
-    `${baseUrl}/callosum/v1/metadata/list?type=${listTypeMap[type]}&category=${categoryMap[category]}&sort=MODIFIED&sortascending=false&offset=${recordOffset}&batchsize=10&pattern=${pattern}&showhidden=false`,
+    `${baseUrl}/callosum/v1/metadata/list?type=${listTypeMap[type]}&category=${categoryMap[category]}&sort=MODIFIED&sortascending=false&offset=${recordOffset}&batchsize=10&pattern=${pattern}&showhidden=false&auto_created=false`,
     {
       method: 'get',
       headers: {

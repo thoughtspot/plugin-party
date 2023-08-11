@@ -40,7 +40,7 @@ export const Home = () => {
         subTitle={t.INSERT_TS_VIZ_DESCRIPTION}
         firstButton={t.BROWSE_TS}
         firstButtonType={'PRIMARY'}
-        onFirstButtonClick={() => route(Routes.ANSWERLIST)}
+        onFirstButtonClick={() => route(Routes.LIVEBOARDLIST)}
         isFirstButtonDisabled={userID === ''}
       />
       <Card

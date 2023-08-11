@@ -33,7 +33,7 @@ export const TSSearchBar = () => {
           if (ifColumnIsDate[index]) {
             return formatDate(colNames[index], value);
           }
-          if (value.v) {
+          if (value?.v) {
             return value.v?.s;
           }
           return value;
