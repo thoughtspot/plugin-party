@@ -34,7 +34,7 @@
   "YOURS": "Yours",
   "ANSWERS": "Answers",
   "LIVEBOARDS": "Liveboards",
-  "INSERT_FAILURE_MESSAGE":"Insert Failed Please Try again",
-  "BROSWER_NOT_SUPPORTED": "This Broswer Not supported",
-  "BROSER_RECCOMENDATION":"Please use Google Chrome to use this plugin"
+  "INSERT_FAILURE_MESSAGE":"Insert failed, please try again",
+  "BROSWER_NOT_SUPPORTED": "Browser not supported",
+  "BROSER_RECCOMENDATION":"This plugin is only supported on Google Chrome."
 }
