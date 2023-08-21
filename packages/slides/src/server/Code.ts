@@ -10,7 +10,7 @@ function onOpen() {
     .createMenu('ThoughtSpot Connected Slides')
     .addItem('Launch', 'showTSSidebar')
     .addSeparator()
-    .addItem('Reset', 'resetTSInstance')
+    .addItem('Reset instance url', 'resetTSInstance')
     .addToUi();
 }
 
@@ -220,11 +220,14 @@ function reloadImages(images) {
   const errorImageLinks = [];
   const currentCluster = getClusterUrl().url;
   const tsImages = images.filter((image) => {
-    return (
-      (image.getLink().getUrl().indexOf('/pinboard/') > -1 ||
-        image.getLink().getUrl().indexOf('/saved-answer/') > -1) &&
-      image.getLink().getUrl().indexOf(currentCluster) > -1
-    );
+    if (image.getLink()) {
+      return (
+        (image.getLink().getUrl().indexOf('/pinboard/') > -1 ||
+          image.getLink().getUrl().indexOf('/saved-answer/') > -1) &&
+        image.getLink().getUrl().indexOf(currentCluster) > -1
+      );
+    }
+    return false;
   });
   const tsImageLinks = tsImages.map((image) => image.getLink().getUrl());
   const blobs = getImages(tsImageLinks, true);
