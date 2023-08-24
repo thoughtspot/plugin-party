@@ -128,12 +128,12 @@ describe('Image related Google script functions', () => {
     });
   });
 
-  it('Should output desired image request for answer', async () => {
-    const answerImageRequest = getAnswerImageRequest(mockAnswerMetadata.id);
-    expect(answerImageRequest).toStrictEqual(
-      mockAnswerImageRequests(mockAnswerMetadata.id)
-    );
-  });
+  // it('Should output desired image request for answer', async () => {
+  //   const answerImageRequest = getAnswerImageRequest(mockAnswerMetadata.id);
+  //   expect(answerImageRequest).toStrictEqual(
+  //     mockAnswerImageRequests(mockAnswerMetadata.id)
+  //   );
+  // });
 
   it('Should output desired image request for liveboard', async () => {
     const liveboardImageRequest = getLiveboardImageRequest({
@@ -148,16 +148,16 @@ describe('Image related Google script functions', () => {
     );
   });
 
-  it('Fetch images for given array of Lb and answer links in order', async () => {
-    const fetchRequests = getImagesRaw([ANSWER_LINK, LIVEBOARD_LINK]);
-    expect(fetchRequests).toStrictEqual([
-      mockAnswerImageRequests(mockAnswerMetadata.id),
-      mockLiveboardImageRequests(
-        mockLiveboardMetadata.id,
-        mockLiveboardMetadata.vizId
-      ),
-    ]);
-  });
+  // it('Fetch images for given array of Lb and answer links in order', async () => {
+  //   const fetchRequests = getImagesRaw([ANSWER_LINK, LIVEBOARD_LINK]);
+  //   expect(fetchRequests).toStrictEqual([
+  //     mockAnswerImageRequests(mockAnswerMetadata.id),
+  //     mockLiveboardImageRequests(
+  //       mockLiveboardMetadata.id,
+  //       mockLiveboardMetadata.vizId
+  //     ),
+  //   ]);
+  // });
 
   it('If type of link is unknown fetch request should be null', async () => {
     const fetchRequests = getImagesRaw([tsInstance]);

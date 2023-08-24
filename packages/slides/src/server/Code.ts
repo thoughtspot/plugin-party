@@ -80,14 +80,11 @@ function getAnswerImageRequest(answerId) {
   const userCache = CacheService.getUserCache();
   const token = userCache.get('ts-auth-token');
   const clusterUrl = getClusterUrl().url;
-  const url = `https://${clusterUrl}/api/rest/2.0/report/answer`;
+  const url = `https://127.0.0.1:5173/api/report/answer?url=${clusterUrl}&answerId=${answerId}&token=${token}`;
   return {
     url,
     method: 'post',
     contentType: 'application/json',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
     payload: JSON.stringify({
       metadata_identifier: answerId,
       file_format: 'PNG',
@@ -152,6 +149,8 @@ function getImagesRaw(links) {
     }
     return null;
   });
+
+  console.log('response', fetchRequests);
 
   const responses = UrlFetchApp.fetchAll(fetchRequests);
 
