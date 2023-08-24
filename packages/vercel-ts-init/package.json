@@ -1,0 +1,25 @@
+{
+    "name": "vercel-ts-init",
+    "version": "0.0.0",
+    "description": "",
+    "main": "lib/index.js",
+    "scripts": {
+      "test": "vitest run",
+      "copy-files": "copyfiles -u 1 src/**/*.scss lib/",
+      "build": "tsc -p . && npm run copy-files"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "peerDependencies": {
+      "preact": "^10.11.13"
+    },
+    "dependencies": {
+      "widgets": "0.0.0",
+      "i18n": "0.0.0"
+    },
+    "devDependencies": {
+      "copyfiles": "^2.4.1"
+    }
+  }
+  
