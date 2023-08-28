@@ -1,30 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  LiveboardEmbed,
-  useEmbedRef,
-  AppEmbed,
-} from '@thoughtspot/visual-embed-sdk/lib/src/react';
-
-interface Metadata {
-  configuration: {
-    host: string;
-    password: string;
-    database: string;
-    port: string;
-    user: string;
-  };
-}
-
-interface ParamObject {
-  name: string;
-  type: string;
-  createEmpty: boolean;
-  state: number;
-  metadata: Metadata;
-}
-enum Page {
-  Data = 'data',
-}
+import { AppEmbed } from '@thoughtspot/visual-embed-sdk/lib/src/react';
 
 export const CreateConnection = ({ clusterUrl }: any) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -81,8 +56,66 @@ export const CreateConnection = ({ clusterUrl }: any) => {
         setIsLoading(false);
       }
     };
+    // whitelist the urls.
+    // url: `nginxcsp`,
+    const params = {
+      configOperation: 'add',
+      configOptions: [
+        {
+          optionKey: 'nginx_csp_connect_src',
+          optionValue: 'bG9jYWxob3N0OjUwMDA=',
+        },
+      ],
+    };
+    const whitelistCSP = async () => {
+      try {
+        const response = await fetch(
+          `${hostUrl}/managementconsole/admin-api/nginxcsp`,
+          {
+            headers: {
+              accept: 'application/json',
+              'content-Type': 'application/x-www-form-urlencoded',
+            },
+            credentials: 'include',
+            method: 'POST',
+            body: JSON.stringify(params),
+          }
+        );
+
+        if (response.ok) {
+          const rs = await response.json();
+          console.log('hello', response);
+        }
+      } catch (error) {
+        console.error('Network Error:', error);
+      }
+    };
+
+    const generateSecretKey = async () => {
+      try {
+        const response = await fetch(
+          `${hostUrl}/managementconsole/admin-api/tokenauth?view_mode=all`,
+          {
+            headers: {
+              accept: 'application/json',
+              'content-Type': 'application/x-www-form-urlencoded',
+            },
+            credentials: 'include',
+            method: 'POST',
+          }
+        );
+        if (response.ok) {
+          const rs = await response.json();
+          console.log('hello', response);
+        }
+      } catch (error) {
+        console.error('Network Error:', error);
+      }
+    };
 
     createConnection();
+    whitelistCSP();
+    generateSecretKey();
   }, [clusterUrl, hostUrl]);
 
   if (isLoading) {

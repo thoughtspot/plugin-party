@@ -1,4 +1,3 @@
-import { useState } from 'preact/hooks';
 import { Card } from 'widgets/lib/card';
 import { useTranslations } from 'i18n';
 import { ClusterUrl } from 'ts-init/src/cluster-url/cluster-url';
@@ -32,10 +31,6 @@ export function VercelTSInit({ children, setClusterUrl, clusterUrl }) {
       isCandidate: false,
     });
   };
-
-  // whitelist the urls.
-  // url: `nginxcsp`,
-  //
 
   if (clusterUrl.isCandidate)
     return <ClusterUrl candidateUrl={clusterUrl.url} onSetUrl={onSetUrl} />;
