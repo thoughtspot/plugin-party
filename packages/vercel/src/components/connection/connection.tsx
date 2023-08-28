@@ -1,6 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { AppEmbed } from '@thoughtspot/visual-embed-sdk/lib/src/react';
 
+
+
+const getEnvVariables = async () => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const accessCode = searchParams.get('code') || '';
+  const param = new URLSearchParams()
+  param.append('code', accessCode)
+  // param.append('client_id', CLIENT_ID)
+  // param.append('client_secret', CLIENT_SECRET)
+  param.append('redirect_uri', 'http://localhost:3000')
+  const response = await fetch('https://api.vercel.com/v2/oauth/access_token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: param
+  })
+  const res = await response.json()
+  const accessToken = res.access_token;
+  const projRes = await fetch(`https://api.vercel.com/v9/projects/`, {
+    "headers": {
+      "Authorization": `Bearer ${res.access_token}`
+    },
+    "method": "get"
+  })
+  const projectData = await projRes.json()
+  const projectId = projectData.projects[0].id;
+  const EnvRes = await fetch(`https://api.vercel.com/v8/projects/${projectId}/env?decrypt=true&source=vercel-cli:pull`, {
+    "headers": {
+      "Authorization": `Bearer ${accessToken}`
+    },
+    "method": "get"
+  })
+  const envData = await EnvRes.json();
+  return envData;
+}
+
 export const CreateConnection = ({ clusterUrl }: any) => {
   const [isLoading, setIsLoading] = useState(true);
   const [connectionId, setConnectionId] = useState('');
@@ -33,6 +70,8 @@ export const CreateConnection = ({ clusterUrl }: any) => {
 
     const createConnection = async () => {
       try {
+        const envVariables = await getEnvVariables();
+        console.log(envVariables);
         const response = await fetch(
           `${hostUrl}/callosum/v1/tspublic/v1/connection/create`,
           {
