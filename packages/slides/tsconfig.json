@@ -12,6 +12,5 @@
     "preserveWatchOutput": true
   },
   "include": ["src/server/*.ts"],
-  "exclude": ["src/server/*.test.ts", "src/server/*.mocks.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "exclude": ["src/server/*.test.ts", "src/server/*.mocks.ts"]
 }

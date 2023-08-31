@@ -14,6 +14,7 @@ import {
   getLiveboardImageRequest,
   resetTSInstance,
   setClusterUrl,
+  getClusterUrl,
   setToken,
 } from '../../dist/Code';
 
@@ -34,33 +35,39 @@ const mockLiveboardMetadata = {
   vizId: '2a55264e-2c6a-464f-af61-887991bd46e8',
 };
 
-const mockAnswerImageRequests = (answerId) => {
+const mockAnswerImageRequests = (answerId, clusterUrl) => {
+  const answerReportPayload = {
+    metadata_identifier: answerId,
+    file_format: 'PNG',
+  };
   return {
-    url: 'https://test.thoughtspotdev.cloud/api/rest/2.0/report/answer',
+    url: 'https://plugin-party-slides.vercel.app/api/proxy',
     method: 'post',
     contentType: 'application/json',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
     payload: JSON.stringify({
-      metadata_identifier: answerId,
-      file_format: 'PNG',
+      clusterUrl,
+      endpoint: 'api/rest/2.0/report/answer',
+      token,
+      payload: answerReportPayload,
     }),
   };
 };
 
-const mockLiveboardImageRequests = (liveboardId, vizId) => {
+const mockLiveboardImageRequests = (liveboardId, vizId, clusterUrl) => {
+  const liveboardReportPayload = {
+    metadata_identifier: liveboardId,
+    visualization_identifiers: [vizId],
+    file_format: 'PNG',
+  };
   return {
-    url: 'https://test.thoughtspotdev.cloud/api/rest/2.0/report/liveboard',
+    url: 'https://plugin-party-slides.vercel.app/api/proxy',
     method: 'post',
     contentType: 'application/json',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
     payload: JSON.stringify({
-      metadata_identifier: liveboardId,
-      visualization_identifiers: [vizId],
-      file_format: 'PNG',
+      clusterUrl,
+      endpoint: 'api/rest/2.0/report/liveboard',
+      token,
+      payload: liveboardReportPayload,
     }),
   };
 };
@@ -128,36 +135,41 @@ describe('Image related Google script functions', () => {
     });
   });
 
-  // it('Should output desired image request for answer', async () => {
-  //   const answerImageRequest = getAnswerImageRequest(mockAnswerMetadata.id);
-  //   expect(answerImageRequest).toStrictEqual(
-  //     mockAnswerImageRequests(mockAnswerMetadata.id)
-  //   );
-  // });
+  it('Should output desired image request for answer', async () => {
+    const answerImageRequest = getAnswerImageRequest(mockAnswerMetadata.id);
+    const clusterUrl = getClusterUrl().url;
+    expect(answerImageRequest).toStrictEqual(
+      mockAnswerImageRequests(mockAnswerMetadata.id, clusterUrl)
+    );
+  });
 
   it('Should output desired image request for liveboard', async () => {
     const liveboardImageRequest = getLiveboardImageRequest({
       liveboardId: mockLiveboardMetadata.id,
       vizId: mockLiveboardMetadata.vizId,
     });
+    const clusterUrl = getClusterUrl().url;
     expect(liveboardImageRequest).toStrictEqual(
       mockLiveboardImageRequests(
         mockLiveboardMetadata.id,
-        mockLiveboardMetadata.vizId
+        mockLiveboardMetadata.vizId,
+        clusterUrl
       )
     );
   });
 
-  // it('Fetch images for given array of Lb and answer links in order', async () => {
-  //   const fetchRequests = getImagesRaw([ANSWER_LINK, LIVEBOARD_LINK]);
-  //   expect(fetchRequests).toStrictEqual([
-  //     mockAnswerImageRequests(mockAnswerMetadata.id),
-  //     mockLiveboardImageRequests(
-  //       mockLiveboardMetadata.id,
-  //       mockLiveboardMetadata.vizId
-  //     ),
-  //   ]);
-  // });
+  it('Fetch images for given array of Lb and answer links in order', async () => {
+    const fetchRequests = getImagesRaw([ANSWER_LINK, LIVEBOARD_LINK]);
+    const clusterUrl = getClusterUrl().url;
+    expect(fetchRequests).toStrictEqual([
+      mockAnswerImageRequests(mockAnswerMetadata.id, clusterUrl),
+      mockLiveboardImageRequests(
+        mockLiveboardMetadata.id,
+        mockLiveboardMetadata.vizId,
+        clusterUrl
+      ),
+    ]);
+  });
 
   it('If type of link is unknown fetch request should be null', async () => {
     const fetchRequests = getImagesRaw([tsInstance]);

@@ -26,7 +26,7 @@ export default defineConfig({
     createHtmlPlugin({
       minify: true,
       template: 'index.html',
-      entry: 'src/ui/index.tsx',
+      entry: 'index.tsx',
       inject: {
         data: {
           iconSprite,
@@ -34,12 +34,13 @@ export default defineConfig({
       },
     }),
   ],
+  root: 'src/ui',
   server: {
     https: true,
     port: getPort(process.env.HOST),
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:3001',
         changeOrigin: true,
         secure: false,
       },
