@@ -4,33 +4,35 @@ import { AppEmbed } from '@thoughtspot/visual-embed-sdk/lib/src/react';
 import styles from './connection.module.scss';
 import { DocsPage } from '../docs-page/docs-page';
 
+const CLIENT_ID = 'client_id';
+const CLIENT_SECRET = 'client_secret';
 const envMapping = {
   PGUSER: 'user',
   PGPASSWORD: 'password',
   PGHOST: 'host',
   PGDATABASE: 'database',
-}
+};
 
 const getConnectionParams = (envParams) => {
-  const paramObj: any = {}
-  console.log(envParams)
-  envParams.forEach(element => {
-    if(envMapping[element.key]){
-      paramObj[envMapping[element.key]] = element.value
+  const paramObj: any = {};
+  console.log(envParams);
+  envParams.forEach((element) => {
+    if (envMapping[element.key]) {
+      paramObj[envMapping[element.key]] = element.value;
     }
   });
-  paramObj.port = '5432'
-  return paramObj
-}
+  paramObj.port = '5432';
+  return paramObj;
+};
 
 const getEnvVariables = async () => {
   const searchParams = new URLSearchParams(window.location.search);
   const accessCode = searchParams.get('code') || '';
-  const param = new URLSearchParams()
-  param.append('code', accessCode)
-  param.append('client_id', CLIENT_ID)
-  param.append('client_secret', CLIENT_SECRET)
-  param.append('redirect_uri', window.location.origin)
+  const param = new URLSearchParams();
+  param.append('code', accessCode);
+  param.append('client_id', CLIENT_ID);
+  param.append('client_secret', CLIENT_SECRET);
+  param.append('redirect_uri', window.location.origin);
   const response = await fetch('https://api.vercel.com/v2/oauth/access_token', {
     method: 'POST',
     headers: {
@@ -75,13 +77,12 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   const hostUrl = formatClusterUrl(clusterUrl.url);
 
   useEffect(() => {
-
     const createConnection = async () => {
       try {
         const envVariables = await getEnvVariables();
         console.log(envVariables);
-        const connectionParams = getConnectionParams(envVariables.envs)
-        console.log(connectionParams)
+        const connectionParams = getConnectionParams(envVariables.envs);
+        console.log(connectionParams);
         const param = new URLSearchParams();
         param.append('name', `vercel-db-conn_${Date.now()}`);
         param.append('type', 'RDBMS_POSTGRES');
@@ -180,7 +181,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
     };
 
     createConnection();
-    //whitelistCSP();
+    // whitelistCSP();
     generateSecretKey();
   }, [clusterUrl, hostUrl]);
 
