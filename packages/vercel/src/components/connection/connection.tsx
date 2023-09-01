@@ -4,16 +4,33 @@ import { AppEmbed } from '@thoughtspot/visual-embed-sdk/lib/src/react';
 import styles from './connection.module.scss';
 import { DocsPage } from '../docs-page/docs-page';
 
+const envMapping = {
+  PGUSER: 'user',
+  PGPASSWORD: 'password',
+  PGHOST: 'host',
+  PGDATABASE: 'database',
+}
+
+const getConnectionParams = (envParams) => {
+  const paramObj: any = {}
+  console.log(envParams)
+  envParams.forEach(element => {
+    if(envMapping[element.key]){
+      paramObj[envMapping[element.key]] = element.value
+    }
+  });
+  paramObj.port = '5432'
+  return paramObj
+}
+
 const getEnvVariables = async () => {
   const searchParams = new URLSearchParams(window.location.search);
   const accessCode = searchParams.get('code') || '';
-  // const teamId = searchParams.get('teamId') || '';
-  const param = new URLSearchParams();
-  param.append('code', accessCode);
-  // param.append('teamId', teamId);
-  param.append('client_id', 'oac_tG9zZHVfkxmC7cNNEks7HYP7');
-  param.append('client_secret', 'vzNID4h5wf8womByW3CCwHl9');
-  param.append('redirect_uri', 'https://localhost:3000');
+  const param = new URLSearchParams()
+  param.append('code', accessCode)
+  param.append('client_id', CLIENT_ID)
+  param.append('client_secret', CLIENT_SECRET)
+  param.append('redirect_uri', window.location.origin)
   const response = await fetch('https://api.vercel.com/v2/oauth/access_token', {
     method: 'POST',
     headers: {
@@ -58,28 +75,24 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   const hostUrl = formatClusterUrl(clusterUrl.url);
 
   useEffect(() => {
-    const param = new URLSearchParams();
-    param.append('name', `vercel-db-conn_${Date.now()}`);
-    param.append('type', 'RDBMS_POSTGRES');
-    param.append('createEmpty', 'true');
-    param.append('state', '-1');
-    param.append(
-      'metadata',
-      JSON.stringify({
-        configuration: {
-          host: 'ep-still-recipe-227773.us-east-2.aws.neon.tech',
-          password: 'ncQjp3u5PSlD',
-          database: 'neondb',
-          port: '5432',
-          user: 'girish.singh',
-        },
-      })
-    );
 
     const createConnection = async () => {
       try {
         const envVariables = await getEnvVariables();
         console.log(envVariables);
+        const connectionParams = getConnectionParams(envVariables.envs)
+        console.log(connectionParams)
+        const param = new URLSearchParams();
+        param.append('name', `vercel-db-conn_${Date.now()}`);
+        param.append('type', 'RDBMS_POSTGRES');
+        param.append('createEmpty', 'true');
+        param.append('state', '-1');
+        param.append(
+          'metadata',
+          JSON.stringify({
+            configuration: connectionParams,
+          })
+        );
         const response = await fetch(
           `${hostUrl}/callosum/v1/tspublic/v1/connection/create`,
           {
@@ -167,7 +180,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
     };
 
     createConnection();
-    // whitelistCSP();
+    //whitelistCSP();
     generateSecretKey();
   }, [clusterUrl, hostUrl]);
 
