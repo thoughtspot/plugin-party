@@ -1,0 +1,30 @@
+{
+    "name": "vercel",
+    "version": "0.0.0",
+    "main": "dist/index.js",
+    "devDependencies": {
+        "@preact/preset-vite": "^2.5.0",
+        "@vitejs/plugin-basic-ssl": "^1.0.1",
+        "npm-run-all": "^4.1.5",
+        "rollup-plugin-visualizer": "^5.9.0",
+        "sass": "^1.58.0",
+        "vite": "^4.1.0"
+    },
+    "scripts": {
+        "build": "vite build",
+        "tsw": "tsc -p . -w",
+        "tsc": "tsc -p .",
+        "lint": "eslint src/**",
+        "start": "HOST=http://localhost:3000 vite",
+        "vite": "vite",
+        "test": "vitest run"
+    },
+    "dependencies": {
+        "antd": "^5.8.5",
+        "build-utils": "0.0.0",
+        "i18n": "0.0.0",
+        "preact": "^10.11.13",
+        "ts-init": "0.0.0",
+        "widgets": "0.0.0"
+    }
+}
