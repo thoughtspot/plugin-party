@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'widgets/lib/button';
-import { AppEmbed } from '@thoughtspot/visual-embed-sdk/lib/src/react';
+import {
+  AppEmbed,
+  HostEvent,
+  useEmbedRef,
+} from '@thoughtspot/visual-embed-sdk/lib/src/react';
+import cx from 'classnames';
 import styles from './connection.module.scss';
-import { DocsPage } from '../docs-page/docs-page';
+import { NextPage } from '../next-page/next-page';
 
-const CLIENT_ID = 'client_id';
-const CLIENT_SECRET = 'client_secret';
+const CLIENT_ID = 'oac_ZRDkEzGSa8knXCmJ8XNAbkkN';
+const CLIENT_SECRET = 'u7y8OoZROu3h1ymreAnCA7QV';
 const envMapping = {
   PGUSER: 'user',
   PGPASSWORD: 'password',
@@ -15,7 +20,6 @@ const envMapping = {
 
 const getConnectionParams = (envParams) => {
   const paramObj: any = {};
-  console.log(envParams);
   envParams.forEach((element) => {
     if (envMapping[element.key]) {
       paramObj[envMapping[element.key]] = element.value;
@@ -28,6 +32,7 @@ const getConnectionParams = (envParams) => {
 const getEnvVariables = async () => {
   const searchParams = new URLSearchParams(window.location.search);
   const accessCode = searchParams.get('code') || '';
+  const teamId = searchParams.get('teamId') || '';
   const param = new URLSearchParams();
   param.append('code', accessCode);
   param.append('client_id', CLIENT_ID);
@@ -40,9 +45,13 @@ const getEnvVariables = async () => {
     },
     body: param,
   });
+  let vercelProjectApiEndpoint = 'https://api.vercel.com/v9/projects';
+  if (teamId) {
+    vercelProjectApiEndpoint += `?teamId=${teamId}`;
+  }
   const res = await response.json();
   const accessToken = res.access_token;
-  const projRes = await fetch('https://api.vercel.com/v9/projects', {
+  const projRes = await fetch(vercelProjectApiEndpoint, {
     headers: {
       Authorization: `Bearer ${res.access_token}`,
     },
@@ -50,20 +59,22 @@ const getEnvVariables = async () => {
   });
   const projectData = await projRes.json();
   const projectId = projectData.projects[0].id;
-  const EnvRes = await fetch(
-    `https://api.vercel.com/v8/projects/${projectId}/env?decrypt=true&source=vercel-cli:pull`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      method: 'get',
-    }
-  );
+  let fetchVercelApiEndPoint = `https://api.vercel.com/v8/projects/${projectId}/env?decrypt=true&source=vercel-cli:pull`;
+  if (teamId) {
+    fetchVercelApiEndPoint += `&teamId=${teamId}`;
+  }
+  const EnvRes = await fetch(fetchVercelApiEndPoint, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    method: 'get',
+  });
   const envData = await EnvRes.json();
   return envData;
 };
 
 export const CreateConnection = ({ clusterUrl }: any) => {
+  const embedRef = useEmbedRef();
   const [isLoading, setIsLoading] = useState(true);
   const [connectionId, setConnectionId] = useState('');
   const [secretKey, setSecretKey] = useState('');
@@ -109,6 +120,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
 
         if (response.ok) {
           const rs = await response.json();
+          console.log('restInPeace', rs);
           setConnectionId(rs.header.id);
           setIsLoading(false);
         }
@@ -117,6 +129,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
         setIsLoading(false);
       }
     };
+
     // whitelist the urls.
     // url: `nginxcsp`,
     const encodedUrl = btoa(window.location.href);
@@ -147,7 +160,6 @@ export const CreateConnection = ({ clusterUrl }: any) => {
 
         if (response.ok) {
           const rs = await response.json();
-          console.log('hello', response);
           setIsLoading(false);
         }
       } catch (error) {
@@ -170,10 +182,8 @@ export const CreateConnection = ({ clusterUrl }: any) => {
         );
         if (response.ok) {
           const rs = await response.json();
-          console.log('hello', rs?.Data);
           setSecretKey(rs?.Data?.token);
           setIsLoading(false);
-          console.log('secret key mil gayi', secretKey);
         }
       } catch (error) {
         console.error('Network Error:', error);
@@ -185,6 +195,11 @@ export const CreateConnection = ({ clusterUrl }: any) => {
     generateSecretKey();
   }, [clusterUrl, hostUrl]);
 
+  const updatePath = (navPath: string) => {
+    embedRef.current.trigger(HostEvent.Navigate, navPath);
+    setIsDocsPageVisible(false);
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -192,24 +207,23 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   // add full app embed here
   return (
     <div className={styles.docsContainer}>
-      {isDocsPageVisible ? (
-        <DocsPage></DocsPage>
-      ) : (
-        <div className={styles.container}>
-          <Button
-            className={styles.continueButton}
-            text="Skip to Next Page"
-            onClick={() => setIsDocsPageVisible(true)}
-          ></Button>
-          <AppEmbed
-            frameParams={{
-              height: '100vh',
-              width: '100vw',
-            }}
-            path={`/data/embrace/${connectionId}/edit`}
-          ></AppEmbed>
-        </div>
-      )}
+      <NextPage updatePath={updatePath}></NextPage>
+      <div className={styles.container}>
+        <Button
+          className={styles.continueButton}
+          text="Skip to Next Page"
+          onClick={() => setIsDocsPageVisible(true)}
+        ></Button>
+        <AppEmbed
+          frameParams={{
+            height: '100vh',
+            width: '100vw',
+          }}
+          ref={embedRef}
+          path={`/data/embrace/${connectionId}/edit`}
+          className={cx({ [styles.hideAppEmbed]: isDocsPageVisible })}
+        ></AppEmbed>
+      </div>
     </div>
   );
 };

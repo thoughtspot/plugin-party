@@ -8,6 +8,7 @@ export const App = () => {
     url: '',
     isCandidate: true,
   });
+  // console.log(process.env.CLIENT_ID);
   return (
     <VercelTSInit setClusterUrl={setClusterUrl} clusterUrl={clusterUrl}>
       <CreateConnection clusterUrl={clusterUrl}></CreateConnection>

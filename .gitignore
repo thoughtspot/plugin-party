@@ -38,6 +38,7 @@ yarn-error.log
 testem.log
 /typings
 /packages/**/dist
+.env
 
 # System Files
 .DS_Store
