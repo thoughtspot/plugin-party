@@ -25,6 +25,7 @@ const getConnectionParams = (envParams) => {
       paramObj[envMapping[element.key]] = element.value;
     }
   });
+  // paramObj.database = 'Test';
   paramObj.port = '5432';
   return paramObj;
 };
@@ -105,23 +106,31 @@ export const CreateConnection = ({ clusterUrl }: any) => {
             configuration: connectionParams,
           })
         );
+        const param2 = {
+          name: `vercel-db-conn_${Date.now()}`,
+          data_warehouse_type: 'POSTGRES',
+          data_warehouse_config: {
+            configuration: connectionParams
+          },
+          validate: 'false',
+        }
         const response = await fetch(
-          `${hostUrl}/callosum/v1/tspublic/v1/connection/create`,
+          `${hostUrl}/api/rest/2.0/connection/create`,
           {
             headers: {
               accept: 'application/json',
-              'content-Type': 'application/x-www-form-urlencoded',
+              'content-Type': 'application/json',
             },
             credentials: 'include',
             method: 'POST',
-            body: param,
+            body: JSON.stringify(param2),
           }
         );
 
         if (response.ok) {
           const rs = await response.json();
           console.log('restInPeace', rs);
-          setConnectionId(rs.header.id);
+          setConnectionId(rs.id);
           setIsLoading(false);
         }
       } catch (error) {
@@ -195,6 +204,13 @@ export const CreateConnection = ({ clusterUrl }: any) => {
     generateSecretKey();
   }, [clusterUrl, hostUrl]);
 
+  const handleAllEmbedEvent = (event) => {
+    if(event.type === 'updateConnection' || event.type === 'createConnection') {
+      console.log(event.data)
+      setIsDocsPageVisible(true)
+    }
+  }
+
   const updatePath = (navPath: string) => {
     embedRef.current.trigger(HostEvent.Navigate, navPath);
     setIsDocsPageVisible(false);
@@ -209,11 +225,11 @@ export const CreateConnection = ({ clusterUrl }: any) => {
     <div className={styles.docsContainer}>
       <NextPage updatePath={updatePath}></NextPage>
       <div className={styles.container}>
-        <Button
+        {/* <Button
           className={styles.continueButton}
           text="Skip to Next Page"
           onClick={() => setIsDocsPageVisible(true)}
-        ></Button>
+        ></Button> */}
         <AppEmbed
           frameParams={{
             height: '100vh',
@@ -222,6 +238,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
           ref={embedRef}
           path={`/data/embrace/${connectionId}/edit`}
           className={cx({ [styles.hideAppEmbed]: isDocsPageVisible })}
+          onALL={handleAllEmbedEvent}
         ></AppEmbed>
       </div>
     </div>
