@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from 'widgets/lib/button';
 import {
   AppEmbed,
   HostEvent,
@@ -79,6 +78,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   const [isLoading, setIsLoading] = useState(true);
   const [connectionId, setConnectionId] = useState('');
   const [secretKey, setSecretKey] = useState('');
+  const [newPath, setNewPath] = useState('');
   const [isDocsPageVisible, setIsDocsPageVisible] = useState(false);
   const formatClusterUrl = (url: string) => {
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
@@ -92,9 +92,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
     const createConnection = async () => {
       try {
         const envVariables = await getEnvVariables();
-        console.log(envVariables);
         const connectionParams = getConnectionParams(envVariables.envs);
-        console.log(connectionParams);
         const param = new URLSearchParams();
         param.append('name', `vercel-db-conn_${Date.now()}`);
         param.append('type', 'RDBMS_POSTGRES');
@@ -110,10 +108,10 @@ export const CreateConnection = ({ clusterUrl }: any) => {
           name: `vercel-db-conn_${Date.now()}`,
           data_warehouse_type: 'POSTGRES',
           data_warehouse_config: {
-            configuration: connectionParams
+            configuration: connectionParams,
           },
           validate: 'false',
-        }
+        };
         const response = await fetch(
           `${hostUrl}/api/rest/2.0/connection/create`,
           {
@@ -205,13 +203,17 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   }, [clusterUrl, hostUrl]);
 
   const handleAllEmbedEvent = (event) => {
-    if(event.type === 'updateConnection' || event.type === 'createConnection') {
-      console.log(event.data)
-      setIsDocsPageVisible(true)
+    if (
+      event.type === 'updateConnection' ||
+      event.type === 'createConnection'
+    ) {
+      console.log(event.data);
+      setIsDocsPageVisible(true);
     }
-  }
+  };
 
   const updatePath = (navPath: string) => {
+    setNewPath(navPath);
     embedRef.current.trigger(HostEvent.Navigate, navPath);
     setIsDocsPageVisible(false);
   };
@@ -223,20 +225,18 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   // add full app embed here
   return (
     <div className={styles.docsContainer}>
-      <NextPage updatePath={updatePath}></NextPage>
+      <NextPage
+        updatePath={updatePath}
+        isDocsPageVisible={isDocsPageVisible}
+      ></NextPage>
       <div className={styles.container}>
-        {/* <Button
-          className={styles.continueButton}
-          text="Skip to Next Page"
-          onClick={() => setIsDocsPageVisible(true)}
-        ></Button> */}
         <AppEmbed
           frameParams={{
             height: '100vh',
             width: '100vw',
           }}
           ref={embedRef}
-          path={`/data/embrace/${connectionId}/edit`}
+          path={newPath || `/data/embrace/${connectionId}/edit`}
           className={cx({ [styles.hideAppEmbed]: isDocsPageVisible })}
           onALL={handleAllEmbedEvent}
         ></AppEmbed>

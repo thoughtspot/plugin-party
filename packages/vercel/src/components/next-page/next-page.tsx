@@ -1,9 +1,11 @@
 import React from 'react';
 import { Button } from 'widgets/lib/button';
+import cx from 'classnames';
+import styles from './next-page.module.scss';
 
-export const NextPage = ({ updatePath }: any) => {
+export const NextPage = ({ updatePath, isDocsPageVisible }: any) => {
   return (
-    <div>
+    <div className={cx({ [styles.hideNextPage]: !isDocsPageVisible })}>
       <ul>
         <li>
           <Button
