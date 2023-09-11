@@ -4,12 +4,17 @@ import { EmbedTemplates } from './embed-code-templates';
 
 export const DocsPage = () => {
   const [selectedOption, setSelectedOption] = useState('option1');
+  // add the three params
   const codeMap = {
     option1: EmbedTemplates.SearchEmbed(
-      'https://champagne-grapes.thoughtspotdev.cloud/'
+      'https://champagne-grapes.thoughtspotdev.cloud/',
+      '',
+      ''
     ),
     option2: EmbedTemplates.SageEmbed(
-      'https://champagne-grapes.thoughtspotdev.cloud/'
+      'https://champagne-grapes.thoughtspotdev.cloud/',
+      '',
+      ''
     ),
   };
 

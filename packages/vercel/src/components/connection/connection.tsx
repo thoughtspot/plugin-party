@@ -127,7 +127,6 @@ export const CreateConnection = ({ clusterUrl }: any) => {
 
         if (response.ok) {
           const rs = await response.json();
-          console.log('restInPeace', rs);
           setConnectionId(rs.id);
           setIsLoading(false);
         }
@@ -140,7 +139,6 @@ export const CreateConnection = ({ clusterUrl }: any) => {
     // whitelist the urls.
     // url: `nginxcsp`,
     const encodedUrl = btoa(window.location.href);
-    console.log('encodedUrl', encodedUrl, window.location.href);
     const params = {
       configOperation: 'add',
       configOptions: [
@@ -207,7 +205,6 @@ export const CreateConnection = ({ clusterUrl }: any) => {
       event.type === 'updateConnection' ||
       event.type === 'createConnection'
     ) {
-      console.log(event.data);
       setIsDocsPageVisible(true);
     }
   };
