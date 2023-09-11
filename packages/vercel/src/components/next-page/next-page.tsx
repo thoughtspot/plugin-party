@@ -1,7 +1,5 @@
 import React from 'react';
 import { Button } from 'widgets/lib/button';
-import cx from 'classnames';
-import styles from './next-page.module.scss';
 
 export const NextPage = ({ updatePath }: any) => {
   return (
@@ -15,11 +13,7 @@ export const NextPage = ({ updatePath }: any) => {
         </li>
         <li>
           <Button
-            onClick={() =>
-              updatePath(
-                'answer'
-              )
-            }
+            onClick={() => updatePath('answer')}
             text="Create answers from selected data sources"
           ></Button>
         </li>

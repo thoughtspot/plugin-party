@@ -18,13 +18,12 @@ const envMapping = {
   PGDATABASE: 'database',
 };
 
-
 const customization = {
   style: {
     customCSS: {
       rules_UNSTABLE: {
         '.wizard-module__buttonsContainer .button-module__secondary': {
-          'display': 'none',
+          display: 'none',
         },
       },
     },
@@ -93,16 +92,16 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   const [connectionId, setConnectionId] = useState('');
   const [secretKey, setSecretKey] = useState('');
   const [newPath, setNewPath] = useState('');
-  const [page, setPage] = useState('docs')
-  const answerID = useRef('')
-  const livebaordId = useRef('')
-  const dataSources = useRef([])
+  const [page, setPage] = useState('app-embed');
+  const answerID = useRef('');
+  const livebaordId = useRef('');
+  const dataSources = useRef([] as any);
   const formatClusterUrl = (url: string) => {
     let formattedURL = url;
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       formattedURL = `https://${url}`;
     }
-    return (new URL(formattedURL).origin);
+    return new URL(formattedURL).origin;
   };
   const hostUrl = formatClusterUrl(clusterUrl.url);
 
@@ -219,54 +218,47 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   }, [clusterUrl, hostUrl]);
 
   const handleAllEmbedEvent = (event) => {
-    console.log('event', event)
+    console.log('event', event);
     if (
       event.type === 'updateConnection' ||
       event.type === 'createConnection'
     ) {
       console.log(event);
-      if(event.data.data.updateConnection.dataSource.logicalTableList) {
-        const sourceIds = event.data.data.updateConnection.dataSource.logicalTableList.map(table => table.header.id);
+      if (event.data.data.updateConnection.dataSource.logicalTableList) {
+        const sourceIds =
+          event.data.data.updateConnection.dataSource.logicalTableList.map(
+            (table) => table.header.id
+          );
         dataSources.current = sourceIds;
-        console.log(sourceIds)
+        console.log(sourceIds);
       }
-      setPage('options')
-    }
-    else if (
-      event.type === 'createWorksheet'
-    ) {
+      setPage('options');
+    } else if (event.type === 'createWorksheet') {
       console.log(event);
-      dataSources.current = event.data.cloneWorksheetModel.header.guid;
-      console.log(dataSources)
-      setPage('options')
-    }
-    else if (
-      event.type === 'save'
-    ) {
+      dataSources.current = [event.data.cloneWorksheetModel.header.guid];
+      console.log(dataSources);
+      setPage('options');
+    } else if (event.type === 'save') {
       console.log(event);
       answerID.current = event.data.answerId;
-      console.log(dataSources)
-      setPage('options')
-    }
-    else if (
-      event.type === 'pin'
-    ) {
+      console.log(dataSources);
+      setPage('options');
+    } else if (event.type === 'pin') {
       console.log(event);
       livebaordId.current = event.data.liveboardId;
-      console.log(dataSources)
-      setPage('options')
+      setPage('options');
     }
   };
 
   const updatePath = (navPath: string) => {
-    if(navPath == 'answer') {
-      setPage('search-embed')
+    if (navPath === 'answer') {
+      setPage('search-embed');
+    } else if (navPath === 'documents') {
+      setPage('docs');
+    } else {
+      setNewPath(navPath);
+      setPage('app-embed');
     }
-    if(navPath == 'documents') {
-      setPage('docs')
-    }
-    setNewPath(newPath)
-    setPage('app-embed')
   };
 
   if (isLoading) {
@@ -276,14 +268,10 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   // add full app embed here
   return (
     <div className={styles.docsContainer}>
-      {page === 'options' && (
-        <NextPage
-          updatePath={updatePath}
-        ></NextPage>
-      )}
+      {page === 'options' && <NextPage updatePath={updatePath}></NextPage>}
       <div className={styles.container}>
         {page === 'app-embed' && (
-            <AppEmbed
+          <AppEmbed
             frameParams={{
               height: '100vh',
               width: '100vw',
@@ -296,7 +284,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
           ></AppEmbed>
         )}
         {page === 'search-embed' && (
-          <SearchEmbed 
+          <SearchEmbed
             frameParams={{
               height: '100vh',
               width: '100vw',
@@ -306,9 +294,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
           />
         )}
       </div>
-      {page === 'docs' && (
-        <DocsPage />
-      )}
+      {page === 'docs' && <DocsPage />}
     </div>
   );
 };
