@@ -3,9 +3,9 @@ import { Button } from 'widgets/lib/button';
 import cx from 'classnames';
 import styles from './next-page.module.scss';
 
-export const NextPage = ({ updatePath, isDocsPageVisible }: any) => {
+export const NextPage = ({ updatePath }: any) => {
   return (
-    <div className={cx({ [styles.hideNextPage]: !isDocsPageVisible })}>
+    <div>
       <ul>
         <li>
           <Button
@@ -17,7 +17,7 @@ export const NextPage = ({ updatePath, isDocsPageVisible }: any) => {
           <Button
             onClick={() =>
               updatePath(
-                'isSearchEmbed=true&useLastSelectedSources=false/v2/embed/answer'
+                'answer'
               )
             }
             text="Create answers from selected data sources"
@@ -25,7 +25,7 @@ export const NextPage = ({ updatePath, isDocsPageVisible }: any) => {
         </li>
         <li>
           <Button
-            onClick={() => updatePath('/worksheet/create')}
+            onClick={() => updatePath('documents')}
             text="GoToDocumentsPage"
           ></Button>
         </li>
