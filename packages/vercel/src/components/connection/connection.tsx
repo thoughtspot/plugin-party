@@ -83,7 +83,13 @@ const getEnvVariables = async () => {
     method: 'get',
   });
   const envData = await EnvRes.json();
-  return envData;
+  return {
+    envData,
+    vercelConfig: {
+      accessToken,
+      projectId,
+    },
+  };
 };
 
 export const CreateConnection = ({ clusterUrl }: any) => {
@@ -96,6 +102,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   const answerID = useRef('');
   const livebaordId = useRef('');
   const dataSources = useRef([] as any);
+  const vercelConfigRef = useRef({} as any);
   const formatClusterUrl = (url: string) => {
     let formattedURL = url;
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
@@ -105,10 +112,32 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   };
   const hostUrl = formatClusterUrl(clusterUrl.url);
 
-  useEffect(() => {
+  const saveEnv = async (key, value) => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const teamId = searchParams.get('teamId') || '';
+    let saveEnvEndpoint = `https://api.vercel.com/v10/projects/${vercelConfigRef.current.projectId}/env?upsert=true`;
+    if (teamId) {
+      saveEnvEndpoint += `&teamId=${teamId}`;
+    }
+    await fetch(saveEnvEndpoint, {
+      body: JSON.stringify({
+        key,
+        value,
+        type: 'plain',
+        target: ['production', 'preview'],
+      }),
+      headers: {
+        Authorization: `Bearer ${vercelConfigRef.current.accessToken}`,
+      },
+      method: 'post',
+    });
+  };
+
+  const Initialize = async () => {
     const createConnection = async () => {
       try {
-        const envVariables = await getEnvVariables();
+        const { envData: envVariables, vercelConfig } = await getEnvVariables();
+        vercelConfigRef.current = vercelConfig;
         const connectionParams = getConnectionParams(envVariables.envs);
         const param = new URLSearchParams();
         param.append('name', `vercel-db-conn_${Date.now()}`);
@@ -204,7 +233,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
         );
         if (response.ok) {
           const rs = await response.json();
-          setSecretKey(rs?.Data?.token);
+          await saveEnv('TS_SECRET_KEY', rs?.Data?.token);
           setIsLoading(false);
         }
       } catch (error) {
@@ -212,39 +241,35 @@ export const CreateConnection = ({ clusterUrl }: any) => {
       }
     };
 
-    createConnection();
+    await createConnection();
     // whitelistCSP();
-    generateSecretKey();
+    await generateSecretKey();
+  };
+
+  useEffect(() => {
+    Initialize();
   }, [clusterUrl, hostUrl]);
 
   const handleAllEmbedEvent = (event) => {
-    console.log('event', event);
     if (
       event.type === 'updateConnection' ||
       event.type === 'createConnection'
     ) {
-      console.log(event);
       if (event.data.data.updateConnection.dataSource.logicalTableList) {
         const sourceIds =
           event.data.data.updateConnection.dataSource.logicalTableList.map(
             (table) => table.header.id
           );
         dataSources.current = sourceIds;
-        console.log(sourceIds);
       }
       setPage('options');
     } else if (event.type === 'createWorksheet') {
-      console.log(event);
       dataSources.current = [event.data.cloneWorksheetModel.header.guid];
-      console.log(dataSources);
       setPage('options');
     } else if (event.type === 'save') {
-      console.log(event);
       answerID.current = event.data.answerId;
-      console.log(dataSources);
       setPage('options');
     } else if (event.type === 'pin') {
-      console.log(event);
       livebaordId.current = event.data.liveboardId;
       setPage('options');
     }
@@ -294,7 +319,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
           />
         )}
       </div>
-      {page === 'docs' && <DocsPage />}
+      {page === 'docs' && <DocsPage hostUrl={hostUrl} secretKey={secretKey} />}
     </div>
   );
 };

@@ -2,20 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Menu, Button, message } from 'antd';
 import { EmbedTemplates } from './embed-code-templates';
 
-export const DocsPage = () => {
+export const DocsPage = ({ hostUrl, secretKey }: any) => {
   const [selectedOption, setSelectedOption] = useState('option1');
   // add the three params
   const codeMap = {
-    option1: EmbedTemplates.SearchEmbed(
-      'https://champagne-grapes.thoughtspotdev.cloud/',
-      '',
-      ''
-    ),
-    option2: EmbedTemplates.SageEmbed(
-      'https://champagne-grapes.thoughtspotdev.cloud/',
-      '',
-      ''
-    ),
+    option1: EmbedTemplates.SearchEmbed(hostUrl, secretKey, ''),
+    option2: EmbedTemplates.SageEmbed(hostUrl, secretKey, ''),
   };
 
   const handleOptionChange = (e) => {
