@@ -41,7 +41,7 @@ export const EmbedTemplates = {
     `;
   },
   SageEmbed: (url, dataSourceId, secretKey) => {
-    return `
+    return `// Import ThoughtSpot SDK
     import {
       SageEmbed,
       useEmbedRef,

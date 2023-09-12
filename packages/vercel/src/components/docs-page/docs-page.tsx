@@ -19,13 +19,17 @@ export const DocsPage = () => {
   };
 
   const handleOptionChange = (e) => {
-    console.log(e);
     setSelectedOption(e.key);
   };
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(codeMap[selectedOption]);
     message.success('Code copied to clipboard');
+  };
+
+  const closeVercelModal = () => {
+    window.location.href =
+      new URLSearchParams(window.location.search).get('next') || '';
   };
 
   return (
@@ -44,8 +48,9 @@ export const DocsPage = () => {
             background: 'black',
             padding: '16px',
             borderRadius: '8px',
-            height: '100vh',
-            width: '100vw',
+            height: '80vh',
+            width: '60vw',
+            whiteSpace: 'pre-wrap',
             overflow: 'auto',
             position: 'relative',
           }}
@@ -55,14 +60,28 @@ export const DocsPage = () => {
             onClick={handleCopyCode}
             style={{
               position: 'absolute',
-              top: '10px', // Adjust the button's position as needed
-              right: '50px',
+              top: '20px', // Adjust the button's position as needed
+              right: '20px',
               background: 'white',
               color: 'black',
               zIndex: 1,
             }}
           >
             Copy Code
+          </Button>
+          <Button
+            type="primary"
+            onClick={closeVercelModal}
+            style={{
+              position: 'absolute',
+              bottom: '20px', // Adjust the button's position as needed
+              right: '20px',
+              background: 'white',
+              color: 'black',
+              zIndex: 1,
+            }}
+          >
+            Complete the Setup
           </Button>
           <pre style={{ color: 'white', fontSize: '14px' }}>
             {codeMap[selectedOption]}
