@@ -8,15 +8,7 @@ import {
 import styles from './connection.module.scss';
 import { NextPage } from '../next-page/next-page';
 import { DocsPage } from '../docs-page/docs-page';
-
-const CLIENT_ID = 'oac_ZRDkEzGSa8knXCmJ8XNAbkkN';
-const CLIENT_SECRET = 'u7y8OoZROu3h1ymreAnCA7QV';
-const envMapping = {
-  PGUSER: 'user',
-  PGPASSWORD: 'password',
-  PGHOST: 'host',
-  PGDATABASE: 'database',
-};
+import { getEnvVariables as fetchEnvVariables, saveENV, whiteListCSP } from '../utils';
 
 const customization = {
   style: {
@@ -30,67 +22,6 @@ const customization = {
   },
 };
 
-const getConnectionParams = (envParams) => {
-  const paramObj: any = {};
-  envParams.forEach((element) => {
-    if (envMapping[element.key]) {
-      paramObj[envMapping[element.key]] = element.value;
-    }
-  });
-  // paramObj.database = 'Test';
-  paramObj.port = '5432';
-  return paramObj;
-};
-
-const getEnvVariables = async () => {
-  const searchParams = new URLSearchParams(window.location.search);
-  const accessCode = searchParams.get('code') || '';
-  const teamId = searchParams.get('teamId') || '';
-  const param = new URLSearchParams();
-  param.append('code', accessCode);
-  param.append('client_id', CLIENT_ID);
-  param.append('client_secret', CLIENT_SECRET);
-  param.append('redirect_uri', window.location.origin);
-  const response = await fetch('https://api.vercel.com/v2/oauth/access_token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: param,
-  });
-  let vercelProjectApiEndpoint = 'https://api.vercel.com/v9/projects';
-  if (teamId) {
-    vercelProjectApiEndpoint += `?teamId=${teamId}`;
-  }
-  const res = await response.json();
-  const accessToken = res.access_token;
-  const projRes = await fetch(vercelProjectApiEndpoint, {
-    headers: {
-      Authorization: `Bearer ${res.access_token}`,
-    },
-    method: 'get',
-  });
-  const projectData = await projRes.json();
-  const projectId = projectData.projects[0].id;
-  let fetchVercelApiEndPoint = `https://api.vercel.com/v8/projects/${projectId}/env?decrypt=true&source=vercel-cli:pull`;
-  if (teamId) {
-    fetchVercelApiEndPoint += `&teamId=${teamId}`;
-  }
-  const EnvRes = await fetch(fetchVercelApiEndPoint, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    method: 'get',
-  });
-  const envData = await EnvRes.json();
-  return {
-    envData,
-    vercelConfig: {
-      accessToken,
-      projectId,
-    },
-  };
-};
 
 export const CreateConnection = ({ clusterUrl }: any) => {
   const embedRef = useEmbedRef();
@@ -115,10 +46,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   const saveEnv = async (key, value) => {
     const searchParams = new URLSearchParams(window.location.search);
     const teamId = searchParams.get('teamId') || '';
-    let saveEnvEndpoint = `https://api.vercel.com/v10/projects/${vercelConfigRef.current.projectId}/env?upsert=true`;
-    if (teamId) {
-      saveEnvEndpoint += `&teamId=${teamId}`;
-    }
+    let saveEnvEndpoint = `https://api.vercel.com/v10/projects/${vercelConfigRef.current.projectId}/env?upsert=true&teamId=${teamId}`;
     await fetch(saveEnvEndpoint, {
       body: JSON.stringify({
         key,
@@ -133,122 +61,56 @@ export const CreateConnection = ({ clusterUrl }: any) => {
     });
   };
 
-  const Initialize = async () => {
-    const createConnection = async () => {
-      try {
-        const { envData: envVariables, vercelConfig } = await getEnvVariables();
-        vercelConfigRef.current = vercelConfig;
-        const connectionParams = getConnectionParams(envVariables.envs);
-        const param = new URLSearchParams();
-        param.append('name', `vercel-db-conn_${Date.now()}`);
-        param.append('type', 'RDBMS_POSTGRES');
-        param.append('createEmpty', 'true');
-        param.append('state', '-1');
-        param.append(
-          'metadata',
-          JSON.stringify({
-            configuration: connectionParams,
-          })
-        );
-        const param2 = {
-          name: `vercel-db-conn_${Date.now()}`,
-          data_warehouse_type: 'POSTGRES',
-          data_warehouse_config: {
-            configuration: connectionParams,
+  const createConnection = async() => {
+    try {
+      const { connectionConfig,  } = vercelConfigRef.current;
+      const param2 = {
+        name: `vercel-db-conn_${Date.now()}`,
+        data_warehouse_type: 'POSTGRES',
+        data_warehouse_config: {
+          configuration: connectionConfig,
+        },
+        validate: 'false',
+      };
+      const response = await fetch(
+        `${hostUrl}/api/rest/2.0/connection/create`,
+        {
+          headers: {
+            accept: 'application/json',
+            'content-Type': 'application/json',
           },
-          validate: 'false',
-        };
-        const response = await fetch(
-          `${hostUrl}/api/rest/2.0/connection/create`,
-          {
-            headers: {
-              accept: 'application/json',
-              'content-Type': 'application/json',
-            },
-            credentials: 'include',
-            method: 'POST',
-            body: JSON.stringify(param2),
-          }
-        );
-
-        if (response.ok) {
-          const rs = await response.json();
-          setConnectionId(rs.id);
-          setIsLoading(false);
+          credentials: 'include',
+          method: 'POST',
+          body: JSON.stringify(param2),
         }
-      } catch (error) {
-        console.error('Network Error:', error);
+      );
+
+      if (response.ok) {
+        const rs = await response.json();
+        setConnectionId(rs.id);
         setIsLoading(false);
       }
-    };
+    } catch (error) {
+      console.error('Network Error:', error);
+      setIsLoading(false);
+    }
 
-    // whitelist the urls.
-    // url: `nginxcsp`,
-    const encodedUrl = btoa(window.location.href);
-    const params = {
-      configOperation: 'add',
-      configOptions: [
-        {
-          optionKey: 'nginx_csp_frame_ancestors',
-          optionValue: encodedUrl,
-        },
-      ],
-    };
-    const whitelistCSP = async () => {
-      try {
-        const response = await fetch(
-          `${hostUrl}/managementconsole/admin-api/nginxcsp`,
-          {
-            headers: {
-              accept: 'application/json',
-              'content-Type': 'application/x-www-form-urlencoded',
-            },
-            credentials: 'include',
-            method: 'POST',
-            body: JSON.stringify(params),
-          }
-        );
+  }
 
-        if (response.ok) {
-          const rs = await response.json();
-          setIsLoading(false);
-        }
-      } catch (error) {
-        console.error('Network Error:', error);
-      }
-    };
-
-    const generateSecretKey = async () => {
-      try {
-        const response = await fetch(
-          `${hostUrl}/managementconsole/admin-api/tokenauth?view_mode=all`,
-          {
-            headers: {
-              accept: 'application/json',
-              'content-Type': 'application/x-www-form-urlencoded',
-            },
-            credentials: 'include',
-            method: 'POST',
-          }
-        );
-        if (response.ok) {
-          const rs = await response.json();
-          await saveEnv('TS_SECRET_KEY', rs?.Data?.token);
-          setIsLoading(false);
-        }
-      } catch (error) {
-        console.error('Network Error:', error);
-      }
-    };
-
+  const Initialize = async () => {
+    vercelConfigRef.current = await fetchEnvVariables();
     await createConnection();
-    // whitelistCSP();
-    await generateSecretKey();
+    await whiteListCSP(hostUrl, vercelConfigRef.current.hostUrl);
+    await saveENV(
+      hostUrl, vercelConfigRef.current
+    );
+    // await generateSecretKey();
   };
 
   useEffect(() => {
-    Initialize();
-  }, [clusterUrl, hostUrl]);
+    if(clusterUrl)
+      Initialize();
+  }, [clusterUrl]);
 
   const handleAllEmbedEvent = (event) => {
     if (
