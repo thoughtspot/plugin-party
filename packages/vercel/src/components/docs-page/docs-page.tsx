@@ -8,6 +8,7 @@ export const DocsPage = ({ hostUrl, secretKey }: any) => {
   const codeMap = {
     option1: EmbedTemplates.SearchEmbed(hostUrl, secretKey, ''),
     option2: EmbedTemplates.SageEmbed(hostUrl, secretKey, ''),
+    option3: EmbedTemplates.LiveboardEmbed(hostUrl, secretKey, ''),
   };
 
   const handleOptionChange = (e) => {
@@ -33,6 +34,7 @@ export const DocsPage = ({ hostUrl, secretKey }: any) => {
       >
         <Menu.Item key="option1">Option 1</Menu.Item>
         <Menu.Item key="option2">Option 2</Menu.Item>
+        <Menu.Item key="option3">Option 3</Menu.Item>
       </Menu>
       <div style={{ padding: '16px' }}>
         <div
