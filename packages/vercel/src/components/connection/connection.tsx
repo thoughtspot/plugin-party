@@ -181,7 +181,14 @@ export const CreateConnection = ({ clusterUrl }: any) => {
           />
         )}
       </div>
-      {page === 'docs' && <DocsPage hostUrl={hostUrl} secretKey={secretKey} />}
+      {page === 'docs' && (
+        <DocsPage
+          hostUrl={hostUrl}
+          dataSources={dataSources.current}
+          livebaordId={livebaordId.current}
+          authUrl={vercelConfigRef.current.authUrl}
+        />
+      )}
     </div>
   );
 };

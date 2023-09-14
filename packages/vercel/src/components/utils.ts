@@ -115,23 +115,39 @@ export const getEnvVariables = async () => {
   };
 };
 
+const secuirtySettingsPromise = async (hostUrl, type, method, payload?) => {
+  const endpoint = (type === 'CSP' ? 'nginxcsp' : 'nginxcors?view_mode=all')
+  return fetch(
+    `${hostUrl}/managementconsole/admin-api/${endpoint}`,
+    {
+      headers: {
+        accept: 'application/json',
+        'content-Type': 'application/x-www-form-urlencoded',
+      },
+      credentials: 'include',
+      method: method,
+      ...(payload ? {body: JSON.stringify(payload)} : {})
+    }
+  ).then((res) => res.json());
+}
+
 export const whiteListCSP = async (hostUrl, urlToWhiteList) => {
   try {
-    const currentCSP = await fetch(
-      `${hostUrl}/managementconsole/admin-api/nginxcsp`,
-      {
-        headers: {
-          accept: 'application/json',
-          'content-Type': 'application/x-www-form-urlencoded',
-        },
-        credentials: 'include',
-        method: 'GET',
-      }
-    ).then((res) => res.json());
+    const currentCSP = await secuirtySettingsPromise(hostUrl, 'CSP', 'GET')
+    const currentCORS = await secuirtySettingsPromise(hostUrl, 'CORS', 'GET')
 
+    console.log(currentCORS.Data)
     console.log(currentCSP.Data.configs);
 
-    const params = {
+    const updatedCORSPayload = {
+      configOperation: 'add',
+      configOptions: [{
+          optionKey: 'nginx_corshosts',
+          optionValue: window.btoa(`${currentCORS.Data},${urlToWhiteList}`),
+      }]
+    }
+
+    const updatedCSPPayload = {
       configOperation: 'add',
       configOptions: currentCSP.Data.configs.map((config) => {
         let value = config.value;
@@ -143,29 +159,10 @@ export const whiteListCSP = async (hostUrl, urlToWhiteList) => {
         };
       }),
     };
-    params.configOptions.push({
-      optionKey: 'nginx_corshosts',
-      optionValue: window.btoa(presetCORS + ',' + urlToWhiteList),
-    });
-    console.log(params);
-    const response = await fetch(
-      `${hostUrl}/managementconsole/admin-api/nginxcsp`,
-      {
-        headers: {
-          accept: 'application/json',
-          'content-Type': 'application/x-www-form-urlencoded',
-        },
-        credentials: 'include',
-        method: 'POST',
-        body: JSON.stringify(params),
-      }
-    );
+    console.log(updatedCSPPayload)
 
-    if (response.ok) {
-      const rs = await response.json();
-      console.log(rs);
-      // setIsLoading(false);
-    }
+    secuirtySettingsPromise(hostUrl, 'CORS', 'POST', updatedCORSPayload)
+    secuirtySettingsPromise(hostUrl, 'CSP', 'POST', updatedCSPPayload)
   } catch (error) {
     console.error('Network Error:', error);
   }

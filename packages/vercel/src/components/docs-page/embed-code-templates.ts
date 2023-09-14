@@ -1,5 +1,5 @@
 export const EmbedTemplates = {
-  SearchEmbed: (url, secretKey, dataSourceId) => {
+  SearchEmbed: (params) => {
     return `// Import ThoughtSpot SDK
     import {
       SearchEmbed,
@@ -10,13 +10,13 @@ export const EmbedTemplates = {
     import "./styles.css";
     
     init({
-      thoughtSpotHost: ${url},
+      thoughtSpotHost: ${params.hostUrl},
       authType: AuthType.TrustedAuthToken,
       username: "TO BE FILLED BY USER",
       getAuthToken: () => {
-        return fetch(\`${url}api/rest/2.0/auth/token/full\`, {
+        return fetch(\`${params.authUrl}/api/v2/gettoken/:user\`, {
           headers: { "content-type": "application/json" },
-          body: \`{\\"username\\":\\"To Be Filled by user\\",\\"validity_time_in_sec\\":3000,\\"org_id\\":0,\\"auto_create\\":false,\\"secret_key\\":\\"${secretKey}\\"}\`,
+          body: \`{\\"username\\":\\"To Be Filled by user\\",\\"validity_time_in_sec\\":3000,\\"org_id\\":0,\\"auto_create\\":false,\\"secret_key\\":\\"secretKey\\"}\`,
           method: "POST",
         })
         .then((response) => response.json())
@@ -34,13 +34,13 @@ export const EmbedTemplates = {
           }}
           className="search-content"
           ref={embedRef}
-          dataSources={[${dataSourceId}]}
+          dataSources={[${params.dataSources.join(',')}]}
         />
       );
     };
     `;
   },
-  SageEmbed: (url, dataSourceId, secretKey) => {
+  SageEmbed: (params) => {
     return `// Import ThoughtSpot SDK
     import {
       SageEmbed,
@@ -51,13 +51,13 @@ export const EmbedTemplates = {
     import "./styles.css";
     
     init({
-      thoughtSpotHost: "${url}",
+      thoughtSpotHost: "${params.hostUrl}",
       authType: AuthType.TrustedAuthToken,
       username: "TO BE FILLED BY USER",
       getAuthToken: () => {
-        return fetch(\`${url}api/rest/2.0/auth/token/full\`, {
+        return fetch(\`${params.authUrl}/api/v2/gettoken/:user\`, {
           headers: { "content-type": "application/json" },
-          body: \`{\\"username\\":\\"To Be Filled by user\\",\\"validity_time_in_sec\\":3000,\\"org_id\\":0,\\"auto_create\\":false,\\"secret_key\\":\\"${secretKey}\\"}\`,
+          body: \`{\\"username\\":\\"To Be Filled by user\\",\\"validity_time_in_sec\\":3000,\\"org_id\\":0,\\"auto_create\\":false,\\"secret_key\\":\\"secretKey\\"}\`,
           method: "POST",
         })
         .then((response) => response.json())
@@ -75,12 +75,12 @@ export const EmbedTemplates = {
           }}
           className="search-content"
           ref={embedRef}
-          dataSources={[${dataSourceId}]}
+          dataSources={[${params.dataSources.join(',')}]}
         />
       );
     }`;
   },
-  LiveboardEmbed: (url, secretKey, liveboardId) => {
+  LiveboardEmbed: (params) => {
     return `// Import ThoughtSpot SDK
     import {
       LiveboardEmbed,
@@ -91,13 +91,13 @@ export const EmbedTemplates = {
     import "./styles.css";
     
     init({
-      thoughtSpotHost: ${url},
+      thoughtSpotHost: ${params.hostUrl},
       authType: AuthType.TrustedAuthToken,
       username: "TO BE FILLED BY USER",
       getAuthToken: () => {
-        return fetch(\`${url}api/rest/2.0/auth/token/full\`, {
+        return fetch(\`${params.authUrl}/api/v2/gettoken/:user\`, {
           headers: { "content-type": "application/json" },
-          body: \`{\\"username\\":\\"To Be Filled by user\\",\\"validity_time_in_sec\\":3000,\\"org_id\\":0,\\"auto_create\\":false,\\"secret_key\\":\\"${secretKey}\\"}\`,
+          body: \`{\\"username\\":\\"To Be Filled by user\\",\\"validity_time_in_sec\\":3000,\\"org_id\\":0,\\"auto_create\\":false,\\"secret_key\\":\\"secretKey\\"}\`,
           method: "POST",
         })
         .then((response) => response.json())
@@ -115,7 +115,7 @@ export const EmbedTemplates = {
           }}
           className="search-content"
           ref={embedRef}
-          liveboardId={${liveboardId}}
+          liveboardId={${params.livebaordId}}
         />
       );
     };

@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Menu, Button, message } from 'antd';
 import { EmbedTemplates } from './embed-code-templates';
 
-export const DocsPage = ({ hostUrl, secretKey }: any) => {
+export const DocsPage = (params: any) => {
   const [selectedOption, setSelectedOption] = useState('option1');
   // add the three params
   const codeMap = {
-    option1: EmbedTemplates.SearchEmbed(hostUrl, secretKey, ''),
-    option2: EmbedTemplates.SageEmbed(hostUrl, secretKey, ''),
-    option3: EmbedTemplates.LiveboardEmbed(hostUrl, secretKey, ''),
+    option1: EmbedTemplates.SearchEmbed(params),
+    option2: EmbedTemplates.SageEmbed(params),
+    option3: EmbedTemplates.LiveboardEmbed(params),
   };
 
   const handleOptionChange = (e) => {

@@ -5,21 +5,20 @@ export const NextPage = ({ updatePath }: any) => {
   const optionsData = [
     {
       id: 1,
-      title: 'Create Worksheet',
-      description:
-        'Create worksheet from the tables and columns of your database',
+      title: 'Create A Datamodel',
+      description: 'Create a new data model from the imported tables from your database',
       path: 'worksheet/create',
     },
     {
       id: 2,
-      title: 'Create answers from selected data source',
-      description: 'Create answer from the data sources you have selected',
+      title: 'Create a liveboard using search',
+      description: 'Create an answer from your data and pin it to a new livebaord',
       path: 'answer',
     },
     {
       id: 3,
       title: 'Go to Documents Page',
-      description: 'Refer to the documents on how to embed Thoughtspot',
+      description: 'Complete the integration and Refer to the documents on how to embed Thoughtspot',
       path: 'documents',
     },
   ];
