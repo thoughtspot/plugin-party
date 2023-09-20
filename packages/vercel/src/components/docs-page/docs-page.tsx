@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Menu, Button, message } from 'antd';
+import React, { useState } from 'react';
+import { Menu, message } from 'antd';
+import { Button } from 'widgets/lib/button';
 import { EmbedTemplates } from './embed-code-templates';
 
 export const DocsPage = (params: any) => {
   const [selectedOption, setSelectedOption] = useState('option1');
   // add the three params
   const codeMap = {
-    option1: EmbedTemplates.SearchEmbed(params),
-    option2: EmbedTemplates.SageEmbed(params),
-    option3: EmbedTemplates.LiveboardEmbed(params),
+    SearchEmbed: EmbedTemplates.SearchEmbed(params),
+    SageEmbed: EmbedTemplates.SageEmbed(params),
+    LiveboardEmbed: EmbedTemplates.LiveboardEmbed(params),
   };
 
   const handleOptionChange = (e) => {
@@ -32,9 +33,9 @@ export const DocsPage = (params: any) => {
         selectedKeys={[selectedOption]}
         onClick={handleOptionChange}
       >
-        <Menu.Item key="option1">Option 1</Menu.Item>
-        <Menu.Item key="option2">Option 2</Menu.Item>
-        <Menu.Item key="option3">Option 3</Menu.Item>
+        <Menu.Item key="SearchEmbed">Search Embed</Menu.Item>
+        <Menu.Item key="SageEmbed">Sage Embed</Menu.Item>
+        <Menu.Item key="LiveboardEmbed">Liveboard Embed</Menu.Item>
       </Menu>
       <div style={{ padding: '16px' }}>
         <div
@@ -49,34 +50,8 @@ export const DocsPage = (params: any) => {
             position: 'relative',
           }}
         >
-          <Button
-            type="primary"
-            onClick={handleCopyCode}
-            style={{
-              position: 'absolute',
-              top: '20px', // Adjust the button's position as needed
-              right: '20px',
-              background: 'white',
-              color: 'black',
-              zIndex: 1,
-            }}
-          >
-            Copy Code
-          </Button>
-          <Button
-            type="primary"
-            onClick={closeVercelModal}
-            style={{
-              position: 'absolute',
-              bottom: '20px', // Adjust the button's position as needed
-              right: '20px',
-              background: 'white',
-              color: 'black',
-              zIndex: 1,
-            }}
-          >
-            Complete the Setup
-          </Button>
+          <Button onClick={handleCopyCode} text="Copy Code"></Button>
+          <Button onClick={closeVercelModal} text="Complete the Setup"></Button>
           <pre style={{ color: 'white', fontSize: '14px' }}>
             {codeMap[selectedOption]}
           </pre>

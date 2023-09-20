@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Modal } from 'antd';
+import { Modal } from 'antd';
+import { Button } from 'widgets/lib/button';
 
 export const NextPage = ({ updatePath }: any) => {
   const optionsData = [
@@ -32,9 +33,10 @@ export const NextPage = ({ updatePath }: any) => {
         {optionsData.map((option) => (
           <div key={option.id} style={{ marginBottom: '16px' }}>
             <p>{option.description}</p>
-            <Button type="primary" onClick={() => updatePath(option.path)}>
-              {option.title}
-            </Button>
+            <Button
+              onClick={() => updatePath(option.path)}
+              text={option.title}
+            ></Button>
           </div>
         ))}
       </Modal>

@@ -8,7 +8,11 @@ import {
 import styles from './connection.module.scss';
 import { NextPage } from '../next-page/next-page';
 import { DocsPage } from '../docs-page/docs-page';
-import { getEnvVariables as fetchEnvVariables, saveENV, whiteListCSP } from '../utils';
+import {
+  getEnvVariables as fetchEnvVariables,
+  saveENV,
+  whiteListCSP,
+} from '../utils';
 
 const customization = {
   style: {
@@ -21,7 +25,6 @@ const customization = {
     },
   },
 };
-
 
 export const CreateConnection = ({ clusterUrl }: any) => {
   const embedRef = useEmbedRef();
@@ -46,7 +49,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   const saveEnv = async (key, value) => {
     const searchParams = new URLSearchParams(window.location.search);
     const teamId = searchParams.get('teamId') || '';
-    let saveEnvEndpoint = `https://api.vercel.com/v10/projects/${vercelConfigRef.current.projectId}/env?upsert=true&teamId=${teamId}`;
+    const saveEnvEndpoint = `https://api.vercel.com/v10/projects/${vercelConfigRef.current.projectId}/env?upsert=true&teamId=${teamId}`;
     await fetch(saveEnvEndpoint, {
       body: JSON.stringify({
         key,
@@ -61,9 +64,9 @@ export const CreateConnection = ({ clusterUrl }: any) => {
     });
   };
 
-  const createConnection = async() => {
+  const createConnection = async () => {
     try {
-      const { connectionConfig,  } = vercelConfigRef.current;
+      const { connectionConfig } = vercelConfigRef.current;
       const param2 = {
         name: `vercel-db-conn_${Date.now()}`,
         data_warehouse_type: 'POSTGRES',
@@ -94,22 +97,18 @@ export const CreateConnection = ({ clusterUrl }: any) => {
       console.error('Network Error:', error);
       setIsLoading(false);
     }
-
-  }
+  };
 
   const Initialize = async () => {
     vercelConfigRef.current = await fetchEnvVariables();
     await createConnection();
     await whiteListCSP(hostUrl, vercelConfigRef.current.hostUrl);
-    await saveENV(
-      hostUrl, vercelConfigRef.current
-    );
+    await saveENV(hostUrl, vercelConfigRef.current);
     // await generateSecretKey();
   };
 
   useEffect(() => {
-    if(clusterUrl)
-      Initialize();
+    if (clusterUrl) Initialize();
   }, [clusterUrl]);
 
   const handleAllEmbedEvent = (event) => {
@@ -166,7 +165,6 @@ export const CreateConnection = ({ clusterUrl }: any) => {
             ref={embedRef}
             path={newPath || `/data/embrace/${connectionId}/edit`}
             onALL={handleAllEmbedEvent}
-            showPrimaryNavbar
             customizations={customization}
           ></AppEmbed>
         )}
@@ -181,14 +179,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
           />
         )}
       </div>
-      {page === 'docs' && (
-        <DocsPage
-          hostUrl={hostUrl}
-          dataSources={dataSources.current}
-          livebaordId={livebaordId.current}
-          authUrl={vercelConfigRef.current.authUrl}
-        />
-      )}
+      {page === 'docs' && <DocsPage hostUrl={hostUrl} secretKey={secretKey} />}
     </div>
   );
 };

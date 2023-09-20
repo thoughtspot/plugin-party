@@ -49,7 +49,7 @@ export const getEnvVariables = async () => {
   const res = await response.json();
   const accessToken = res.access_token;
   const userData = await vercelPromise(
-    `https://api.vercel.com/v2/user`,
+    `https://api.vercel.com/v2/user?teamId=${teamId}`,
     accessToken
   );
   const projectData = await vercelPromise(
