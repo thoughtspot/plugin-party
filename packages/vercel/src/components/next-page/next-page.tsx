@@ -7,19 +7,22 @@ export const NextPage = ({ updatePath }: any) => {
     {
       id: 1,
       title: 'Create A Datamodel',
-      description: 'Create a new data model from the imported tables from your database',
+      description:
+        'Create a new data model from the imported tables from your database',
       path: 'worksheet/create',
     },
     {
       id: 2,
       title: 'Create a liveboard using search',
-      description: 'Create an answer from your data and pin it to a new livebaord',
+      description:
+        'Create an answer from your data and pin it to a new livebaord',
       path: 'answer',
     },
     {
       id: 3,
       title: 'Go to Documents Page',
-      description: 'Complete the integration and Refer to the documents on how to embed Thoughtspot',
+      description:
+        'Complete the integration and Refer to the documents on how to embed Thoughtspot',
       path: 'documents',
     },
   ];

@@ -78,12 +78,11 @@ export const getEnvVariables = async () => {
     });
   }
   const projectsResponses = await Promise.all(envPromises);
-  let connectionConfig,
-    authUrl,
-    hostUrl,
-    projectIds: any[] = [];
+  let connectionConfig;
+  let authUrl;
+  let hostUrl;
+  const projectIds: any[] = [];
 
-  console.log(projectsResponses);
   for (let index = 0; index < projectsResponses.length; index += 2) {
     const projectIndex = index / 2;
     const envs = projectsResponses[index].envs;
@@ -96,15 +95,6 @@ export const getEnvVariables = async () => {
     projectIds.push(projectData.projects[projectIndex].id);
   }
 
-  console.log({
-    connectionConfig,
-    authUrl,
-    hostUrl,
-    projectIds,
-    accessToken,
-    teamId,
-  });
-
   return {
     connectionConfig,
     authUrl,
@@ -116,36 +106,32 @@ export const getEnvVariables = async () => {
 };
 
 const secuirtySettingsPromise = async (hostUrl, type, method, payload?) => {
-  const endpoint = (type === 'CSP' ? 'nginxcsp' : 'nginxcors?view_mode=all')
-  return fetch(
-    `${hostUrl}/managementconsole/admin-api/${endpoint}`,
-    {
-      headers: {
-        accept: 'application/json',
-        'content-Type': 'application/x-www-form-urlencoded',
-      },
-      credentials: 'include',
-      method: method,
-      ...(payload ? {body: JSON.stringify(payload)} : {})
-    }
-  ).then((res) => res.json());
-}
+  const endpoint = type === 'CSP' ? 'nginxcsp' : 'nginxcors?view_mode=all';
+  return fetch(`${hostUrl}/managementconsole/admin-api/${endpoint}`, {
+    headers: {
+      accept: 'application/json',
+      'content-Type': 'application/x-www-form-urlencoded',
+    },
+    credentials: 'include',
+    method,
+    ...(payload ? { body: JSON.stringify(payload) } : {}),
+  }).then((res) => res.json());
+};
 
 export const whiteListCSP = async (hostUrl, urlToWhiteList) => {
   try {
-    const currentCSP = await secuirtySettingsPromise(hostUrl, 'CSP', 'GET')
-    const currentCORS = await secuirtySettingsPromise(hostUrl, 'CORS', 'GET')
-
-    console.log(currentCORS.Data)
-    console.log(currentCSP.Data.configs);
+    const currentCSP = await secuirtySettingsPromise(hostUrl, 'CSP', 'GET');
+    const currentCORS = await secuirtySettingsPromise(hostUrl, 'CORS', 'GET');
 
     const updatedCORSPayload = {
       configOperation: 'add',
-      configOptions: [{
+      configOptions: [
+        {
           optionKey: 'nginx_corshosts',
           optionValue: window.btoa(`${currentCORS.Data},${urlToWhiteList}`),
-      }]
-    }
+        },
+      ],
+    };
 
     const updatedCSPPayload = {
       configOperation: 'add',
@@ -159,10 +145,9 @@ export const whiteListCSP = async (hostUrl, urlToWhiteList) => {
         };
       }),
     };
-    console.log(updatedCSPPayload)
 
-    secuirtySettingsPromise(hostUrl, 'CORS', 'POST', updatedCORSPayload)
-    secuirtySettingsPromise(hostUrl, 'CSP', 'POST', updatedCSPPayload)
+    secuirtySettingsPromise(hostUrl, 'CORS', 'POST', updatedCORSPayload);
+    secuirtySettingsPromise(hostUrl, 'CSP', 'POST', updatedCSPPayload);
   } catch (error) {
     console.error('Network Error:', error);
   }

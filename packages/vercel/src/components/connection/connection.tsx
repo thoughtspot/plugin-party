@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   AppEmbed,
-  HostEvent,
   SearchEmbed,
   useEmbedRef,
 } from '@thoughtspot/visual-embed-sdk/lib/src/react';
@@ -127,9 +126,6 @@ export const CreateConnection = ({ clusterUrl }: any) => {
     } else if (event.type === 'createWorksheet') {
       dataSources.current = [event.data.cloneWorksheetModel.header.guid];
       setPage('options');
-    } else if (event.type === 'save') {
-      answerID.current = event.data.answerId;
-      setPage('options');
     } else if (event.type === 'pin') {
       livebaordId.current = event.data.liveboardId;
       setPage('options');
@@ -179,7 +175,14 @@ export const CreateConnection = ({ clusterUrl }: any) => {
           />
         )}
       </div>
-      {page === 'docs' && <DocsPage hostUrl={hostUrl} secretKey={secretKey} />}
+      {page === 'docs' && (
+        <DocsPage
+          hostUrl={hostUrl}
+          dataSources={dataSources.current}
+          livebaordId={livebaordId.current}
+          authUrl={vercelConfigRef.current.authUrl}
+        />
+      )}
     </div>
   );
 };

@@ -10,11 +10,11 @@ export const EmbedTemplates = {
     import "./styles.css";
     
     init({
-      thoughtSpotHost: ${params.hostUrl},
+      thoughtSpotHost: ${params?.hostUrl},
       authType: AuthType.TrustedAuthToken,
       username: "TO BE FILLED BY USER",
       getAuthToken: () => {
-        return fetch(\`${params.authUrl}/api/v2/gettoken/:user\`, {
+        return fetch(\`${params?.authUrl}/api/v2/gettoken/:user\`, {
           headers: { "content-type": "application/json" },
           body: \`{\\"username\\":\\"To Be Filled by user\\",\\"validity_time_in_sec\\":3000,\\"org_id\\":0,\\"auto_create\\":false,\\"secret_key\\":\\"secretKey\\"}\`,
           method: "POST",
@@ -34,7 +34,7 @@ export const EmbedTemplates = {
           }}
           className="search-content"
           ref={embedRef}
-          dataSources={[${params.dataSources.join(',')}]}
+          dataSources={['nirmayPatel']}
         />
       );
     };
@@ -51,11 +51,11 @@ export const EmbedTemplates = {
     import "./styles.css";
     
     init({
-      thoughtSpotHost: "${params.hostUrl}",
+      thoughtSpotHost: "${params?.hostUrl}",
       authType: AuthType.TrustedAuthToken,
       username: "TO BE FILLED BY USER",
       getAuthToken: () => {
-        return fetch(\`${params.authUrl}/api/v2/gettoken/:user\`, {
+        return fetch(\`${params?.authUrl}/api/v2/gettoken/:user\`, {
           headers: { "content-type": "application/json" },
           body: \`{\\"username\\":\\"To Be Filled by user\\",\\"validity_time_in_sec\\":3000,\\"org_id\\":0,\\"auto_create\\":false,\\"secret_key\\":\\"secretKey\\"}\`,
           method: "POST",
@@ -75,7 +75,7 @@ export const EmbedTemplates = {
           }}
           className="search-content"
           ref={embedRef}
-          dataSources={[${params.dataSources.join(',')}]}
+          dataSources={['nirmayPatel']}
         />
       );
     }`;
@@ -91,11 +91,11 @@ export const EmbedTemplates = {
     import "./styles.css";
     
     init({
-      thoughtSpotHost: ${params.hostUrl},
+      thoughtSpotHost: ${params?.hostUrl},
       authType: AuthType.TrustedAuthToken,
       username: "TO BE FILLED BY USER",
       getAuthToken: () => {
-        return fetch(\`${params.authUrl}/api/v2/gettoken/:user\`, {
+        return fetch(\`${params?.authUrl}/api/v2/gettoken/:user\`, {
           headers: { "content-type": "application/json" },
           body: \`{\\"username\\":\\"To Be Filled by user\\",\\"validity_time_in_sec\\":3000,\\"org_id\\":0,\\"auto_create\\":false,\\"secret_key\\":\\"secretKey\\"}\`,
           method: "POST",
@@ -115,7 +115,7 @@ export const EmbedTemplates = {
           }}
           className="search-content"
           ref={embedRef}
-          liveboardId={${params.livebaordId}}
+          liveboardId={${params?.livebaordId}}
         />
       );
     };
