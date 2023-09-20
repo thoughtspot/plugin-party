@@ -38,6 +38,13 @@ export default defineConfig({
   server: {
     https: true,
     port: getPort(process.env.HOST),
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
   build: {
     outDir: path.join(process.cwd(), 'build'),

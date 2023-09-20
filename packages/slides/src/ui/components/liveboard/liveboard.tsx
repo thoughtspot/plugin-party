@@ -158,8 +158,8 @@ const PrerenderedLiveboardShell = () => {
         },
       },
     });
-    lbRef.current.prerenderGeneric();
     lbRef.current.on(EmbedEvent.ALL, (e) => console.log(e));
+    lbRef.current.prerenderGeneric();
   }, []);
   useEffect(() => {
     if (!liveboardId) {

@@ -1,0 +1,15 @@
+{
+    "extends": "../tsconfig.base.json",
+    "compilerOptions": {
+      "module": "commonjs",
+      "outDir": "dist",
+      "baseUrl": ".",
+      "declaration": false,
+      "declarationMap": false,
+      "sourceMap": false,
+      "target": "ES5",
+      "preserveWatchOutput": true
+    },
+    "include": ["*.ts"]
+  }
+  
