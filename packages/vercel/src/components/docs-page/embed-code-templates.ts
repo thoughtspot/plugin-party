@@ -1,111 +1,124 @@
 export const EmbedTemplates = {
-  SearchEmbed: (url) => {
+  SearchEmbed: (params) => {
     return `// Import ThoughtSpot SDK
     import {
-      init,
       SearchEmbed,
+      useEmbedRef,
       EmbedEvent,
-      AuthType,
-    } from "@thoughtspot/visual-embed-sdk";
+    } from "@thoughtspot/visual-embed-sdk/lib/src/react";
+    import { init, AuthType } from "@thoughtspot/visual-embed-sdk";
     import "./styles.css";
     
-    // Write Javascript code!
     init({
-      thoughtSpotHost: "${url}",
-      authType: AuthType.None,
-      /*param-start-styleCustomization*//*param-end-styleCustomization*/
-    });
-    
-    // Instantiate SearchEmbed class
-    const embed = new SearchEmbed("#your-own-div", {
-        frameParams: {},
-          dataSources: ["cd252e5c-b552-49a8-821d-3eadaa049cca"],
-    });
-    
-    embed
-      // Register event handlers
-      .on(EmbedEvent.Init, showLoader)
-      .on(EmbedEvent.Load, hideLoader)
-      .on(EmbedEvent.AuthExpire, showAuthExpired)
-      /*param-start-customActionHandle*//*param-end-customActionHandle*/
-      .on("answerPageLoading", payload =>
-        console.log("message received from embedded view" + JSON.stringify(payload))
-      )
-      // Render the embedded search and pass in the data source id
-      .render();
-    
-    // Function to show/hide
-    function setDisplayStyle(el, style) {
-      if(document.getElementById(el)) {
-        document.getElementById(el).style.display = style;
+      thoughtSpotHost: ${params?.hostUrl},
+      authType: AuthType.TrustedAuthToken,
+      username: "TO BE FILLED BY USER",
+      getAuthToken: () => {
+        return fetch(\`${params?.authUrl}/api/v2/gettoken/:user\`, {
+          headers: { "content-type": "application/json" },
+          body: \`{\\"username\\":\\"To Be Filled by user\\",\\"validity_time_in_sec\\":3000,\\"org_id\\":0,\\"auto_create\\":false,\\"secret_key\\":\\"secretKey\\"}\`,
+          method: "POST",
+        })
+        .then((response) => response.json())
+        .then((data) => data.token);
       }
-    }
-    
-    // Functions to show and hide a loader while iframe loads
-    function showLoader() {
-      setDisplayStyle("loader", "block");
-    }
-    function hideLoader() {
-      setDisplayStyle("loader", "none");
-    }
-    
-    function showAuthExpired() {
-      setDisplayStyle("authExpiredBanner", "flex");
-    }
+    });
+
+    export const SearchEmbed = () => {
+      const embedRef = useEmbedRef();
+      return (
+        <SearchEmbed
+          frameParams={{
+            height: 800,
+            width: 1000,
+          }}
+          className="search-content"
+          ref={embedRef}
+          dataSources={['nirmayPatel']}
+        />
+      );
+    };
     `;
   },
-  SageEmbed: (url) => {
+  SageEmbed: (params) => {
     return `// Import ThoughtSpot SDK
     import {
-      init,
       SageEmbed,
+      useEmbedRef,
       EmbedEvent,
-      AuthType,
-    } from "@thoughtspot/visual-embed-sdk";
+    } from "@thoughtspot/visual-embed-sdk/lib/src/react";
+    import { init, AuthType } from "@thoughtspot/visual-embed-sdk";
     import "./styles.css";
     
-    // Initialize embed configuration
     init({
-      thoughtSpotHost:"${url}",
-      authType: AuthType.None,
-      /*param-start-styleCustomization*//*param-end-styleCustomization*/
-    });
-    
-    // Instantiate class for embedding the full application
-    const embed = new SageEmbed("#your-own-div", {
-        frameParams: {},
-        /*param-start-sageDataSource*/
-          dataSource: "cd252e5c-b552-49a8-821d-3eadaa049cca",
-    });
-    
-    embed
-      // Register event listeners
-      .on(EmbedEvent.Init, showLoader)
-      .on(EmbedEvent.Load, hideLoader)
-      .on(EmbedEvent.AuthExpire, showAuthExpired)
-      /*param-start-customActionHandle*//*param-end-customActionHandle*/
-      .render();
-    
-    /*param-start-useHostEvent*/
-    /*param-end-useHostEvent*/
-    
-    // Function to show/hide
-    function setDisplayStyle(el, style) {
-      if(document.getElementById(el)) {
-        document.getElementById(el).style.display = style;
+      thoughtSpotHost: "${params?.hostUrl}",
+      authType: AuthType.TrustedAuthToken,
+      username: "TO BE FILLED BY USER",
+      getAuthToken: () => {
+        return fetch(\`${params?.authUrl}/api/v2/gettoken/:user\`, {
+          headers: { "content-type": "application/json" },
+          body: \`{\\"username\\":\\"To Be Filled by user\\",\\"validity_time_in_sec\\":3000,\\"org_id\\":0,\\"auto_create\\":false,\\"secret_key\\":\\"secretKey\\"}\`,
+          method: "POST",
+        })
+        .then((response) => response.json())
+        .then((data) => data.token);
       }
-    }
-    
-    // Functions to show and hide a loader while iframe loads
-    function showLoader() {
-      setDisplayStyle("loader", "block");
-    }
-    function hideLoader() {
-      setDisplayStyle("loader", "none");
-    }
-    
-    function showAuthExpired() {
-      setDisplayStyle("authExpiredBanner", "flex");
+    });
+
+    export const SageEmbed = () => {
+      const embedRef = useEmbedRef();
+      return (
+        <SageEmbed
+          frameParams={{
+            height: 800,
+            width: 1000,
+          }}
+          className="search-content"
+          ref={embedRef}
+          dataSources={['nirmayPatel']}
+        />
+      );
     }`;
+  },
+  LiveboardEmbed: (params) => {
+    return `// Import ThoughtSpot SDK
+    import {
+      LiveboardEmbed,
+      useEmbedRef,
+      EmbedEvent,
+    } from "@thoughtspot/visual-embed-sdk/lib/src/react";
+    import { init, AuthType } from "@thoughtspot/visual-embed-sdk";
+    import "./styles.css";
+    
+    init({
+      thoughtSpotHost: ${params?.hostUrl},
+      authType: AuthType.TrustedAuthToken,
+      username: "TO BE FILLED BY USER",
+      getAuthToken: () => {
+        return fetch(\`${params?.authUrl}/api/v2/gettoken/:user\`, {
+          headers: { "content-type": "application/json" },
+          body: \`{\\"username\\":\\"To Be Filled by user\\",\\"validity_time_in_sec\\":3000,\\"org_id\\":0,\\"auto_create\\":false,\\"secret_key\\":\\"secretKey\\"}\`,
+          method: "POST",
+        })
+        .then((response) => response.json())
+        .then((data) => data.token);
+      }
+    });
+
+    export const LiveboardEmbed = () => {
+      const embedRef = useEmbedRef();
+      return (
+        <LiveboardEmbed
+          frameParams={{
+            height: 800,
+            width: 1000,
+          }}
+          className="search-content"
+          ref={embedRef}
+          liveboardId={${params?.livebaordId}}
+        />
+      );
+    };
+    `;
   },
 };

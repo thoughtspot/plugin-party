@@ -1,26 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { Menu, Button, message } from 'antd';
+import React, { useState } from 'react';
+import { Menu, message } from 'antd';
+import { Button } from 'widgets/lib/button';
 import { EmbedTemplates } from './embed-code-templates';
 
-export const DocsPage = () => {
+export const DocsPage = (params: any) => {
   const [selectedOption, setSelectedOption] = useState('option1');
+  // add the three params
   const codeMap = {
-    option1: EmbedTemplates.SearchEmbed(
-      'https://champagne-grapes.thoughtspotdev.cloud/'
-    ),
-    option2: EmbedTemplates.SageEmbed(
-      'https://champagne-grapes.thoughtspotdev.cloud/'
-    ),
+    SearchEmbed: EmbedTemplates.SearchEmbed(params),
+    SageEmbed: EmbedTemplates.SageEmbed(params),
+    LiveboardEmbed: EmbedTemplates.LiveboardEmbed(params),
   };
 
   const handleOptionChange = (e) => {
-    console.log(e);
     setSelectedOption(e.key);
   };
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(codeMap[selectedOption]);
     message.success('Code copied to clipboard');
+  };
+
+  const closeVercelModal = () => {
+    window.location.href =
+      new URLSearchParams(window.location.search).get('next') || '';
   };
 
   return (
@@ -30,8 +33,9 @@ export const DocsPage = () => {
         selectedKeys={[selectedOption]}
         onClick={handleOptionChange}
       >
-        <Menu.Item key="option1">Option 1</Menu.Item>
-        <Menu.Item key="option2">Option 2</Menu.Item>
+        <Menu.Item key="SearchEmbed">Search Embed</Menu.Item>
+        <Menu.Item key="SageEmbed">Sage Embed</Menu.Item>
+        <Menu.Item key="LiveboardEmbed">Liveboard Embed</Menu.Item>
       </Menu>
       <div style={{ padding: '16px' }}>
         <div
@@ -39,26 +43,15 @@ export const DocsPage = () => {
             background: 'black',
             padding: '16px',
             borderRadius: '8px',
-            height: '100vh',
-            width: '100vw',
+            height: '80vh',
+            width: '60vw',
+            whiteSpace: 'pre-wrap',
             overflow: 'auto',
             position: 'relative',
           }}
         >
-          <Button
-            type="primary"
-            onClick={handleCopyCode}
-            style={{
-              position: 'absolute',
-              top: '10px', // Adjust the button's position as needed
-              right: '50px',
-              background: 'white',
-              color: 'black',
-              zIndex: 1,
-            }}
-          >
-            Copy Code
-          </Button>
+          <Button onClick={handleCopyCode} text="Copy Code"></Button>
+          <Button onClick={closeVercelModal} text="Complete the Setup"></Button>
           <pre style={{ color: 'white', fontSize: '14px' }}>
             {codeMap[selectedOption]}
           </pre>
