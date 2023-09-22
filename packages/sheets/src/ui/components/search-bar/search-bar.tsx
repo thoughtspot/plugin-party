@@ -65,6 +65,7 @@ export const TSSearchBar = () => {
           Action.AddParameter,
           Action.CollapseDataSources,
         ]}
+        useLastSelectedSources={true}
         customizations={customization}
         onLoad={() => loader.hide()}
         onData={(data) => {
