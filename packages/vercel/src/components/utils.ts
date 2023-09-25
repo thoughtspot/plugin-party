@@ -1,5 +1,5 @@
-const CLIENT_ID = 'oac_ZRDkEzGSa8knXCmJ8XNAbkkN';
-const CLIENT_SECRET = 'u7y8OoZROu3h1ymreAnCA7QV';
+const CLIENT_ID = 'oac_yLfaITMJiCjRBscm4xFpXFom';
+const CLIENT_SECRET = 'kWXH76nKYvU2rBLQeW0R73u9';
 
 const presetCORS = 'localhost.*:443,.*:8080,.*:80,localhost:3000';
 
@@ -10,7 +10,7 @@ const envMapping = {
   PGDATABASE: 'database',
 };
 
-const getConnectionParams = (envParams) => {
+export const getConnectionParams = (envParams) => {
   const paramObj: any = {};
   envParams.forEach((element) => {
     if (envMapping[element.key]) {
@@ -21,7 +21,7 @@ const getConnectionParams = (envParams) => {
   return paramObj;
 };
 
-const vercelPromise = (endpoint, accessToken) => {
+export const vercelPromise = (endpoint, accessToken) => {
   return fetch(endpoint, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -29,6 +29,27 @@ const vercelPromise = (endpoint, accessToken) => {
     method: 'get',
   }).then((res) => res.json());
 };
+
+export const getVercelAccessToken = async () => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const accessCode = searchParams.get('code') || '';
+  const teamId = searchParams.get('teamId') || '';
+  const param = new URLSearchParams();
+  param.append('code', accessCode);
+  param.append('client_id', CLIENT_ID);
+  param.append('client_secret', CLIENT_SECRET);
+  param.append('redirect_uri', window.location.origin);
+  const response = await fetch('https://api.vercel.com/v2/oauth/access_token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: param,
+  });
+  const res = await response.json();
+  const accessToken = res.access_token;
+  return accessToken;
+}
 
 export const getEnvVariables = async () => {
   const searchParams = new URLSearchParams(window.location.search);
@@ -154,7 +175,7 @@ export const whiteListCSP = async (hostUrl, urlToWhiteList) => {
 };
 
 export const saveENV = async (hostUrl, vercelConfig) => {
-  const { accessToken, teamId, projectIds, hostUrl: tsHostURL } = vercelConfig;
+  const { accessToken, teamId, projectIds, tsHostURL } = vercelConfig;
   try {
     const response = await fetch(
       `${hostUrl}/managementconsole/admin-api/tokenauth?view_mode=all`,
