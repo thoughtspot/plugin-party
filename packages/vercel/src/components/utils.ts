@@ -1,5 +1,5 @@
-const CLIENT_ID = 'oac_yLfaITMJiCjRBscm4xFpXFom';
-const CLIENT_SECRET = 'kWXH76nKYvU2rBLQeW0R73u9';
+const CLIENT_ID = 'oac_ZRDkEzGSa8knXCmJ8XNAbkkN';
+const CLIENT_SECRET = 'u7y8OoZROu3h1ymreAnCA7QV';
 
 const presetCORS = 'localhost.*:443,.*:8080,.*:80,localhost:3000';
 
