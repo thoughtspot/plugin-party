@@ -11,6 +11,8 @@ export default async function handler(request) {
     file_format: 'PNG',
   });
   let res;
+  //For logging in Axiom
+  console.log('Proxy request body',requestBody);
   try {
     res = await fetchEndpoint(
       requestBody.endpoint,
@@ -18,7 +20,7 @@ export default async function handler(request) {
       requestBody.token,
       requestBody.payload
     );
-    console.log('Proxy res received');
+    console.log('Proxy res received', res);
   } catch (e) {
     console.log('Proxy res Failed', e);
     res = {
