@@ -9,12 +9,13 @@ import { NextPage } from '../next-page/next-page';
 import { DocsPage } from '../docs-page/docs-page';
 import {
   getEnvVariables as fetchEnvVariables,
-  getConnectionParams,
   saveENV,
   vercelPromise,
   whiteListCSP,
 } from '../utils';
+import findConnectedComponents from './connection-utils';
 import { SelectProject } from '../select-project/select-project';
+import { SelectTables } from '../select-tables/select-tables';
 
 const customization = {
   style: {
@@ -30,6 +31,7 @@ const customization = {
 
 export const CreateConnection = ({ clusterUrl }: any) => {
   const embedRef = useEmbedRef();
+  const [embedPath, setEmbedPath] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [connectionId, setConnectionId] = useState('');
   const [newPath, setNewPath] = useState('');
@@ -47,6 +49,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
     return new URL(formattedURL).origin;
   };
   const hostUrl = formatClusterUrl(clusterUrl.url);
+  const [connectedTablesName, setConnectedTablesName] = useState();
 
   const createConnection = async (connectionConfig?: any) => {
     try {
@@ -75,6 +78,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
       if (response.ok) {
         const rs = await response.json();
         setConnectionId(rs.id);
+        setEmbedPath(`/data/embrace/${rs.id}/edit`);
         setIsLoading(false);
       }
     } catch (error) {
@@ -97,19 +101,34 @@ export const CreateConnection = ({ clusterUrl }: any) => {
 
   const handleAllEmbedEvent = (event) => {
     if (event.type === 'updateConnection') {
-      if (event.data.data.updateConnection.dataSource.logicalTableList) {
-        const sourceIds =
-          event.data.data.updateConnection.dataSource.logicalTableList.map(
-            (table) => table.header.id
-          );
-        dataSources.current = sourceIds;
+      const sourceIds =
+        event.data.data.updateConnection.dataSource.logicalTableList.map(
+          (table) => table.header.id
+        );
+      const sourceNames =
+        event.data.data.updateConnection.dataSource.logicalTableList.map(
+          (table) => table.header.name
+        );
+      const sourceMap: { [id: string]: string } = {};
+
+      for (let i = 0; i < sourceIds.length; i++) {
+        sourceMap[sourceIds[i]] = sourceNames[i];
       }
-      setPage('options');
-    } else if (event.type === 'createWorksheet') {
-      dataSources.current = [event.data.cloneWorksheetModel.header.guid];
-      setPage('options');
-    } else if (event.type === 'pin') {
-      livebaordId.current = event.data.liveboardId;
+
+      const tableRelationships =
+        event.data.data.updateConnection.dataSource.logicalTableList.map(
+          (table) => table.relationships
+        );
+      const connectedTables = findConnectedComponents(
+        sourceIds,
+        tableRelationships
+      );
+      const connectedTablesNames = connectedTables.map((connectedTable) => {
+        return connectedTable
+          .map((connectedTableIds) => sourceMap[connectedTableIds])
+          .join(' - ');
+      });
+      setConnectedTablesName(connectedTablesNames);
       setPage('options');
     }
   };
@@ -129,50 +148,50 @@ export const CreateConnection = ({ clusterUrl }: any) => {
     const domainConfig1 = await vercelPromise(
       `https://api.vercel.com/v8/projects/${projectIds[0]}/domains?teamId=${teamId}`,
       accessToken
-    )
+    );
     const domainConfig2 = await vercelPromise(
       `https://api.vercel.com/v8/projects/${projectIds[1]}/domains?teamId=${teamId}`,
       accessToken
-    )
-    const tsHostURL = domainConfig1.domains[0].name
+    );
+    const tsHostURL = domainConfig1.domains[0].name;
 
-    authURLRef.current = domainConfig2.domains[0].name
+    authURLRef.current = domainConfig2.domains[0].name;
     whiteListCSP(hostUrl, tsHostURL);
     saveENV(hostUrl, {
       accessToken,
       teamId,
       projectIds,
-      tsHostURL
+      tsHostURL,
     });
-  }
+  };
 
-  const updateProjects = async (projects, accessToken) => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const teamId = searchParams.get('teamId') || '';
-    projectRef.current = projects;
-    const dbConfig = await vercelPromise(
-      `https://api.vercel.com/v8/projects/${projects[0]}/env?teamId=${teamId}&decrypt=true&source=vercel-cli:pull`,
-      accessToken
-    );
-    const connectionParams = getConnectionParams(dbConfig.envs);
-    console.log(connectionParams)
-    if (Object.keys(connectionParams).length === 5) {
-      createConnection(connectionParams)
+  const updateProject = async (
+    project: string,
+    hasPostgres: string,
+    isConnectionPostgres: boolean,
+    projectEnvs: any
+  ) => {
+    if (hasPostgres === 'Yes' && isConnectionPostgres) {
+      await createConnection(projectEnvs);
+    } else {
+      setEmbedPath('/data/embrace/connection');
     }
     setPage('app-embed');
-    getDomains(projects, teamId, accessToken);
-  }
+  };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Connecting to Postgres...</div>;
   }
 
   // add full app embed here
-  console.log('page', page)
   return (
     <div className={styles.docsContainer}>
-      {page === 'select-page' && <SelectProject updateProjects={updateProjects} />}
-      {page === 'options' && <NextPage updatePath={updatePath}></NextPage>}
+      {page === 'select-page' && (
+        <SelectProject updateProject={updateProject} />
+      )}
+      {page === 'options' && (
+        <SelectTables connectedTablesName={connectedTablesName}></SelectTables>
+      )}
       <div className={styles.container}>
         {page === 'app-embed' && (
           <AppEmbed
@@ -181,7 +200,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
               width: '100vw',
             }}
             ref={embedRef}
-            path={newPath || `/data/embrace/${connectionId}/edit`}
+            path={newPath || embedPath}
             onALL={handleAllEmbedEvent}
             customizations={customization}
           ></AppEmbed>
