@@ -1,0 +1,164 @@
+@import '../common.scss';
+
+.stepperWrapper {
+    position: relative;
+}
+
+.stepperItemWrapper {
+    display: flex;
+    flex-direction: row;
+
+    position: relative;
+
+    .stepItemMain:last-child .connector {
+        display: flex;
+    }
+}
+
+.stepItemMain {
+    position: relative;
+}
+
+.stepItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &:focus {
+        outline: 2px solid $blue1;
+    }
+
+    &:focus:not( [ data-focus-visible-added ] ) {
+        outline: none;
+    }
+}
+
+.stepCircle {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    height: $spacing--c;
+    width: $spacing--c;
+    border-radius: $layout--radius-round;
+    color: $gray4;
+    background-color: $gray4;
+    background-position: 50% 50%;
+    background-size: 0% 0%;
+    background-repeat: no-repeat;
+    z-index: 1;
+
+    .stepIcon {
+        fill: $gray4;
+    }
+}
+
+.stepTitle {
+    color: $text-color;
+    max-width: 168px;
+}
+
+.connector {
+    position: absolute;
+    background-color: $gray4;
+}
+
+.verticalStepper {
+
+    .stepperItemWrapper {
+        display: flex;
+        flex-direction: column;
+    }
+
+    div.stepItemMain:not(:first-child) .stepItem {
+            margin-top: $spacing--f;
+        }
+
+    .stepCircle {
+        margin-right: $spacing--c;
+    }
+
+    .connector {
+        top: $spacing--e/2;
+        left: $spacing--c/2;
+        height: 100%;
+        width: 1px;
+    }
+}
+
+.isActive {
+
+    .stepCircle {
+        background-color: $blue1;
+    }
+
+    .stepIcon {
+        fill: $blue1;
+    }
+
+    .stepTitle,
+    .stepCircleContent {
+        color: $blue1;
+    }
+    .connector {
+        background-color: $blue1;
+        transition: background-color 0.3s ease-out;
+    }
+}
+
+.isCompleted {
+
+    .stepCircle {
+        background-size: 100% 100%;
+        border-width: 0;
+        background-color: $blue1;
+        transition: background-size 0.3s ease-out, border-width 0.3s ease-out;
+    }
+
+    .stepTitle {
+        color: $text-color;
+    }
+
+    .stepIcon {
+        fill: $white;
+    }
+
+    .connector {
+        background-color: $blue1;
+        transition: background-color 0.3s ease-out;
+    }
+}
+
+.isSubStep {
+
+    .stepCircle {
+        background-color: transparent;
+        margin-right: 16px;
+    }
+
+    .stepIcon {
+        fill: $white;
+    }
+
+    .stepItem:hover{
+        .stepCircle {
+            background-color: transparent;
+        }
+    }
+
+    .stepItem {
+            margin-top: 10px !important;
+        }
+
+        &.isActive{.stepTitle {
+            color: $blue1;
+        }}
+        .stepTitle {
+            color: $gray4;
+        }
+}
+
+.stepCircleContent {
+    height: $spacing--d;
+}

@@ -48,7 +48,7 @@ export interface AvatarProps {
 
 export const Avatar: FC<AvatarProps> = ({
   name,
-  id,
+  id = '',
   className = '',
   src = '',
   showName = false,
@@ -96,6 +96,7 @@ export const Avatar: FC<AvatarProps> = ({
           )}
           {src && isImageExists && (
             <img
+              data-testid={`${id}_img`}
               loading="lazy"
               className={cx(styles.avatarImage, {
                 [styles.loaded]: isImageLoaded,
