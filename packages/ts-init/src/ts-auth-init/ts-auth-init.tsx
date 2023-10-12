@@ -23,6 +23,7 @@ const initTSBasic = (url: string, username: string, password: string) => {
     authType: AuthType.Basic,
     username,
     password,
+    detectCookieAccessSlow: true,
   });
 };
 

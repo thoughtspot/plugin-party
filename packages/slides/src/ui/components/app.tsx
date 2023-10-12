@@ -1,6 +1,7 @@
 import Router from 'preact-router';
 import { createMemoryHistory, createHashHistory } from 'history';
 import { ShellContext, defaultShellContextOptions } from 'gsuite-shell';
+import { Analytics } from '@vercel/analytics/react';
 import { I18N } from 'i18n';
 import { TSInit } from 'ts-init';
 import React from 'preact';
@@ -23,6 +24,7 @@ export function App() {
         <TSInit>
           <Header history={history}></Header>
           <div className={styles.content}>
+            <Analytics />
             <AppContextProvider>
               <PrerenderdLiveboardProvider>
                 <Router history={history}>

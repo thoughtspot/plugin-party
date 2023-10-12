@@ -8,11 +8,9 @@ import { createContext } from 'preact';
 import { useRouter } from 'preact-router';
 import { useEffect, useContext, useRef, useState } from 'preact/hooks';
 import { useLoader } from 'widgets/lib/loader';
-import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
-import { Colors, Typography } from 'widgets/lib/typography';
-import { Button } from 'widgets/lib/button';
-import { Icon } from 'widgets/lib/icon';
+import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { useTranslations } from 'i18n';
+import { ErrorBanner } from 'widgets/lib/error-banner';
 import styles from './liveboard.module.scss';
 import { getOffset, getTSLBVizLink } from '../../utils';
 
@@ -95,24 +93,11 @@ export const Liveboard = () => {
   }, []);
   return (
     <Vertical className={styles.liveboardContainer}>
-      {showError && (
-        <Horizontal
-          vAlignContent="center"
-          spacing="e"
-          className={styles.errorBanner}
-        >
-          <Typography variant="h6" noMargin color={Colors.failure}>
-            {t.INSERT_FAILURE_MESSAGE}
-          </Typography>
-          <Button
-            type="ICON"
-            className={styles.errorButton}
-            onClick={() => setShowError(false)}
-          >
-            <Icon name="rd-icon-cross" size="xs"></Icon>
-          </Button>
-        </Horizontal>
-      )}
+      <ErrorBanner
+        errorMessage={t.INSERT_FAILURE_MESSAGE}
+        showBanner={showError}
+        onCloseIconClick={() => setShowError(false)}
+      />
       <div className={styles.liveboardContainer} ref={ref}></div>
     </Vertical>
   );
