@@ -5,6 +5,7 @@ import {
   mockCacheService,
   mockPropertiesService,
   mockGoogleFetch,
+  mockGoogleUtilities,
 } from './googleservice.mocks';
 import {
   getAnswerImageRequest,
@@ -110,6 +111,7 @@ describe('Image related Google script functions', () => {
     mockCacheService();
     mockPropertiesService();
     mockGoogleFetch();
+    mockGoogleUtilities();
     setClusterUrl(tsInstance);
     setToken(token, 't');
   });

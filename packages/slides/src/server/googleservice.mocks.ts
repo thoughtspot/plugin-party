@@ -59,8 +59,20 @@ export function mockGoogleFetch() {
           getBlob: () => {
             return req as any;
           },
+          getContent: () => {
+            return req as any;
+          },
         } as GoogleAppsScript.URL_Fetch.HTTPResponse;
       });
+    },
+  };
+}
+
+export function mockGoogleUtilities() {
+  global.Utilities = {
+    ...global?.Utilities,
+    newBlob: (content) => {
+      return content;
     },
   };
 }
