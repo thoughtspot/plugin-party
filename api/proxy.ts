@@ -20,7 +20,7 @@ export default async function handler(request) {
       requestBody.token,
       requestBody.payload
     );
-    console.log('Proxy res received', res);
+    console.log('Proxy res received', res?.status, res?.statusText);
   } catch (e) {
     console.log('Proxy res Failed', e);
     res = {
