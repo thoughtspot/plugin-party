@@ -28,6 +28,7 @@ export const Button = ({
   return (
     <button
       id={id}
+      data-testid={id}
       className={classnames}
       onClick={onClick}
       disabled={isDisabled}
