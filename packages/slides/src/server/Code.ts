@@ -161,7 +161,10 @@ function getImagesRaw(links) {
 
   const responses = UrlFetchApp.fetchAll(fetchRequests);
 
-  return responses.map((response) => response.getBlob());
+  return responses.map((response) => {
+    const blob = Utilities.newBlob(response.getContent());
+    return blob;
+  });
 }
 
 function deserializeToBlob(serialized) {
