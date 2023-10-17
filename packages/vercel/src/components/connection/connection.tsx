@@ -41,6 +41,8 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   const dataSources = useRef([] as any);
   const projectRef = useRef([] as any);
   const vercelConfigRef = useRef({} as any);
+  const [tableNameToIdMap, setTableNameToIdMap] =
+    useState<Record<string, string>>();
   const formatClusterUrl = (url: string) => {
     let formattedURL = url;
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
@@ -50,6 +52,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   };
   const hostUrl = formatClusterUrl(clusterUrl.url);
   const [connectedTablesName, setConnectedTablesName] = useState();
+  const [relationship, setRelationship] = useState<any[]>();
 
   const createConnection = async (connectionConfig?: any) => {
     try {
@@ -87,17 +90,60 @@ export const CreateConnection = ({ clusterUrl }: any) => {
     }
   };
 
-  const Initialize = async () => {
-    vercelConfigRef.current = await fetchEnvVariables();
-    await createConnection();
-    // await whiteListCSP(hostUrl, vercelConfigRef.current.hostUrl);
-    // await saveENV(hostUrl, vercelConfigRef.current);
-    // await generateSecretKey();
+  const ImportWorksheetTML = async (
+    request: any,
+    generationType = 'DEFAULT'
+  ) => {
+    try {
+      const formData = new URLSearchParams();
+      formData.append('request', JSON.stringify(request));
+      formData.append('generationType', generationType);
+      const response = await fetch(
+        `${hostUrl}/callosum/v1/autogen/worksheet/save`,
+        {
+          headers: {
+            'content-Type': 'application/x-www-form-urlencoded',
+            Accept: 'text/plain',
+          },
+          credentials: 'include',
+          method: 'POST',
+          body: formData,
+        }
+      );
+      if (response.ok) {
+        const rs = await response.json();
+        console.log('rss', rs);
+      }
+    } catch (error) {
+      console.log('errr', error);
+    }
   };
 
-  // useEffect(() => {
-  //   if (clusterUrl) Initialize();
-  // }, [clusterUrl]);
+  const generateWorksheetTML = async (tableIds, relationships) => {
+    try {
+      const formData = new URLSearchParams();
+      formData.append('tableIds', JSON.stringify(tableIds));
+      formData.append('relationships', JSON.stringify(relationships));
+
+      const response = await fetch(`${hostUrl}/callosum/v1/autogen/worksheet`, {
+        headers: {
+          Accept: 'application/json',
+        },
+        credentials: 'include',
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const rs = await response.json();
+        console.log('result Of generateWorksheetTML', rs);
+        const params = { object: rs.object };
+        await ImportWorksheetTML(params);
+      }
+    } catch (error) {
+      console.log('err', error);
+    }
+  };
 
   const handleAllEmbedEvent = (event) => {
     if (event.type === 'updateConnection') {
@@ -109,38 +155,35 @@ export const CreateConnection = ({ clusterUrl }: any) => {
         event.data.data.updateConnection.dataSource.logicalTableList.map(
           (table) => table.header.name
         );
-      const sourceMap: { [id: string]: string } = {};
+      const tableIdToNameMap: { [id: string]: string } = {};
+      const tableNameToIdsMap: { [id: string]: string } = {};
 
       for (let i = 0; i < sourceIds.length; i++) {
-        sourceMap[sourceIds[i]] = sourceNames[i];
+        tableIdToNameMap[sourceIds[i]] = sourceNames[i];
       }
+
+      for (let i = 0; i < sourceIds.length; i++) {
+        tableNameToIdsMap[sourceNames[i]] = sourceIds[i];
+      }
+
+      setTableNameToIdMap(tableNameToIdsMap);
 
       const tableRelationships =
         event.data.data.updateConnection.dataSource.logicalTableList.map(
           (table) => table.relationships
         );
+      setRelationship(tableRelationships);
       const connectedTables = findConnectedComponents(
         sourceIds,
         tableRelationships
       );
       const connectedTablesNames = connectedTables.map((connectedTable) => {
         return connectedTable
-          .map((connectedTableIds) => sourceMap[connectedTableIds])
+          .map((connectedTableIds) => tableIdToNameMap[connectedTableIds])
           .join(' - ');
       });
       setConnectedTablesName(connectedTablesNames);
       setPage('options');
-    }
-  };
-
-  const updatePath = (navPath: string) => {
-    if (navPath === 'answer') {
-      setPage('search-embed');
-    } else if (navPath === 'documents') {
-      setPage('docs');
-    } else {
-      setNewPath(navPath);
-      setPage('app-embed');
     }
   };
 
@@ -179,6 +222,36 @@ export const CreateConnection = ({ clusterUrl }: any) => {
     setPage('app-embed');
   };
 
+  const updateDataSource = async (selectDataSources: string) => {
+    console.log('selectedDFa', selectDataSources);
+    const dataSourcesName = selectDataSources.split(' - ');
+    console.log('dataSources', dataSourcesName);
+    const dataSourcesId = dataSourcesName.map(
+      (dataSource) => tableNameToIdMap?.[dataSource]
+    );
+    console.log('data', dataSourcesId);
+    console.log('rep', relationship);
+
+    const relationshipIds = relationship
+      ?.filter((dataSourceRelationship) => {
+        if (
+          dataSourceRelationship.length > 0 &&
+          dataSourcesId.includes(dataSourceRelationship[0]?.sourceTable) &&
+          dataSourcesId.includes(dataSourceRelationship[0]?.destinationTable)
+        ) {
+          console.log('hello');
+          return true;
+        }
+        return false;
+      })
+      .map((dataSourceRelationship) => dataSourceRelationship[0]);
+    console.log('finally', relationshipIds);
+
+    const response = await generateWorksheetTML(dataSourcesId, relationshipIds);
+    console.log('modiji', response);
+    setPage('documents');
+  };
+
   if (isLoading) {
     return <div>Connecting to Postgres...</div>;
   }
@@ -189,8 +262,12 @@ export const CreateConnection = ({ clusterUrl }: any) => {
       {page === 'select-page' && (
         <SelectProject updateProject={updateProject} />
       )}
+      {page === 'documents' && <DocsPage></DocsPage>}
       {page === 'options' && (
-        <SelectTables connectedTablesName={connectedTablesName}></SelectTables>
+        <SelectTables
+          connectedTablesName={connectedTablesName}
+          updateDataSource={updateDataSource}
+        ></SelectTables>
       )}
       <div className={styles.container}>
         {page === 'app-embed' && (

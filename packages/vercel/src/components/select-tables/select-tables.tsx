@@ -1,8 +1,15 @@
 import { Modal, Checkbox } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
+import { Button } from 'widgets/lib/button';
 
-export const SelectTables = ({ connectedTablesName }: any) => {
-  console.log('sdfsf', connectedTablesName);
+export const SelectTables = ({
+  connectedTablesName,
+  updateDataSource,
+}: any) => {
+  const [selectDataSources, setSelectDataSources] = useState<string>('');
+  const handleSelectDataSources = (connectedTableName: string) => {
+    setSelectDataSources(connectedTableName);
+  };
   return (
     <div>
       <Modal
@@ -16,12 +23,23 @@ export const SelectTables = ({ connectedTablesName }: any) => {
             {connectedTablesName.map((connectedTableName: any) => (
               <tr>
                 <td>
-                  <Checkbox>{connectedTableName}</Checkbox>
+                  <Checkbox
+                    checked={connectedTableName === selectDataSources}
+                    onChange={() => handleSelectDataSources(connectedTableName)}
+                  >
+                    {connectedTableName}
+                  </Checkbox>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        <div>
+          <Button
+            onClick={() => updateDataSource(selectDataSources)}
+            text="Continue"
+          ></Button>
+        </div>
       </Modal>
     </div>
   );
