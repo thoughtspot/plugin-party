@@ -114,6 +114,9 @@ const PrerenderedLiveboardShell = () => {
     }
     lbRef.current = new LiveboardEmbed(ref.current, {
       visibleActions: [Action.InsertInToSlide],
+      additionalFlags: {
+        modularHomeExperience: false,
+      },
       frameParams: {
         height: '100%',
       },
