@@ -117,9 +117,7 @@ const PrerenderedLiveboardShell = () => {
       frameParams: {
         height: '100%',
       },
-      additionalFlags: {
-        isLiveboardHeaderSticky: false,
-      },
+      isLiveboardHeaderSticky: false,
       insertInToSlide: true,
       customizations: {
         style: {
