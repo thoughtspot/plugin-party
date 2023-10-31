@@ -19,7 +19,7 @@ This will also serve the plugin application on `https://localhost:5173`.
 
 - Go to the Google sheet where the test plugin was created. And open the plugin using the menu.
 
-## Deploy to Production
+## Deploy to Staging
 
 - Build the sheets plugin
 
@@ -50,3 +50,7 @@ This creates the files in the `dist` directory which can be pushed to the sheets
 ```
 $ clasp push (from 'sheets' dir)
 ```
+
+To trigger above mentioned, `Deploy to Staging` workflow create and merge a PR into `staging` branch.
+
+## To update and deploy production, merged PR from staging to main branch.

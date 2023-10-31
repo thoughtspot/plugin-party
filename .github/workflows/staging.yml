@@ -1,0 +1,52 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Sanity
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the staging branch
+on:
+  push:
+    branches: [staging]
+  pull_request:
+    branches: [staging]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Use NodeJS v16.19.0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.19.0'
+
+      # Run npm install
+      - name: Run npm install
+        run: npm install
+
+      # Runs linter
+      - name: Run linter
+        run: npm run lint
+
+      # Runs Syncpack
+      - name: Run linter
+        run: npm run syncpack:check
+
+      # Runs the build for all sub projects
+      - name: Run build
+        run: npm run build-all -- --skip-nx-cache
+      
+      # Builds dist folder for all sub projects
+      - name: Run dist
+        run: SHEETS_HOST=${{ vars.STAGING_SHEETS_HOST }} SLIDES_HOST=${{ vars.STAGING_SLIDES_HOST }} npm run deploy-all -- --skip-nx-cache
+
+      #Runs tests for all sub projects
+      - name: Run tests
+        run: npm run test
