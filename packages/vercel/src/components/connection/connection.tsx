@@ -1,7 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
   AppEmbed,
-  SearchEmbed,
   useEmbedRef,
 } from '@thoughtspot/visual-embed-sdk/lib/src/react';
 import styles from './connection.module.scss';
@@ -34,14 +33,10 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   const [embedPath, setEmbedPath] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [connectionId, setConnectionId] = useState('');
+  const [vercelAccessToken, setVercelAccessToken] = useState('');
+  const [selectedProjectName, setSelectedProjectName] = useState('');
   const [worksheetId, setWorksheetId] = useState('');
   const [page, setPage] = useState('select-page');
-  console.log('page', page);
-  const livebaordId = useRef('');
-  const authURLRef = useRef('');
-  const dataSources = useRef([] as any);
-  const projectRef = useRef([] as any);
-  const vercelConfigRef = useRef({} as any);
   const [tableNameToIdMap, setTableNameToIdMap] =
     useState<Record<string, string>>();
   const formatClusterUrl = (url: string) => {
@@ -88,6 +83,21 @@ export const CreateConnection = ({ clusterUrl }: any) => {
       console.error('Network Error:', error);
       setIsLoading(false);
     }
+  };
+
+  const getDomains = async (projectIds, teamId, accessToken) => {
+    const domainConfig = await vercelPromise(
+      `https://api.vercel.com/v8/projects/${projectIds}/domains?teamId=${teamId}`,
+      accessToken
+    );
+    const tsHostURL = domainConfig.domains[0].name;
+    whiteListCSP(hostUrl, tsHostURL);
+    saveENV(hostUrl, {
+      accessToken,
+      teamId,
+      projectIds,
+      tsHostURL,
+    });
   };
 
   const ImportWorksheetTML = async (
@@ -138,6 +148,9 @@ export const CreateConnection = ({ clusterUrl }: any) => {
         const rs = await response.json();
         const params = { object: rs.object };
         await ImportWorksheetTML(params);
+        const searchParams = new URLSearchParams(window.location.search);
+        const teamId = searchParams.get('teamId') || '';
+        await getDomains(selectedProjectName, teamId, vercelAccessToken);
       }
     } catch (error) {
       console.log('err', error);
@@ -184,33 +197,15 @@ export const CreateConnection = ({ clusterUrl }: any) => {
     }
   };
 
-  const getDomains = async (projectIds, teamId, accessToken) => {
-    const domainConfig1 = await vercelPromise(
-      `https://api.vercel.com/v8/projects/${projectIds[0]}/domains?teamId=${teamId}`,
-      accessToken
-    );
-    const domainConfig2 = await vercelPromise(
-      `https://api.vercel.com/v8/projects/${projectIds[1]}/domains?teamId=${teamId}`,
-      accessToken
-    );
-    const tsHostURL = domainConfig1.domains[0].name;
-
-    authURLRef.current = domainConfig2.domains[0].name;
-    whiteListCSP(hostUrl, tsHostURL);
-    saveENV(hostUrl, {
-      accessToken,
-      teamId,
-      projectIds,
-      tsHostURL,
-    });
-  };
-
   const updateProject = async (
+    vercelToken: string,
     project: string,
     hasPostgres: string,
     isConnectionPostgres: boolean,
     projectEnvs: any
   ) => {
+    setVercelAccessToken(vercelToken);
+    setSelectedProjectName(project);
     if (hasPostgres === 'Yes' && isConnectionPostgres) {
       await createConnection(projectEnvs);
     } else {
@@ -232,7 +227,6 @@ export const CreateConnection = ({ clusterUrl }: any) => {
           dataSourcesId.includes(dataSourceRelationship[0]?.sourceTable) &&
           dataSourcesId.includes(dataSourceRelationship[0]?.destinationTable)
         ) {
-          console.log('hello');
           return true;
         }
         return false;
@@ -280,25 +274,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
             customizations={customization}
           ></AppEmbed>
         )}
-        {page === 'search-embed' && (
-          <SearchEmbed
-            frameParams={{
-              height: '100vh',
-              width: '100vw',
-            }}
-            dataSources={dataSources.current}
-            onALL={handleAllEmbedEvent}
-          />
-        )}
       </div>
-      {page === 'docs' && (
-        <DocsPage
-          hostUrl={hostUrl}
-          dataSources={dataSources.current}
-          livebaordId={livebaordId.current}
-          authUrl={authURLRef.current}
-        />
-      )}
     </div>
   );
 };

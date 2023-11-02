@@ -23,6 +23,7 @@ export const SelectProject = ({ updateProject }: any) => {
   const [hasPostgres, setHasPostgres] = useState<string[]>([]);
   const [projectEnvs, setProjectEnvs] = useState<any>([]);
   const [isConnectionPostgres, setIsConnectionPostgres] = useState(true);
+  const [vercelToken, setVercelToken] = useState('');
 
   // In the init Method, I have generated vercel token and
   // get all the envs of all the projects and checking if
@@ -31,6 +32,7 @@ export const SelectProject = ({ updateProject }: any) => {
     const searchParams = new URLSearchParams(window.location.search);
     const teamId = searchParams.get('teamId') || '';
     const accessToken = await getVercelAccessToken();
+    setVercelToken(accessToken);
     const projectData = await vercelPromise(
       `https://api.vercel.com/v9/projects?teamId=${teamId}`,
       accessToken
@@ -118,6 +120,7 @@ export const SelectProject = ({ updateProject }: any) => {
               <Button
                 onClick={() => {
                   updateProject(
+                    vercelToken,
                     selectedProject,
                     hasPostgres[projectIndex],
                     isConnectionPostgres,
