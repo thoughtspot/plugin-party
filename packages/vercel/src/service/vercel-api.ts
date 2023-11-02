@@ -1,8 +1,6 @@
 const CLIENT_ID = 'oac_ZRDkEzGSa8knXCmJ8XNAbkkN';
 const CLIENT_SECRET = 'u7y8OoZROu3h1ymreAnCA7QV';
 
-const presetCORS = 'localhost.*:443,.*:8080,.*:80,localhost:3000';
-
 const envMapping = {
   PGUSER: 'user',
   PGPASSWORD: 'password',
@@ -21,19 +19,19 @@ export const getConnectionParams = (envParams) => {
   return paramObj;
 };
 
-export const vercelPromise = (endpoint, accessToken) => {
-  return fetch(endpoint, {
+export const vercelPromise = async (endpoint: string, accessToken: string) => {
+  const res = await fetch(endpoint, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
     method: 'get',
-  }).then((res) => res.json());
+  });
+  return res.json();
 };
 
 export const getVercelAccessToken = async () => {
   const searchParams = new URLSearchParams(window.location.search);
   const accessCode = searchParams.get('code') || '';
-  const teamId = searchParams.get('teamId') || '';
   const param = new URLSearchParams();
   param.append('code', accessCode);
   param.append('client_id', CLIENT_ID);
@@ -51,7 +49,7 @@ export const getVercelAccessToken = async () => {
   return accessToken;
 };
 
-export const getEnvVariables = async () => {
+/* export const getEnvVariables = async () => {
   const searchParams = new URLSearchParams(window.location.search);
   const accessCode = searchParams.get('code') || '';
   const teamId = searchParams.get('teamId') || '';
@@ -113,7 +111,6 @@ export const getEnvVariables = async () => {
 
     projectIds.push(projectData.projects[projectIndex].id);
   }
-
   return {
     connectionConfig,
     authUrl,
@@ -123,6 +120,7 @@ export const getEnvVariables = async () => {
     teamId,
   };
 };
+*/
 
 const secuirtySettingsPromise = async (hostUrl, type, method, payload?) => {
   const endpoint = type === 'CSP' ? 'nginxcsp' : 'nginxcors?view_mode=all';
@@ -137,7 +135,7 @@ const secuirtySettingsPromise = async (hostUrl, type, method, payload?) => {
   }).then((res) => res.json());
 };
 
-export const whiteListCSP = async (hostUrl, urlToWhiteList) => {
+export const whiteListCSP = async (hostUrl: string, urlToWhiteList: string) => {
   try {
     const currentCSP = await secuirtySettingsPromise(hostUrl, 'CSP', 'GET');
     const currentCORS = await secuirtySettingsPromise(hostUrl, 'CORS', 'GET');
@@ -172,7 +170,7 @@ export const whiteListCSP = async (hostUrl, urlToWhiteList) => {
   }
 };
 
-export const saveENV = async (hostUrl, vercelConfig) => {
+export const saveENV = async (hostUrl: string, vercelConfig: any) => {
   const { accessToken, teamId, projectIds, tsHostURL } = vercelConfig;
   try {
     const response = await fetch(
@@ -189,7 +187,6 @@ export const saveENV = async (hostUrl, vercelConfig) => {
     if (response.ok) {
       const rs = await response.json();
       const secretKey = rs?.Data?.token;
-      // await saveEnv('TS_SECRET_KEY', rs?.Data?.token);
 
       projectIds.forEach((projectId) => {
         fetch(

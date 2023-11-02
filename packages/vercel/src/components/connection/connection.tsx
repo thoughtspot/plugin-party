@@ -6,12 +6,7 @@ import {
 import styles from './connection.module.scss';
 import { NextPage } from '../next-page/next-page';
 import { DocsPage } from '../docs-page/docs-page';
-import {
-  getEnvVariables as fetchEnvVariables,
-  saveENV,
-  vercelPromise,
-  whiteListCSP,
-} from '../utils';
+import { saveENV, vercelPromise, whiteListCSP } from '../../service/vercel-api';
 import findConnectedComponents from './connection-utils';
 import { SelectProject } from '../select-project/select-project';
 import { SelectTables } from '../select-tables/select-tables';
@@ -238,10 +233,14 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   };
 
   if (isLoading) {
-    return <div>Connecting to Postgres...</div>;
+    return (
+      <div className="loading-container">
+        <div className="loader"></div>
+        <div className="loading-text">Connecting to Postgres...</div>
+      </div>
+    );
   }
 
-  // add full app embed here
   return (
     <div className={styles.docsContainer}>
       {page === 'select-page' && (

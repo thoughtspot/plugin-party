@@ -6,7 +6,7 @@ import {
   getConnectionParams,
   getVercelAccessToken,
   vercelPromise,
-} from '../utils';
+} from '../../service/vercel-api';
 import styles from './select-project.module.scss';
 
 interface Project {
@@ -86,8 +86,8 @@ export const SelectProject = ({ updateProject }: any) => {
             <table className={styles.table}>
               <thead>
                 <tr>
-                  <td>{t.PROJECT_NAME}</td>
-                  <td>{t.HAS_POSTGRES}</td>
+                  <th>{t.PROJECT_NAME}</th>
+                  <th>{t.HAS_POSTGRES}</th>
                 </tr>
               </thead>
               <tbody>
@@ -116,7 +116,7 @@ export const SelectProject = ({ updateProject }: any) => {
                 {t.USE_POSTGRES_CONNECTION}
               </Checkbox>
             </div>
-            <div className={styles.button}>
+            <div className={styles.buttonContainer}>
               <Button
                 onClick={() => {
                   updateProject(

@@ -52,5 +52,6 @@
   "PROJECT_NAME": "Project Name",
   "HAS_POSTGRES": "Has Postgres",
   "SELECT_PROJECT_DESCRIPTION": "Please select the project with which you would like to integrate Thoughtspot.",
-  "LOADING_PROJECTS": "Loading Projects..."
+  "LOADING_PROJECTS": "Loading Projects...",
+  "SELECT_TABLES": "Please select the table with which you'd like to create worksheet."
 }
