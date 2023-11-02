@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   AppEmbed,
   SearchEmbed,
@@ -34,8 +34,9 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   const [embedPath, setEmbedPath] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [connectionId, setConnectionId] = useState('');
-  const [newPath, setNewPath] = useState('');
+  const [worksheetId, setWorksheetId] = useState('');
   const [page, setPage] = useState('select-page');
+  console.log('page', page);
   const livebaordId = useRef('');
   const authURLRef = useRef('');
   const dataSources = useRef([] as any);
@@ -56,7 +57,6 @@ export const CreateConnection = ({ clusterUrl }: any) => {
 
   const createConnection = async (connectionConfig?: any) => {
     try {
-      // const { connectionConfig } = vercelConfigRef.current;
       const param2 = {
         name: `vercel-db-conn_${Date.now()}`,
         data_warehouse_type: 'POSTGRES',
@@ -112,10 +112,10 @@ export const CreateConnection = ({ clusterUrl }: any) => {
       );
       if (response.ok) {
         const rs = await response.json();
-        console.log('rss', rs);
+        setWorksheetId(rs.object[0].response.header.id_guid);
       }
     } catch (error) {
-      console.log('errr', error);
+      console.log('error', error);
     }
   };
 
@@ -136,7 +136,6 @@ export const CreateConnection = ({ clusterUrl }: any) => {
 
       if (response.ok) {
         const rs = await response.json();
-        console.log('result Of generateWorksheetTML', rs);
         const params = { object: rs.object };
         await ImportWorksheetTML(params);
       }
@@ -146,15 +145,16 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   };
 
   const handleAllEmbedEvent = (event) => {
-    if (event.type === 'updateConnection') {
-      const sourceIds =
-        event.data.data.updateConnection.dataSource.logicalTableList.map(
-          (table) => table.header.id
-        );
-      const sourceNames =
-        event.data.data.updateConnection.dataSource.logicalTableList.map(
-          (table) => table.header.name
-        );
+    if (
+      event.type === 'updateConnection' ||
+      event.type === 'createConnection'
+    ) {
+      const res =
+        event.type === 'updateConnection'
+          ? event.data.data.updateConnection.dataSource.logicalTableList
+          : event.data.data.createConnection.dataSource.logicalTableList;
+      const sourceIds = res.map((table) => table.header.id);
+      const sourceNames = res.map((table) => table.header.name);
       const tableIdToNameMap: { [id: string]: string } = {};
       const tableNameToIdsMap: { [id: string]: string } = {};
 
@@ -168,10 +168,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
 
       setTableNameToIdMap(tableNameToIdsMap);
 
-      const tableRelationships =
-        event.data.data.updateConnection.dataSource.logicalTableList.map(
-          (table) => table.relationships
-        );
+      const tableRelationships = res.map((table) => table.relationships);
       setRelationship(tableRelationships);
       const connectedTables = findConnectedComponents(
         sourceIds,
@@ -223,14 +220,10 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   };
 
   const updateDataSource = async (selectDataSources: string) => {
-    console.log('selectedDFa', selectDataSources);
     const dataSourcesName = selectDataSources.split(' - ');
-    console.log('dataSources', dataSourcesName);
     const dataSourcesId = dataSourcesName.map(
       (dataSource) => tableNameToIdMap?.[dataSource]
     );
-    console.log('data', dataSourcesId);
-    console.log('rep', relationship);
 
     const relationshipIds = relationship
       ?.filter((dataSourceRelationship) => {
@@ -245,10 +238,8 @@ export const CreateConnection = ({ clusterUrl }: any) => {
         return false;
       })
       .map((dataSourceRelationship) => dataSourceRelationship[0]);
-    console.log('finally', relationshipIds);
 
-    const response = await generateWorksheetTML(dataSourcesId, relationshipIds);
-    console.log('modiji', response);
+    await generateWorksheetTML(dataSourcesId, relationshipIds);
     setPage('documents');
   };
 
@@ -262,7 +253,14 @@ export const CreateConnection = ({ clusterUrl }: any) => {
       {page === 'select-page' && (
         <SelectProject updateProject={updateProject} />
       )}
-      {page === 'documents' && <DocsPage></DocsPage>}
+      {page === 'documents' && (
+        <DocsPage
+          setPage={setPage}
+          hostUrl={hostUrl}
+          worksheetId={worksheetId}
+        ></DocsPage>
+      )}
+      {page === 'nextPage' && <NextPage></NextPage>}
       {page === 'options' && (
         <SelectTables
           connectedTablesName={connectedTablesName}
@@ -277,7 +275,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
               width: '100vw',
             }}
             ref={embedRef}
-            path={newPath || embedPath}
+            path={embedPath}
             onALL={handleAllEmbedEvent}
             customizations={customization}
           ></AppEmbed>

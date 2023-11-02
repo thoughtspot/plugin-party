@@ -3,7 +3,6 @@ import { VercelTSInit } from 'vercel-ts-init/src/index';
 import { useState } from 'preact/hooks';
 import { CreateConnection } from './components/connection/connection';
 
-window.resizeTo(1000, window.innerHeight);
 export const App = () => {
   const [clusterUrl, setClusterUrl] = useState<any>({
     url: '',

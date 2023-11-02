@@ -49,7 +49,7 @@ export const getVercelAccessToken = async () => {
   const res = await response.json();
   const accessToken = res.access_token;
   return accessToken;
-}
+};
 
 export const getEnvVariables = async () => {
   const searchParams = new URLSearchParams(window.location.search);
@@ -77,8 +77,6 @@ export const getEnvVariables = async () => {
     `https://api.vercel.com/v9/projects?teamId=${teamId}`,
     accessToken
   );
-  console.log(userData);
-  console.log(projectData);
 
   const projectDetails: any[] = [];
   const envPromises: any[] = [];

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Checkbox, Modal } from 'antd';
+import { Checkbox } from 'antd';
 import { Button } from 'widgets/lib/button';
+import { useTranslations } from 'i18n';
 import {
   getConnectionParams,
   getVercelAccessToken,
@@ -14,6 +15,7 @@ interface Project {
 }
 
 export const SelectProject = ({ updateProject }: any) => {
+  const { t } = useTranslations();
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProject, selectProject] = useState<string>('');
   const accessTokenRef = useRef('');
@@ -74,32 +76,30 @@ export const SelectProject = ({ updateProject }: any) => {
   return (
     <div>
       {!projects.length ? (
-        <div>Loading projects...</div>
+        <div>{t.LOADING_PROJECTS}</div>
       ) : (
-        <div className={styles.modal}>
-          <Modal
-            title="Please choose the project with which you'd like to integrate ThoughtSpot."
-            footer={null}
-            visible={true}
-            closable={false}
-          >
+        <div className={styles.container}>
+          <div className={styles.modal}>
+            <div className={styles.header}>{t.SELECT_PROJECT_DESCRIPTION}</div>
             <table className={styles.table}>
               <thead>
                 <tr>
-                  <td>Project Name</td>
-                  <td>Has Postgres</td>
+                  <td>{t.PROJECT_NAME}</td>
+                  <td>{t.HAS_POSTGRES}</td>
                 </tr>
               </thead>
               <tbody>
                 {projects.map((project, index) => (
                   <tr key={project.id}>
                     <td>
-                      <Checkbox
+                      <input
+                        type="radio"
+                        id={`myCheckbox_${project.id}`}
+                        name="projectRadio"
                         checked={selectedProject === project.id}
                         onChange={() => handleSelectProject(project.id, index)}
-                      >
-                        {project.name}
-                      </Checkbox>
+                      />
+                      {project.name}
                     </td>
                     <td>{hasPostgres[index]}</td>
                   </tr>
@@ -111,7 +111,7 @@ export const SelectProject = ({ updateProject }: any) => {
                 onChange={() => isPostgresSelected()}
                 checked={isConnectionPostgres}
               >
-                Use postgres connection from the project if available
+                {t.USE_POSTGRES_CONNECTION}
               </Checkbox>
             </div>
             <div className={styles.button}>
@@ -124,10 +124,10 @@ export const SelectProject = ({ updateProject }: any) => {
                     projectEnvs[projectIndex]
                   );
                 }}
-                text="Continue"
+                text={t.CONTINUE}
               ></Button>
             </div>
-          </Modal>
+          </div>
         </div>
       )}
     </div>

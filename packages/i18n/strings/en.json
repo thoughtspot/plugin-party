@@ -36,5 +36,21 @@
   "LIVEBOARDS": "Liveboards",
   "INSERT_FAILURE_MESSAGE":"Insert failed, please try again",
   "BROSWER_NOT_SUPPORTED": "Browser not supported",
-  "BROSER_RECCOMENDATION":"This plugin is only supported on Google Chrome."
+  "BROSER_RECCOMENDATION":"This plugin is only supported on Google Chrome.",
+  
+  "TEST_EMBED_HEADING": "Test Embedding Thoughtspot",
+  "TEST_EMBED_DESCRIPTION": "Paste the code snippet below in your application to test embedding ThoughtSpot. Note that this embed will not have authentication setup.",
+  "NEXT_BUTTON": "Next",
+  "EXIT_SETUP": "Exit Setup",
+  "CODE_SAMPLE_DESCRIPTION": "To finish deploying ThoughtSpot into your application, use Trusted Authentication (as described in the next step). You can install the integration at a later time and temporarily exit the setup if you plan to embed it in your application later.",
+  "OPEN_SANDBOX": "Open in Sandbox",
+  "COPY_CODE": "Copy Code",
+  "TRUSTED_AUTH_HEADING": "Embed Thoughtspot in your application",
+  "TRUSTED_AUTH_TEMPLATE_HEADING": "Deploying the Trusted Authentication Template",
+  "TRUSTED_AUTH_DESCRIPTION": "Thoughtspot recommends using Trusted Authentication to seamlessly authenticate user in your application Use the thoughtspot Trusted Authentication template in Vercel to get started in implementing authentication in your application Read more about trusted auth <a href='https://developers.thoughtspot.com/docs/trusted-auth' target='_blank'>here</a>",
+  "USE_POSTGRES_CONNECTION": "Use Postgres connection from the project if available",
+  "PROJECT_NAME": "Project Name",
+  "HAS_POSTGRES": "HAS Postgres",
+  "SELECT_PROJECT_DESCRIPTION": "Please select the project with which you would like to integrate Thoughtspot.",
+  "LOADING_PROJECTS": "Loading Projects..."
 }
