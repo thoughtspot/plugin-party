@@ -4,7 +4,7 @@ import styles from './button.module.scss';
 export interface ButtonProps {
   type?: 'PRIMARY' | 'SECONDARY' | 'ICON';
   className?: string;
-  children?: any[];
+  children?: any;
   text?: string;
   onClick: (e) => void;
   id?: string;

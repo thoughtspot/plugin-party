@@ -1,4 +1,5 @@
-import React from 'react';
+import React from 'preact';
+import { route } from 'preact-router';
 import { message } from 'antd';
 import { Button } from 'widgets/lib/button';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -6,6 +7,7 @@ import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTranslations } from 'i18n';
 import { EmbedTemplates } from './embed-code-templates';
 import styles from './docs-page.module.scss';
+import { Routes } from '../connection/connection-utils';
 
 export const DocsPage = (params: any) => {
   const { t } = useTranslations();
@@ -29,7 +31,7 @@ export const DocsPage = (params: any) => {
   };
 
   const goToTrustedAuth = () => {
-    params.setPage('nextPage');
+    route(Routes.NEXT_PAGE);
   };
 
   return (

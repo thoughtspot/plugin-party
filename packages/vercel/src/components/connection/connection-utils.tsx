@@ -1,4 +1,47 @@
 /* eslint-disable no-restricted-syntax */
+
+export enum Routes {
+  LOGIN = '/login',
+  SELECT_PAGE = '/',
+  APP_EMBED = '/app',
+  OPTIONS = '/options',
+  DOCUMENTS = '/doc',
+  BUFFER = '/buffer',
+  NEXT_PAGE = '/nextPage',
+}
+
+export const steps = [
+  {
+    title: 'Setup Your data model in Thoughtspot',
+  },
+  {
+    title: 'Connect to Thoughtspot',
+    isSubStep: true,
+  },
+  {
+    title: 'Select Data Tables',
+    isSubStep: true,
+  },
+  {
+    title: 'Create Data model to analyze',
+    isSubStep: true,
+  },
+  {
+    title: 'Test Embedding Thoughtspot',
+  },
+  {
+    title: 'Embed Thoughtspot in your application',
+  },
+  {
+    title: 'Deploying the Trusted Authentication Template',
+    isSubStep: true,
+  },
+  {
+    title: 'Embedding Thoughtspot withTrusted Authentication',
+    isSubStep: true,
+  },
+];
+
 export default function findConnectedComponents(
   tables: any,
   relationships: any
