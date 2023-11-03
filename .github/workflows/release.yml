@@ -3,12 +3,12 @@
 name: Sanity
 
 # Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the main branch
+# events but only for the release branch
 on:
   push:
-    branches: [main]
+    branches: [release]
   pull_request:
-    branches: [main]
+    branches: [release]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -45,7 +45,7 @@ jobs:
       
       # Builds dist folder for all sub projects
       - name: Run dist
-        run: SHEETS_HOST=${{ vars.STAGING_SHEETS_HOST }} SLIDES_HOST=${{ vars.STAGING_SLIDES_HOST }} npm run deploy-all -- --skip-nx-cache
+        run: SHEETS_HOST=${{ vars.SHEETS_HOST }} SLIDES_HOST=${{ vars.SLIDES_HOST }} npm run deploy-all -- --skip-nx-cache
 
       #Runs tests for all sub projects
       - name: Run tests

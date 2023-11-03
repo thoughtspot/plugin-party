@@ -19,7 +19,7 @@ This will also serve the plugin application on `https://localhost:5174`.
 
 - Go to the Google sheet where the test plugin was created. And open the plugin using the menu.
 
-## Deploy to Production
+## Deploy to Staging
 
 - Build the slides plugin
 
@@ -50,3 +50,7 @@ This creates the files in the `dist` directory which can be pushed to the slides
 ```
 $ clasp push (from 'slides' dir)
 ```
+
+To trigger above mentioned, `Deploy to Staging` workflow create and merge a PR into `main` branch.
+
+## To update and deploy production, merge PR from main to release branch.
