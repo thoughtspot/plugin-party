@@ -1,37 +1,27 @@
 import React, { useState } from 'react';
-import {
-  AppEmbed,
-  useEmbedRef,
-} from '@thoughtspot/visual-embed-sdk/lib/src/react';
+import Router, { route, useRouter } from 'preact-router';
+import { createMemoryHistory, createHashHistory } from 'history';
+import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
+import { Stepper } from 'widgets/lib/stepper';
 import styles from './connection.module.scss';
 import { NextPage } from '../next-page/next-page';
 import { DocsPage } from '../docs-page/docs-page';
 import { saveENV, vercelPromise, whiteListCSP } from '../../service/vercel-api';
-import findConnectedComponents from './connection-utils';
+import findConnectedComponents, { Routes, steps } from './connection-utils';
 import { SelectProject } from '../select-project/select-project';
 import { SelectTables } from '../select-tables/select-tables';
-
-const customization = {
-  style: {
-    customCSS: {
-      rules_UNSTABLE: {
-        '.wizard-module__buttonsContainer .button-module__secondary': {
-          display: 'none',
-        },
-      },
-    },
-  },
-};
+import { FullEmbed } from '../full-app/full-app';
 
 export const CreateConnection = ({ clusterUrl }: any) => {
-  const embedRef = useEmbedRef();
+  const history: any = createMemoryHistory();
+  const [router] = useRouter();
+  const currentRouteIndex = Object.values(Routes).indexOf(router.path);
   const [embedPath, setEmbedPath] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [connectionId, setConnectionId] = useState('');
   const [vercelAccessToken, setVercelAccessToken] = useState('');
   const [selectedProjectName, setSelectedProjectName] = useState('');
   const [worksheetId, setWorksheetId] = useState('');
-  const [page, setPage] = useState('select-page');
   const [tableNameToIdMap, setTableNameToIdMap] =
     useState<Record<string, string>>();
   const formatClusterUrl = (url: string) => {
@@ -188,7 +178,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
           .join(' - ');
       });
       setConnectedTablesName(connectedTablesNames);
-      setPage('options');
+      route(Routes.OPTIONS);
     }
   };
 
@@ -206,7 +196,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
     } else {
       setEmbedPath('/data/embrace/connection');
     }
-    setPage('app-embed');
+    route(Routes.APP_EMBED);
   };
 
   const updateDataSource = async (selectDataSources: string) => {
@@ -229,7 +219,7 @@ export const CreateConnection = ({ clusterUrl }: any) => {
       .map((dataSourceRelationship) => dataSourceRelationship[0]);
 
     await generateWorksheetTML(dataSourcesId, relationshipIds);
-    setPage('documents');
+    route(Routes.DOCUMENTS);
   };
 
   if (isLoading) {
@@ -242,38 +232,35 @@ export const CreateConnection = ({ clusterUrl }: any) => {
   }
 
   return (
-    <div className={styles.docsContainer}>
-      {page === 'select-page' && (
-        <SelectProject updateProject={updateProject} />
-      )}
-      {page === 'documents' && (
-        <DocsPage
-          setPage={setPage}
-          hostUrl={hostUrl}
-          worksheetId={worksheetId}
-        ></DocsPage>
-      )}
-      {page === 'nextPage' && <NextPage></NextPage>}
-      {page === 'options' && (
+    <Horizontal spacing="e" className={styles.docsContainer}>
+      <Router history={history}>
+        <SelectProject
+          updateProject={updateProject}
+          path={Routes.SELECT_PAGE}
+        />
+        <FullEmbed
+          embedPath={embedPath}
+          handleAllEmbedEvent={handleAllEmbedEvent}
+          path={Routes.APP_EMBED}
+        />
         <SelectTables
           connectedTablesName={connectedTablesName}
           updateDataSource={updateDataSource}
-        ></SelectTables>
-      )}
-      <div className={styles.container}>
-        {page === 'app-embed' && (
-          <AppEmbed
-            frameParams={{
-              height: '100vh',
-              width: '100vw',
-            }}
-            ref={embedRef}
-            path={embedPath}
-            onALL={handleAllEmbedEvent}
-            customizations={customization}
-          ></AppEmbed>
-        )}
-      </div>
-    </div>
+          path={Routes.OPTIONS}
+        />
+        <DocsPage
+          hostUrl={hostUrl}
+          worksheetId={worksheetId}
+          path={Routes.DOCUMENTS}
+        />
+        <NextPage path={Routes.NEXT_PAGE} />
+      </Router>
+      <Vertical hAlignContent="stretch" className={styles.stepper}>
+        <Stepper
+          currentStep={currentRouteIndex > 0 ? currentRouteIndex : 1}
+          steps={steps}
+        ></Stepper>
+      </Vertical>
+    </Horizontal>
   );
 };
