@@ -1,3 +1,3 @@
-import { Colors, Typography } from './typography';
+import { Colors, Typography, Variants } from './typography';
 
-export { Colors, Typography };
+export { Colors, Typography, Variants };

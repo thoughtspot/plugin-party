@@ -34,9 +34,11 @@
   "YOURS": "Yours",
   "ANSWERS": "Answers",
   "LIVEBOARDS": "Liveboards",
-  "INSERT_FAILURE_MESSAGE":"Insert failed, please try again",
+  "INSERT_FAILURE_MESSAGE":"Insert failed, please try again.\n\n If issue persists please contact ThoughtSpot support",
   "BROSWER_NOT_SUPPORTED": "Browser not supported",
   "BROSER_RECCOMENDATION":"This plugin is only supported on Google Chrome.",
+  "TOKEN_FETCH_FAILED": "Failed to fetch token!\n\nPlease relaunch the extension to retry.",
+  "PRIVILEGE_REQUIRED": "You need the privilege `Can download Data` to access this extension. Please contact your administrator",
   
   "TEST_EMBED_HEADING": "Test Embedding Thoughtspot",
   "TEST_EMBED_DESCRIPTION": "Paste the code snippet below in your application to test embedding ThoughtSpot. Note that this embed will not have authentication setup.",

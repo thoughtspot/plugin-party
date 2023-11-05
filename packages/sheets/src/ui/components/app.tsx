@@ -6,6 +6,7 @@ import {
   defaultShellContextOptions,
 } from 'gsuite-shell';
 import { I18N } from 'i18n';
+import { Analytics } from '@vercel/analytics/react';
 import { TSInit } from 'ts-init';
 import { TSSearchBar } from './search-bar/search-bar';
 
@@ -16,6 +17,7 @@ export function App() {
     <I18N>
       <ShellContext.Provider value={defaultShellContextOptions}>
         <TSInit>
+          <Analytics />
           <TSSearchBar />
         </TSInit>
       </ShellContext.Provider>

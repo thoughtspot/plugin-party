@@ -4,14 +4,11 @@ import { useRouter } from 'preact-router';
 import { useEffect, useState } from 'preact/hooks';
 import { useShellContext } from 'gsuite-shell';
 import { useLoader } from 'widgets/lib/loader';
-import { Typography, Colors } from 'widgets/lib/typography';
-import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
-import { Button } from 'widgets/lib/button';
-import { Icon } from 'widgets/lib/icon';
+import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { useTranslations } from 'i18n';
+import { ErrorBanner } from 'widgets/lib/error-banner';
 import styles from './answer.module.scss';
 import { getTSAnswerLink } from '../../utils';
-import { exportAnswer } from '../../services/api';
 import { customCSSProperties } from './answer.util';
 
 export const Answer = () => {
@@ -45,24 +42,11 @@ export const Answer = () => {
   }, [ref.current]);
   return (
     <Vertical className={styles.answerIframe}>
-      {showError && (
-        <Horizontal
-          vAlignContent="center"
-          spacing="e"
-          className={styles.errorBanner}
-        >
-          <Typography variant="h6" noMargin color={Colors.failure}>
-            {t.INSERT_FAILURE_MESSAGE}
-          </Typography>
-          <Button
-            type="ICON"
-            className={styles.errorButton}
-            onClick={() => setShowError(false)}
-          >
-            <Icon name="rd-icon-cross" size="xs"></Icon>
-          </Button>
-        </Horizontal>
-      )}
+      <ErrorBanner
+        errorMessage={t.INSERT_FAILURE_MESSAGE}
+        showBanner={showError}
+        onCloseIconClick={() => setShowError(false)}
+      />
       <SearchEmbed
         ref={ref}
         answerId={answerId}
