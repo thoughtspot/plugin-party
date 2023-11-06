@@ -2,19 +2,22 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Checkbox } from 'antd';
 import { Button } from 'widgets/lib/button';
 import { useTranslations } from 'i18n';
+import { route } from 'preact-router';
 import {
   getConnectionParams,
   getVercelAccessToken,
   vercelPromise,
 } from '../../service/vercel-api';
 import styles from './select-project.module.scss';
+import { useAppContext } from '../../app.context';
+import { Routes } from '../connection/connection-utils';
 
 interface Project {
   id: string;
   name: string;
 }
 
-export const SelectProject = ({ updateProject }: any) => {
+export const SelectProject = () => {
   const { t } = useTranslations();
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProject, selectProject] = useState<string>('');
@@ -22,8 +25,14 @@ export const SelectProject = ({ updateProject }: any) => {
   const [projectIndex, setProjectIndex] = useState(0);
   const [hasPostgres, setHasPostgres] = useState<string[]>([]);
   const [projectEnvs, setProjectEnvs] = useState<any>([]);
-  const [isConnectionPostgres, setIsConnectionPostgres] = useState(true);
-  const [vercelToken, setVercelToken] = useState('');
+  const [isConnectionPostgres, setConnectionPostgres] = useState(true);
+  const {
+    setSelectedProject,
+    setVercelToken,
+    setHasPostgresConnection,
+    setProjectEnv,
+    setIsConnectionPostgres,
+  } = useAppContext();
 
   // In the init Method, I have generated vercel token and
   // get all the envs of all the projects and checking if
@@ -71,8 +80,16 @@ export const SelectProject = ({ updateProject }: any) => {
     selectProject(value);
     setProjectIndex(index);
   };
+
+  const updateProject = () => {
+    setSelectedProject(selectedProject);
+    setHasPostgresConnection(hasPostgres[projectIndex]);
+    setProjectEnv(projectEnvs[projectIndex]);
+    setIsConnectionPostgres(isConnectionPostgres);
+    route(Routes.APP_EMBED);
+  };
   const isPostgresSelected = () => {
-    setIsConnectionPostgres(!isConnectionPostgres);
+    setConnectionPostgres(!isConnectionPostgres);
   };
 
   return (
@@ -119,13 +136,14 @@ export const SelectProject = ({ updateProject }: any) => {
             <div className={styles.buttonContainer}>
               <Button
                 onClick={() => {
-                  updateProject(
-                    vercelToken,
-                    selectedProject,
-                    hasPostgres[projectIndex],
-                    isConnectionPostgres,
-                    projectEnvs[projectIndex]
-                  );
+                  // updateProject(
+                  //   vercelToken,
+                  //   selectedProject,
+                  //   hasPostgres[projectIndex],
+                  //   isConnectionPostgres,
+                  //   projectEnvs[projectIndex]
+                  // );
+                  updateProject();
                 }}
                 text={t.CONTINUE}
               ></Button>

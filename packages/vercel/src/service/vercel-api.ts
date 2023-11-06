@@ -49,78 +49,6 @@ export const getVercelAccessToken = async () => {
   return accessToken;
 };
 
-/* export const getEnvVariables = async () => {
-  const searchParams = new URLSearchParams(window.location.search);
-  const accessCode = searchParams.get('code') || '';
-  const teamId = searchParams.get('teamId') || '';
-  const param = new URLSearchParams();
-  param.append('code', accessCode);
-  param.append('client_id', CLIENT_ID);
-  param.append('client_secret', CLIENT_SECRET);
-  param.append('redirect_uri', window.location.origin);
-  const response = await fetch('https://api.vercel.com/v2/oauth/access_token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: param,
-  });
-  const res = await response.json();
-  const accessToken = res.access_token;
-  const userData = await vercelPromise(
-    `https://api.vercel.com/v2/user?teamId=${teamId}`,
-    accessToken
-  );
-  const projectData = await vercelPromise(
-    `https://api.vercel.com/v9/projects?teamId=${teamId}`,
-    accessToken
-  );
-
-  const projectDetails: any[] = [];
-  const envPromises: any[] = [];
-  if (projectData?.projects.length) {
-    projectData.projects.map(async (project) => {
-      envPromises.push(
-        vercelPromise(
-          `https://api.vercel.com/v8/projects/${project.id}/env?teamId=${teamId}&decrypt=true&source=vercel-cli:pull`,
-          accessToken
-        )
-      );
-      envPromises.push(
-        vercelPromise(
-          `https://api.vercel.com/v8/projects/${project.id}/domains?teamId=${teamId}`,
-          accessToken
-        )
-      );
-    });
-  }
-  const projectsResponses = await Promise.all(envPromises);
-  let connectionConfig;
-  let authUrl;
-  let hostUrl;
-  const projectIds: any[] = [];
-
-  for (let index = 0; index < projectsResponses.length; index += 2) {
-    const projectIndex = index / 2;
-    const envs = projectsResponses[index].envs;
-    const connectionParams = getConnectionParams(envs);
-    if (Object.keys(connectionParams).length === 5) {
-      connectionConfig = connectionParams;
-      hostUrl = projectsResponses[index + 1].domains[0].name;
-    } else authUrl = projectsResponses[index + 1].domains[0].name;
-
-    projectIds.push(projectData.projects[projectIndex].id);
-  }
-  return {
-    connectionConfig,
-    authUrl,
-    hostUrl,
-    projectIds,
-    accessToken,
-    teamId,
-  };
-};
-*/
 
 const secuirtySettingsPromise = async (hostUrl, type, method, payload?) => {
   const endpoint = type === 'CSP' ? 'nginxcsp' : 'nginxcors?view_mode=all';
@@ -217,4 +145,19 @@ export const saveENV = async (hostUrl: string, vercelConfig: any) => {
   } catch (error) {
     console.error('Network Error:', error);
   }
+};
+
+export const getDomains = async (hostUrl, projectIds, teamId, accessToken) => {
+  const domainConfig = await vercelPromise(
+    `https://api.vercel.com/v8/projects/${projectIds}/domains?teamId=${teamId}`,
+    accessToken
+  );
+  const tsHostURL = domainConfig.domains[0].name;
+  whiteListCSP(hostUrl, tsHostURL);
+  saveENV(hostUrl, {
+    accessToken,
+    teamId,
+    projectIds,
+    tsHostURL,
+  });
 };

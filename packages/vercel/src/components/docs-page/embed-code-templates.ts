@@ -1,5 +1,5 @@
 export const EmbedTemplates = {
-  SageEmbed: (params) => {
+  SageEmbed: (tsHostURL, worksheetId) => {
     const codeSnippet = `// Import ThoughtSpot SDK
 import {
   SageEmbed,
@@ -10,7 +10,7 @@ import { init, AuthType } from "@thoughtspot/visual-embed-sdk";
 import "./styles.css";
 
 init({
-  thoughtSpotHost: "${params?.hostUrl}",
+  thoughtSpotHost: "${tsHostURL}",
   authType: AuthType.None,
 });
 
@@ -24,7 +24,7 @@ export default function App() {
       }}
       className="search-content"
       ref={embedRef}
-      dataSources="${params?.worksheetId}"
+      dataSources="${worksheetId}"
     />
   );
 };
