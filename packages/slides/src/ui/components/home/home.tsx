@@ -18,6 +18,7 @@ export const Home = () => {
   const [errorMessage, setErrorMessage] = useState({
     visible: true,
     message: '',
+    type: BannerType.CARD,
   });
   const [isPrivileged, setIsPrivileged] = useState(false);
 
@@ -29,7 +30,11 @@ export const Home = () => {
         userInfo?.privileges?.includes('ADMINISTRATION');
       setIsPrivileged(isUserPrivileged);
       if (!isUserPrivileged) {
-        setErrorMessage({ visible: true, message: t.PRIVILEGE_REQUIRED });
+        setErrorMessage({
+          visible: true,
+          message: t.PRIVILEGE_REQUIRED,
+          type: BannerType.CARD,
+        });
         loader.hide();
       }
     };
@@ -44,27 +49,54 @@ export const Home = () => {
           setErrorMessage({
             visible: false,
             message: '',
+            type: BannerType.MESSAGE,
           });
         } else {
-          setErrorMessage({ visible: true, message: t.TOKEN_FETCH_FAILED });
+          setErrorMessage({
+            visible: true,
+            message: t.TOKEN_FETCH_FAILED,
+            type: BannerType.CARD,
+          });
         }
         loader.hide();
       });
     }
   }, [isPrivileged]);
 
+  const onReloadImages = (reloadFn: string) => {
+    setErrorMessage({
+      visible: false,
+      message: '',
+      type: BannerType.MESSAGE,
+    });
+    loader.show();
+    run(reloadFn)
+      .catch(() =>
+        setErrorMessage({
+          visible: true,
+          message: t.IMAGE_UPDATE_FAILURE_MESSAGE,
+          type: BannerType.MESSAGE,
+        })
+      )
+      .finally(() => loader.hide());
+  };
+
   return (
     <Vertical className={styles.home} spacing="c">
       <ErrorBanner
         errorMessage={errorMessage.message}
-        bannerType={BannerType.CARD}
+        bannerType={errorMessage.type}
         errorCardButton={{
           name: '',
         }}
-        showCloseIcon={false}
+        showCloseIcon={!!errorMessage.type}
+        onCloseIconClick={() =>
+          setErrorMessage({ ...errorMessage, visible: false })
+        }
         showBanner={errorMessage.visible && !!errorMessage.message}
       />
-      {!errorMessage.visible && !errorMessage.message && (
+      {((!errorMessage.visible && !errorMessage.message) ||
+        !(errorMessage.type === BannerType.CARD)) && (
         <>
           <Card
             id={0}
@@ -80,16 +112,14 @@ export const Home = () => {
             subTitle={t.UPDATE_VIZ_DESCRIPTION}
             firstButton={t.UPDATE_ALL_VIZ}
             firstButtonType="SECONDARY"
-            onFirstButtonClick={() => {
-              loader.show();
-              run('reloadImagesInPresentation').then(() => loader.hide());
-            }}
+            onFirstButtonClick={() =>
+              onReloadImages('reloadImagesInPresentation')
+            }
             secondButton={t.UPDATE_VIZ_IN_SLIDE}
             secondButtonType={'SECONDARY'}
-            onSecondButtonClick={() => {
-              loader.show();
-              run('reloadImagesInCurrentSlide').then(() => loader.hide());
-            }}
+            onSecondButtonClick={() =>
+              onReloadImages('reloadImagesInCurrentSlide')
+            }
           />
         </>
       )}
