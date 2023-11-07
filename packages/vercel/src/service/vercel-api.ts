@@ -49,7 +49,6 @@ export const getVercelAccessToken = async () => {
   return accessToken;
 };
 
-
 const secuirtySettingsPromise = async (hostUrl, type, method, payload?) => {
   const endpoint = type === 'CSP' ? 'nginxcsp' : 'nginxcors?view_mode=all';
   return fetch(`${hostUrl}/managementconsole/admin-api/${endpoint}`, {

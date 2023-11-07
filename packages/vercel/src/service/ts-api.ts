@@ -75,6 +75,5 @@ export const generateWorksheetTML = async (
   const searchParams = new URLSearchParams(window.location.search);
   const teamId = searchParams.get('teamId') || '';
   await getDomains(hostUrl, selectedProjectName, teamId, vercelAccessToken);
-  const ress = await res.json();
-  return ress;
+  return res;
 };

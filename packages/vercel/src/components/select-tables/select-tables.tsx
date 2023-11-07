@@ -4,7 +4,9 @@ import React, { useState } from 'preact/hooks';
 import { route } from 'preact-router';
 import styles from './select-table.module.scss';
 import { useAppContext } from '../../app.context';
-import findConnectedComponents, { Routes } from '../connection/connection-utils';
+import findConnectedComponents, {
+  Routes,
+} from '../connection/connection-utils';
 
 export const SelectTables = () => {
   const { t } = useTranslations();
@@ -14,9 +16,10 @@ export const SelectTables = () => {
 
   const sourceIds = logicalTableList.map((table) => table.header.id);
   const sourceNames = logicalTableList.map((table) => table.header.name);
-  const tableRelationships = logicalTableList.map(
-    (table) => table.relationships
+  const tableRelationships = logicalTableList.map((table) =>
+    table.relationships.concat(table.destinationRelationships)
   );
+
   const connectedTables = findConnectedComponents(
     sourceIds,
     tableRelationships

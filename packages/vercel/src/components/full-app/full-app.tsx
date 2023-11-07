@@ -40,7 +40,7 @@ export const FullEmbed = ({ hostUrl }) => {
       const res =
         event.type === 'updateConnection'
           ? event.data.data.updateConnection.dataSource.logicalTableList
-          : event.data.data.createConnection.dataSource.logicalTableList;
+          : event.data.data.createConnection.logicalTableList;
       setLogicalTableList(res);
       route(Routes.OPTIONS);
     }

@@ -33,8 +33,8 @@ export const DocsPage = ({ hostUrl }) => {
       selectedProject
     )
       .then((res) => {
-        setIsLoading(false);
         setWorksheetId(res.object[0].response.header.id_guid);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
