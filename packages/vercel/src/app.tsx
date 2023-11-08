@@ -2,7 +2,7 @@ import React from 'preact';
 import { VercelTSInit } from 'vercel-ts-init/src/index';
 import { useState } from 'preact/hooks';
 import { createMemoryHistory } from 'history';
-import Router, { useRouter } from 'preact-router';
+import Router, { useRouter, route } from 'preact-router';
 import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { I18N } from 'i18n';
 import { Stepper } from 'widgets/lib/stepper';
@@ -14,15 +14,26 @@ import { DocsPage } from './components/docs-page/docs-page';
 import { NextPage } from './components/next-page/next-page';
 import styles from './app.module.scss';
 import { AppContextProvider } from './app.context';
+import { TrustedAuthPage } from './components/trusted-auth-page/trusted-auth-page';
 
 export const App = () => {
   const history: any = createMemoryHistory();
   const [router] = useRouter();
   const currentRouteIndex = Object.values(Routes).indexOf(router.path);
+  const url = window.location.search;
+  const searchParams = url.split('?');
+  const addedSearchParam = new URLSearchParams(searchParams[1]);
+  const clusterId = addedSearchParam.get('clusterUrl');
+  const worksheetId = addedSearchParam.get('worksheetId');
+  const deploymentUrlSearchParam = new URLSearchParams(searchParams[2]);
+  const deploymentUrl = deploymentUrlSearchParam.get('deployment-url');
   const [clusterUrl, setClusterUrl] = useState<any>({
-    url: '',
-    isCandidate: true,
+    url: deploymentUrl ? clusterId : '',
+    isCandidate: !deploymentUrl,
   });
+  if (deploymentUrl) {
+    route(Routes.TRUSTED_AUTH_PAGE);
+  }
   return (
     <I18N>
       <VercelTSInit setClusterUrl={setClusterUrl} clusterUrl={clusterUrl}>
@@ -33,7 +44,13 @@ export const App = () => {
               <FullEmbed hostUrl={clusterUrl} path={Routes.APP_EMBED} />
               <SelectTables path={Routes.OPTIONS} />
               <DocsPage hostUrl={clusterUrl} path={Routes.DOCUMENTS} />
-              <NextPage path={Routes.NEXT_PAGE} />
+              <NextPage hostUrl={clusterUrl} path={Routes.NEXT_PAGE} />
+              <TrustedAuthPage
+                hostUrl={clusterUrl}
+                worksheetId={worksheetId}
+                deploymentUrl={deploymentUrl}
+                path={Routes.TRUSTED_AUTH_PAGE}
+              />
             </Router>
           </AppContextProvider>
           <Vertical hAlignContent="stretch" className={styles.stepper}>

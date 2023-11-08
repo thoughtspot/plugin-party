@@ -10,6 +10,7 @@ export interface AppConfigInterface {
   dataSourcesId: any;
   relationshipId: any;
   createConnection: boolean;
+  worksheetId: string;
 }
 
 export enum AppConfigActions {
@@ -23,6 +24,7 @@ export enum AppConfigActions {
   DATA_SOURCES_ID,
   RELATIONSHIP_ID,
   CREATE_CONNECTION,
+  WORKSHEET_ID,
 }
 
 const defaultAppConfigValues = {
@@ -36,6 +38,7 @@ const defaultAppConfigValues = {
   dataSourcesId: null,
   relationshipId: null,
   createConnection: false,
+  worksheetId: '',
 };
 
 const reducer: any = (state, action) => {
@@ -90,6 +93,11 @@ const reducer: any = (state, action) => {
         ...state,
         createConnection: action.newCreateConnection,
       };
+    case AppConfigActions.WORKSHEET_ID:
+      return {
+        ...state,
+        worksheetId: action.newWorksheetId,
+      };
     default:
       return state;
   }
@@ -112,6 +120,7 @@ export const AppContextProvider = ({ children }) => {
     dataSourcesId,
     relationshipId,
     createConnection,
+    worksheetId,
   } = state;
   const setSelectedProject = (newSelectedProject: string) => {
     dispatch({ type: AppConfigActions.SELECTED_PROJECT, newSelectedProject });
@@ -176,6 +185,13 @@ export const AppContextProvider = ({ children }) => {
     });
   };
 
+  const setWorksheetId = (newWorksheetId: string) => {
+    dispatch({
+      type: AppConfigActions.WORKSHEET_ID,
+      newWorksheetId,
+    });
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -199,6 +215,8 @@ export const AppContextProvider = ({ children }) => {
         setRelationshipId,
         createConnection,
         setCreateConnection,
+        worksheetId,
+        setWorksheetId,
       }}
     >
       {children}

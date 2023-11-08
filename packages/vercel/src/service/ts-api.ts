@@ -45,6 +45,18 @@ const ImportWorksheetTML = async (hostUrl, request: any) => {
   return rs;
 };
 
+export const getUserName = async (hostUrl) => {
+  const response = await fetch(`${hostUrl}/api/rest/2.0/auth/session/user`, {
+    headers: {
+      Accept: 'application/json',
+    },
+    credentials: 'include',
+    method: 'GET',
+  });
+  const rs = await response.json();
+  return rs.name;
+};
+
 export const generateWorksheetTML = async (
   hostUrl,
   vercelAccessToken,

@@ -1,52 +1,40 @@
 import React from 'preact';
-import { route } from 'preact-router';
 import { message } from 'antd';
 import { Button } from 'widgets/lib/button';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTranslations } from 'i18n';
-import { useState, useEffect } from 'preact/hooks';
-import { EmbedTemplates } from './embed-code-templates';
-import styles from './docs-page.module.scss';
-import { Routes } from '../connection/connection-utils';
-import { useAppContext } from '../../app.context';
-import { generateWorksheetTML } from '../../service/ts-api';
+import { useEffect, useState } from 'preact/hooks';
+import styles from './trusted-auth-page.module.scss';
 import { formatClusterUrl } from '../full-app/full-app.utils';
+import { EmbedTemplates } from '../docs-page/embed-code-templates';
+import { getUserName } from '../../service/ts-api';
 
-export const DocsPage = ({ hostUrl }) => {
+export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
   const { t } = useTranslations();
+  const [userName, setUserName] = useState();
   const tsHostURL = formatClusterUrl(hostUrl.url);
   const [isLoading, setIsLoading] = useState(true);
-  const {
-    dataSourcesId,
-    relationshipId,
-    vercelToken,
-    selectedProject,
-    setWorksheetId,
-  } = useAppContext();
-  const [newWorksheetId, setNewWorksheetId] = useState();
   const codeMap = {
-    SageEmbed: EmbedTemplates.SageEmbed(tsHostURL, newWorksheetId),
+    SageEmbed: EmbedTemplates.TrustedAuthSageEmbed(
+      tsHostURL,
+      worksheetId,
+      deploymentUrl,
+      userName
+    ),
   };
 
   useEffect(() => {
-    generateWorksheetTML(
-      tsHostURL,
-      vercelToken,
-      dataSourcesId,
-      relationshipId,
-      selectedProject
-    )
+    getUserName(tsHostURL)
       .then((res) => {
-        setWorksheetId(res);
-        setNewWorksheetId(res);
+        setUserName(res);
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        console.log('err', error);
         setIsLoading(false);
       });
-  }, [dataSourcesId, relationshipId]);
+  }, []);
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(codeMap.SageEmbed);
@@ -63,20 +51,14 @@ export const DocsPage = ({ hostUrl }) => {
       new URLSearchParams(window.location.search).get('next') || '';
   };
 
-  const goToTrustedAuth = () => {
-    route(Routes.NEXT_PAGE);
-  };
-
   if (isLoading) {
-    return <div>Creating Worksheet...</div>;
+    return <div>Setting up Trusted Authentication...</div>;
   }
 
   return (
     <div>
       <div className={styles.container}>
-        <div className={styles.heading}>{t.TEST_EMBED_HEADING}</div>
-        <div className={styles.divider}></div>
-        <p>{t.TEST_EMBED_DESCRIPTION}</p>
+        <div className={styles.heading}>{t.TRUSTED_AUTH_PAGE_HEADING}</div>
       </div>
       <div style={{ padding: '16px' }}>
         <div>
@@ -102,12 +84,7 @@ export const DocsPage = ({ hostUrl }) => {
           <Button
             onClick={closeVercelModal}
             className={styles.button}
-            text={t.EXIT_SETUP}
-          />
-          <Button
-            onClick={goToTrustedAuth}
-            className={styles.button}
-            text={t.NEXT_BUTTON}
+            text={t.FINISH_SETUP}
           />
         </div>
       </div>

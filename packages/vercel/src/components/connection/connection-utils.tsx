@@ -8,6 +8,7 @@ export enum Routes {
   DOCUMENTS = '/doc',
   BUFFER = '/buffer',
   NEXT_PAGE = '/nextPage',
+  TRUSTED_AUTH_PAGE = '/authPage',
 }
 
 export const steps = [
