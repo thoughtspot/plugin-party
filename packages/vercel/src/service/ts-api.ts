@@ -26,26 +26,21 @@ export const createConnection = async (
   return res;
 };
 
-const ImportWorksheetTML = async (
-  hostUrl,
-  request: any,
-  generationType = 'DEFAULT'
-) => {
-  const formData = new URLSearchParams();
-  formData.append('request', JSON.stringify(request));
-  formData.append('generationType', generationType);
-  const response = await fetch(
-    `${hostUrl}/callosum/v1/autogen/worksheet/save`,
-    {
-      headers: {
-        'content-Type': 'application/x-www-form-urlencoded',
-        Accept: 'text/plain',
-      },
-      credentials: 'include',
-      method: 'POST',
-      body: formData,
-    }
-  );
+const ImportWorksheetTML = async (hostUrl, request: any) => {
+  const payload = {
+    metadata_tmls: request,
+    import_policy: 'ALL_OR_NONE',
+    create_new: false,
+  };
+  const response = await fetch(`${hostUrl}/api/rest/2.0/metadata/tml/import`, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
   const rs = await response.json();
   return rs;
 };
@@ -61,19 +56,31 @@ export const generateWorksheetTML = async (
   formData.append('tableIds', JSON.stringify(tableIds));
   formData.append('relationships', JSON.stringify(relationships));
 
-  const response = await fetch(`${hostUrl}/callosum/v1/autogen/worksheet`, {
-    headers: {
-      Accept: 'application/json',
-    },
-    credentials: 'include',
-    method: 'POST',
-    body: formData,
-  });
-  const rs = await response.json();
-  const params = { object: rs.object };
-  const res = await ImportWorksheetTML(hostUrl, params);
-  const searchParams = new URLSearchParams(window.location.search);
-  const teamId = searchParams.get('teamId') || '';
-  await getDomains(hostUrl, selectedProjectName, teamId, vercelAccessToken);
-  return res;
+  try {
+    const response = await fetch(`${hostUrl}/callosum/v1/autogen/worksheet`, {
+      headers: {
+        Accept: 'application/json',
+      },
+      credentials: 'include',
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Error generating worksheet');
+    }
+
+    const result = await response.json();
+    const metadataTmls = result.object.map((test) => test.edoc);
+    const resp = await ImportWorksheetTML(hostUrl, metadataTmls);
+    const idGuid = resp[0].response.header.id_guid;
+    const searchParams = new URLSearchParams(window.location.search);
+    const teamId = searchParams.get('teamId') || '';
+    await getDomains(hostUrl, selectedProjectName, teamId, vercelAccessToken);
+
+    return idGuid;
+  } catch (error) {
+    console.error('An error occurred:', error);
+    throw error;
+  }
 };

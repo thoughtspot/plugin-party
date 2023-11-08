@@ -11,15 +11,21 @@ import findConnectedComponents, {
 export const SelectTables = () => {
   const { t } = useTranslations();
   const [selectedDataSources, setSelectedDataSources] = useState<string>('');
-  const { logicalTableList, setDataSourcesId, setRelationshipId } =
-    useAppContext();
+  const {
+    logicalTableList,
+    setDataSourcesId,
+    setRelationshipId,
+    createConnection,
+  } = useAppContext();
 
   const sourceIds = logicalTableList.map((table) => table.header.id);
   const sourceNames = logicalTableList.map((table) => table.header.name);
-  const tableRelationships = logicalTableList.map((table) =>
-    table.relationships.concat(table.destinationRelationships)
-  );
-
+  const tableRelationships = logicalTableList.map((table) => {
+    if (createConnection) {
+      return table.destinationRelationships;
+    }
+    return table.relationships;
+  });
   const connectedTables = findConnectedComponents(
     sourceIds,
     tableRelationships

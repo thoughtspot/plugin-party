@@ -9,6 +9,7 @@ export interface AppConfigInterface {
   logicalTableList: any;
   dataSourcesId: any;
   relationshipId: any;
+  createConnection: boolean;
 }
 
 export enum AppConfigActions {
@@ -21,6 +22,7 @@ export enum AppConfigActions {
   SELECT_DATA_SOURCES,
   DATA_SOURCES_ID,
   RELATIONSHIP_ID,
+  CREATE_CONNECTION,
 }
 
 const defaultAppConfigValues = {
@@ -33,6 +35,7 @@ const defaultAppConfigValues = {
   selectDataSources: null,
   dataSourcesId: null,
   relationshipId: null,
+  createConnection: false,
 };
 
 const reducer: any = (state, action) => {
@@ -82,6 +85,11 @@ const reducer: any = (state, action) => {
         ...state,
         relationshipId: action.newRelationshipId,
       };
+    case AppConfigActions.CREATE_CONNECTION:
+      return {
+        ...state,
+        createConnection: action.newCreateConnection,
+      };
     default:
       return state;
   }
@@ -103,6 +111,7 @@ export const AppContextProvider = ({ children }) => {
     selectDataSources,
     dataSourcesId,
     relationshipId,
+    createConnection,
   } = state;
   const setSelectedProject = (newSelectedProject: string) => {
     dispatch({ type: AppConfigActions.SELECTED_PROJECT, newSelectedProject });
@@ -160,6 +169,13 @@ export const AppContextProvider = ({ children }) => {
     });
   };
 
+  const setCreateConnection = (newCreateConnection: boolean) => {
+    dispatch({
+      type: AppConfigActions.CREATE_CONNECTION,
+      newCreateConnection,
+    });
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -181,6 +197,8 @@ export const AppContextProvider = ({ children }) => {
         setDataSourcesId,
         relationshipId,
         setRelationshipId,
+        createConnection,
+        setCreateConnection,
       }}
     >
       {children}

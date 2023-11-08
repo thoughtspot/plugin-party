@@ -10,7 +10,7 @@ import { Routes } from '../connection/connection-utils';
 export const FullEmbed = ({ hostUrl }) => {
   const embedRef = useEmbedRef();
   const [isLoading, setIsLoading] = useState(false);
-  const { setLogicalTableList } = useAppContext();
+  const { setLogicalTableList, setCreateConnection } = useAppContext();
   const { projectEnv, hasPostgresConnection, isConnectionPostgres } =
     useAppContext();
   const [embedPath, setEmbedPath] = useState('');
@@ -42,6 +42,11 @@ export const FullEmbed = ({ hostUrl }) => {
           ? event.data.data.updateConnection.dataSource.logicalTableList
           : event.data.data.createConnection.logicalTableList;
       setLogicalTableList(res);
+      if (event.type === 'createConnection') {
+        setCreateConnection(true);
+      } else {
+        setCreateConnection(false);
+      }
       route(Routes.OPTIONS);
     }
   };
