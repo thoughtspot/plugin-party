@@ -170,7 +170,6 @@ export const saveENV = async (hostUrl, vercelConfig) => {
     if (response.ok) {
       const rs = await response.json();
       const secretKey = rs?.Data?.token;
-      // await saveEnv('TS_SECRET_KEY', rs?.Data?.token);
 
       projectIds.forEach((projectId) => {
         fetch(

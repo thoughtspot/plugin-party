@@ -1,6 +1,6 @@
 import React from 'preact';
 import { VercelTSInit } from 'vercel-ts-init/src/index';
-import { useState } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import { createMemoryHistory } from 'history';
 import Router, { useRouter, route } from 'preact-router';
 import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
@@ -15,6 +15,7 @@ import { NextPage } from './components/next-page/next-page';
 import styles from './app.module.scss';
 import { AppContextProvider } from './app.context';
 import { TrustedAuthPage } from './components/trusted-auth-page/trusted-auth-page';
+//import { getCurrentUserInfo, getVercelAccessToken } from './service/vercel-api';
 
 export const App = () => {
   const history: any = createMemoryHistory();
@@ -34,6 +35,14 @@ export const App = () => {
   if (deploymentUrl) {
     route(Routes.TRUSTED_AUTH_PAGE);
   }
+  // useEffect(() => {
+  //   const vercelToken = getVercelAccessToken().then((res) => {
+  //     getCurrentUserInfo(res).then((response) => {
+  //       console.log('userInfo', response);
+  //     });
+  //   });
+  // });
+
   return (
     <I18N>
       <VercelTSInit setClusterUrl={setClusterUrl} clusterUrl={clusterUrl}>

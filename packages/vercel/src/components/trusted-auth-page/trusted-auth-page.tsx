@@ -48,7 +48,9 @@ export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
 
   const closeVercelModal = () => {
     window.location.href =
-      new URLSearchParams(window.location.search).get('next') || '';
+      new URLSearchParams(window.location.search.split('?')[1]).get(
+        'closeVercel'
+      ) || '';
   };
 
   if (isLoading) {

@@ -9,8 +9,10 @@ export const NextPage = ({ hostUrl }) => {
   const { worksheetId } = useAppContext();
   const redirectUrl = formatClusterUrl(window.location.href);
   const tsHostURL = formatClusterUrl(hostUrl.url);
+  const vercelModalClose =
+    new URLSearchParams(window.location.search).get('next') || '';
 
-  const vercelParams = `repository-url=https%3A%2F%2Fgithub.com%2Fthoughtspot%2Ftoken-auth-service&redirect-url=${redirectUrl}%2F%3FworksheetId=${worksheetId}%26clusterUrl=${tsHostURL}&output-directory=.`;
+  const vercelParams = `repository-url=https%3A%2F%2Fgithub.com%2Fthoughtspot%2Ftoken-auth-service&redirect-url=${redirectUrl}%2F%3FworksheetId=${worksheetId}%26clusterUrl=${tsHostURL}%26closeVercel=${vercelModalClose}&output-directory=.`;
   return (
     <div>
       <div className={styles.container}>
