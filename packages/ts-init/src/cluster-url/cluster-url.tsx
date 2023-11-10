@@ -1,11 +1,12 @@
 import { useRef } from 'preact/hooks';
 import { Input } from 'widgets/lib/input';
 import { Button } from 'widgets/lib/button';
+import { Typography, Colors } from 'widgets/lib/typography';
 import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { useTranslations } from 'i18n';
 import './cluster-url.scss';
 
-export function ClusterUrl({ onSetUrl, candidateUrl }) {
+export function ClusterUrl({ onSetUrl, candidateUrl, isUrlValid = true }) {
   const { t } = useTranslations();
   const inpRef = useRef<HTMLInputElement>(null);
   return (
@@ -23,6 +24,16 @@ export function ClusterUrl({ onSetUrl, candidateUrl }) {
           ref={inpRef}
           className="ts-cluster-url"
         />
+        {!isUrlValid && (
+          <Typography
+            variant="h6"
+            color={Colors.failure}
+            noMargin
+            className="invalid-url-error"
+          >
+            {t.INVALID_INSTANCE_ERROR}
+          </Typography>
+        )}
         <Button
           onClick={() => onSetUrl(inpRef.current.value)}
           text={t.CONTINUE}

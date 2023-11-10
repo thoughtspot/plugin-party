@@ -5,6 +5,7 @@ import { Card } from 'widgets/lib/card';
 import { useTranslations } from 'i18n';
 import { ClusterUrl } from './cluster-url/cluster-url';
 import { TSAuthInit } from './ts-auth-init/ts-auth-init';
+import { getConfig } from './services/config';
 
 const useClusterUrl = () => {
   const [clusterUrl, setClusterUrl] = useState<any>();
@@ -42,21 +43,41 @@ export function TSInit({ children }) {
     setClusterUrl({
       ...clusterUrl,
       isCandidate: true,
+      isError: false,
     });
   };
-  const onSetUrl = (url: string) => {
-    run('setClusterUrl', url);
-    setClusterUrl({
-      url,
-      isCandidate: false,
-    });
+  const onSetUrl = async (url: string) => {
+    const formattedUrl = new URL(`https://${url.replace('https://', '')}`);
+    const host = formattedUrl.host;
+    await getConfig(host)
+      .then(() => {
+        run('setClusterUrl', host);
+        setClusterUrl({
+          url: host,
+          isCandidate: false,
+          isError: false,
+        });
+      })
+      .catch((err) => {
+        setClusterUrl({
+          url,
+          isCandidate: true,
+          isError: true,
+        });
+      });
   };
   if (!clusterUrl) {
     return <></>;
   }
 
   if (clusterUrl.isCandidate) {
-    return <ClusterUrl candidateUrl={clusterUrl.url} onSetUrl={onSetUrl} />;
+    return (
+      <ClusterUrl
+        candidateUrl={clusterUrl.url}
+        onSetUrl={onSetUrl}
+        isUrlValid={!clusterUrl.isError}
+      />
+    );
   }
 
   return (
