@@ -55,11 +55,13 @@ function getClusterUrl() {
     return {
       url: userProps.getProperty('ts-cluster-url'),
       isCandidate: false,
+      isError: false,
     };
   }
   return {
     url: getCandidateClusterUrl(),
     isCandidate: true,
+    isError: false,
   };
 }
 
@@ -67,7 +69,7 @@ function setClusterUrl(url) {
   const userProps = PropertiesService.getUserProperties();
   userProps.setProperty(
     'ts-cluster-url',
-    url.replace('https://', '').replace('#', '').replace(/\/+$/, '')
+    url.replace('https://', '').split('/')[0]
   );
 }
 

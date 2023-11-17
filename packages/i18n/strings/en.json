@@ -35,8 +35,10 @@
   "ANSWERS": "Answers",
   "LIVEBOARDS": "Liveboards",
   "INSERT_FAILURE_MESSAGE":"Insert failed, please try again.\n\n If issue persists please contact ThoughtSpot support",
+  "IMAGE_UPDATE_FAILURE_MESSAGE":"Update failed, please try again.\n\n If issue persists please contact ThoughtSpot support",
   "BROSWER_NOT_SUPPORTED": "Browser not supported",
   "BROSER_RECCOMENDATION":"This plugin is only supported on Google Chrome.",
   "TOKEN_FETCH_FAILED": "Failed to fetch token!\n\nPlease relaunch the extension to retry.",
-  "PRIVILEGE_REQUIRED": "You need the privilege `Can download Data` to access this extension. Please contact your administrator"
+  "PRIVILEGE_REQUIRED": "You need to have the `Can download Data` privilege to use this extension. Please contact your ThoughtSpot administrator.",
+  "INVALID_INSTANCE_ERROR": "Please input valid ThoughtSpot Instance"
 }
