@@ -3,14 +3,14 @@ import { Checkbox } from 'antd';
 import { Button } from 'widgets/lib/button';
 import { useTranslations } from 'i18n';
 import { route } from 'preact-router';
+import { Vertical } from 'widgets/lib/layout/flex-layout';
+import { BannerType, ErrorBanner } from 'widgets/lib/error-banner';
 import { getConnectionParams, vercelPromise } from '../../service/vercel-api';
 import styles from './select-project.module.scss';
 import { useAppContext } from '../../app.context';
 import { Routes } from '../connection/connection-utils';
 import { getUserName } from '../../service/ts-api';
 import { formatClusterUrl } from '../full-app/full-app.utils';
-import { BannerType, ErrorBanner } from 'widgets/lib/error-banner';
-import { Vertical } from 'widgets/lib/layout/flex-layout';
 
 interface Project {
   id: string;
