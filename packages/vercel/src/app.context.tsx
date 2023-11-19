@@ -2,7 +2,7 @@ import React, { createContext, useContext } from 'preact/compat';
 
 export interface AppConfigInterface {
   selectedProject?: string;
-  vercelToken?: string;
+  hasAdminPrivileges?: boolean;
   hasPostgresConnection?: string;
   projectEnv?: any;
   isConnectionPostgres?: boolean;
@@ -15,7 +15,7 @@ export interface AppConfigInterface {
 
 export enum AppConfigActions {
   SELECTED_PROJECT,
-  VERCEL_TOKEN,
+  HAS_ADMIN_PRIVILEGES,
   HAS_POSTGRES_CONNECTION,
   PROJECT_ENV,
   IS_CONNECTION_POSTGRES,
@@ -29,7 +29,7 @@ export enum AppConfigActions {
 
 const defaultAppConfigValues = {
   selectedProject: '',
-  vercelToken: '',
+  hasAdminPrivileges: false,
   hasPostgresConnection: '',
   projectEnv: null,
   isConnectionPostgres: false,
@@ -48,10 +48,10 @@ const reducer: any = (state, action) => {
         ...state,
         selectedProject: action.newSelectedProject,
       };
-    case AppConfigActions.VERCEL_TOKEN:
+    case AppConfigActions.HAS_ADMIN_PRIVILEGES:
       return {
         ...state,
-        vercelToken: action.newVercelToken,
+        hasAdminPrivileges: action.adminPrivilege,
       };
     case AppConfigActions.HAS_POSTGRES_CONNECTION:
       return {
@@ -111,7 +111,7 @@ export const AppContextProvider = ({ children }) => {
   });
   const {
     selectedProject,
-    vercelToken,
+    hasAdminPrivileges,
     hasPostgresConnection,
     projectEnv,
     isConnectionPostgres,
@@ -125,8 +125,9 @@ export const AppContextProvider = ({ children }) => {
   const setSelectedProject = (newSelectedProject: string) => {
     dispatch({ type: AppConfigActions.SELECTED_PROJECT, newSelectedProject });
   };
-  const setVercelToken = (newVercelToken: string) => {
-    dispatch({ type: AppConfigActions.VERCEL_TOKEN, newVercelToken });
+
+  const setHasAdminPrivilege = (adminPrivilege: boolean) => {
+    dispatch({ type: AppConfigActions.HAS_ADMIN_PRIVILEGES, adminPrivilege });
   };
 
   const setHasPostgresConnection = (hasNewPostgresConnection: string) => {
@@ -197,8 +198,8 @@ export const AppContextProvider = ({ children }) => {
       value={{
         selectedProject,
         setSelectedProject,
-        vercelToken,
-        setVercelToken,
+        hasAdminPrivileges,
+        setHasAdminPrivilege,
         hasPostgresConnection,
         setHasPostgresConnection,
         projectEnv,

@@ -1,17 +1,18 @@
-/* Modal content */
+.container {
+  display: flex;
+  width: 100%;
+}
+
 .modal {
   position: relative;
-  border: 1px solid #ccc;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   background-color: #fff;
-  max-width: 600px; /* Increase maximum width for larger screens */
-  margin: 0 auto; /* Center the modal horizontally */
-  text-align: center; /* Center-align the content */
+  margin: 0 auto;
   border-radius: 8px;
+  height: 100%;
 }
 
-/* Header */
 .header {
   font-weight: bold;
   margin-bottom: 20px;
@@ -19,7 +20,6 @@
   color: #333;
 }
 
-/* Table Styles */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -33,41 +33,23 @@ td {
   padding: 12px 0;
 }
 
-/* Options */
-.options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  grid-gap: 20px; /* Increase spacing between options */
-  align-items: center;
-}
-
-/* Option */
 .option {
   display: flex;
-  align-items: center;
-  padding: 15px; /* Increase padding to make options larger */
-  font-size: 20px; /* Increase font size for options */
+  padding: 15px;
+  font-size: 20px;
 }
 
-.option input[type="radio"] {
-  margin-right: 10px;
-}
-
-/* Checkbox */
 .checkbox {
   display: flex;
-  align-items: center;
   margin-top: 20px;
 }
 
-/* Button Container */
 .buttonContainer {
   display: flex;
   justify-content: center;
   margin-top: 20px;
 }
 
-/* Style the "Continue" button */
 .button {
   background-color: #007bff;
   color: #fff;
@@ -77,8 +59,41 @@ td {
   cursor: pointer;
   transition: background-color 0.3s ease;
 
-  /* Hover state */
   &:hover {
     background-color: #0056b3;
   }
 }
+
+.loader {
+  width: 40px;
+  aspect-ratio: 1;
+  display: grid;
+  -webkit-mask: conic-gradient(from 22deg, #0003,#000);
+          mask: conic-gradient(from 22deg, #0003,#000);
+  animation: load 1s steps(8) infinite;
+  text-align: center;
+}
+.loader,
+.loader:before {
+  --_g: linear-gradient(#6a6a73 0 0) 50%;
+  background: 
+    var(--_g)/34% 8%  space no-repeat,
+    var(--_g)/8%  34% no-repeat space;
+}
+.loader:before {
+  content: "";
+  transform: rotate(45deg);
+}
+@keyframes load {
+  from {transform: rotate(0turn)}
+  to   {transform: rotate(1turn)}
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+

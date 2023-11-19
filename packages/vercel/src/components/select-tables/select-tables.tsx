@@ -2,6 +2,7 @@ import { useTranslations } from 'i18n';
 import { Button } from 'widgets/lib/button';
 import React, { useState } from 'preact/hooks';
 import { route } from 'preact-router';
+import { useLoader } from 'widgets/lib/loader';
 import styles from './select-table.module.scss';
 import { useAppContext } from '../../app.context';
 import findConnectedComponents, {
@@ -9,6 +10,8 @@ import findConnectedComponents, {
 } from '../connection/connection-utils';
 
 export const SelectTables = () => {
+  const loader = useLoader();
+  loader.hide();
   const { t } = useTranslations();
   const [selectedDataSources, setSelectedDataSources] = useState<string>('');
   const {
@@ -76,7 +79,8 @@ export const SelectTables = () => {
   return (
     <div className={styles.modal}>
       <div className={styles.header}>{t.SELECT_TABLES}</div>
-      <div className={styles.options}>
+      <div className={styles.subtitle}>{t.SELECT_TABLES_SUBTITLE}</div>
+      <div>
         {connectedTablesNames.map((connectedTableName: any) => (
           <div key={connectedTableName} className={styles.option}>
             <input

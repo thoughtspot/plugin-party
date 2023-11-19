@@ -6,6 +6,7 @@ import Router, { useRouter, route } from 'preact-router';
 import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { I18N } from 'i18n';
 import { Stepper } from 'widgets/lib/stepper';
+import { useLoader } from 'widgets/lib/loader';
 import { SelectProject } from './components/select-project/select-project';
 import { Routes, steps } from './components/connection/connection-utils';
 import { FullEmbed } from './components/full-app/full-app';
@@ -15,11 +16,17 @@ import { NextPage } from './components/next-page/next-page';
 import styles from './app.module.scss';
 import { AppContextProvider } from './app.context';
 import { TrustedAuthPage } from './components/trusted-auth-page/trusted-auth-page';
-//import { getCurrentUserInfo, getVercelAccessToken } from './service/vercel-api';
+import { getCurrentUserInfo, getVercelAccessToken } from './service/vercel-api';
+
+window.resizeTo(window.screen.width, window.screen.height);
 
 export const App = () => {
+  const loader = useLoader();
+  loader.hide();
   const history: any = createMemoryHistory();
   const [router] = useRouter();
+  const [vercelAccessToken, setVercelAccessToken] = useState();
+  const [isLoading, setIsLoading] = useState(true);
   const currentRouteIndex = Object.values(Routes).indexOf(router.path);
   const url = window.location.search;
   const searchParams = url.split('?');
@@ -31,28 +38,73 @@ export const App = () => {
   const [clusterUrl, setClusterUrl] = useState<any>({
     url: deploymentUrl ? clusterId : '',
     isCandidate: !deploymentUrl,
+    suggestedUrl: '',
   });
   if (deploymentUrl) {
     route(Routes.TRUSTED_AUTH_PAGE);
   }
-  // useEffect(() => {
-  //   const vercelToken = getVercelAccessToken().then((res) => {
-  //     getCurrentUserInfo(res).then((response) => {
-  //       console.log('userInfo', response);
-  //     });
-  //   });
-  // });
+  useEffect(() => {
+    if (!deploymentUrl) {
+      getVercelAccessToken()
+        .then((res) => {
+          setVercelAccessToken(res);
+          getCurrentUserInfo(res)
+            .then((response) => {
+              const companyName = response.user.email
+                .split('@')[1]
+                .split('.')[0];
+              const suggestedUrl =
+                companyName === 'thoughtspot'
+                  ? 'https://champagne-grapes.thoughtspotdev.cloud/'
+                  : `https://${companyName}.thoughtspot.cloud`;
+              setClusterUrl({
+                url: clusterUrl.url,
+                isCandidate: clusterUrl.isCandidate,
+                suggestedUrl,
+              });
+              setIsLoading(false);
+            })
+            .catch((err) => {
+              console.log('err', err);
+              setIsLoading(false);
+            });
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          console.log('error', err);
+        });
+    } else {
+      setIsLoading(false);
+    }
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <h1>Loading...</h1>
+        <div className={styles.loader}></div>
+      </div>
+    );
+  }
 
   return (
     <I18N>
       <VercelTSInit setClusterUrl={setClusterUrl} clusterUrl={clusterUrl}>
-        <Horizontal spacing="e" className={styles.docsContainer}>
+        <Horizontal spacing="c" className={styles.docsContainer}>
           <AppContextProvider>
             <Router history={history}>
-              <SelectProject path={Routes.SELECT_PAGE} />
+              <SelectProject
+                hostUrl={clusterUrl}
+                vercelAccessToken={vercelAccessToken}
+                path={Routes.SELECT_PAGE}
+              />
               <FullEmbed hostUrl={clusterUrl} path={Routes.APP_EMBED} />
               <SelectTables path={Routes.OPTIONS} />
-              <DocsPage hostUrl={clusterUrl} path={Routes.DOCUMENTS} />
+              <DocsPage
+                hostUrl={clusterUrl}
+                vercelToken={vercelAccessToken}
+                path={Routes.DOCUMENTS}
+              />
               <NextPage hostUrl={clusterUrl} path={Routes.NEXT_PAGE} />
               <TrustedAuthPage
                 hostUrl={clusterUrl}

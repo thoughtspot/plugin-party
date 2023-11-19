@@ -10,19 +10,19 @@ import { EmbedTemplates } from './embed-code-templates';
 import styles from './docs-page.module.scss';
 import { Routes } from '../connection/connection-utils';
 import { useAppContext } from '../../app.context';
-import { generateWorksheetTML } from '../../service/ts-api';
+import { generateWorksheetTML, getUserName } from '../../service/ts-api';
 import { formatClusterUrl } from '../full-app/full-app.utils';
 
-export const DocsPage = ({ hostUrl }) => {
+export const DocsPage = ({ hostUrl, vercelToken }) => {
   const { t } = useTranslations();
   const tsHostURL = formatClusterUrl(hostUrl.url);
   const [isLoading, setIsLoading] = useState(true);
   const {
     dataSourcesId,
     relationshipId,
-    vercelToken,
     selectedProject,
     setWorksheetId,
+    hasAdminPrivileges,
   } = useAppContext();
   const [newWorksheetId, setNewWorksheetId] = useState();
   const codeMap = {
@@ -63,8 +63,12 @@ export const DocsPage = ({ hostUrl }) => {
       new URLSearchParams(window.location.search).get('next') || '';
   };
 
-  const goToTrustedAuth = () => {
-    route(Routes.NEXT_PAGE);
+  const goToTrustedAuth = async () => {
+    if (!hasAdminPrivileges) {
+      console.log('To setup Trusted auth, you need administrator privilege');
+    } else {
+      route(Routes.NEXT_PAGE);
+    }
   };
 
   if (isLoading) {
@@ -87,6 +91,7 @@ export const DocsPage = ({ hostUrl }) => {
             text={t.COPY_CODE}
           />
           <Button
+            type="SECONDARY"
             onClick={openSandbox}
             className={styles.button}
             text={t.OPEN_SANDBOX}
@@ -100,6 +105,7 @@ export const DocsPage = ({ hostUrl }) => {
             </p>
           </div>
           <Button
+            type="SECONDARY"
             onClick={closeVercelModal}
             className={styles.button}
             text={t.EXIT_SETUP}

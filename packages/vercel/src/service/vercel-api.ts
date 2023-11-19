@@ -49,6 +49,17 @@ export const getVercelAccessToken = async () => {
   return accessToken;
 };
 
+export const getCurrentUserInfo = async (accessToken: string) => {
+  const response = await fetch('https://api.vercel.com/v2/user', {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    method: 'get',
+  });
+
+  return response.json();
+};
+
 const secuirtySettingsPromise = async (hostUrl, type, method, payload?) => {
   const endpoint = type === 'CSP' ? 'nginxcsp' : 'nginxcors?view_mode=all';
   return fetch(`${hostUrl}/managementconsole/admin-api/${endpoint}`, {

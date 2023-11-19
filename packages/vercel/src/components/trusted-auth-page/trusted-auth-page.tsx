@@ -27,7 +27,7 @@ export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
   useEffect(() => {
     getUserName(tsHostURL)
       .then((res) => {
-        setUserName(res);
+        setUserName(res.name);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -61,6 +61,10 @@ export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
     <div>
       <div className={styles.container}>
         <div className={styles.heading}>{t.TRUSTED_AUTH_PAGE_HEADING}</div>
+        <div className={styles.divider}></div>
+        <div style={{ fontSize: '14px', lineHeight: '1.4' }}>
+          {t.TRUSTED_AUTH_PAGE_DESCRIPTION}
+        </div>
       </div>
       <div style={{ padding: '16px' }}>
         <div>
@@ -71,6 +75,7 @@ export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
             text={t.COPY_CODE}
           />
           <Button
+            type="SECONDARY"
             onClick={openSandbox}
             className={styles.button}
             text={t.OPEN_SANDBOX}
@@ -78,11 +83,6 @@ export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
           <SyntaxHighlighter language="javascript" style={atomOneDark}>
             {codeMap.SageEmbed}
           </SyntaxHighlighter>
-          <div className={styles.codeSample}>
-            <p style={{ fontSize: '14px', lineHeight: '1.4' }}>
-              {t.CODE_SAMPLE_DESCRIPTION}
-            </p>
-          </div>
           <Button
             onClick={closeVercelModal}
             className={styles.button}

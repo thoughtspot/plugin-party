@@ -1,11 +1,11 @@
 import { useRef } from 'preact/hooks';
 import { Input } from 'widgets/lib/input';
 import { Button } from 'widgets/lib/button';
-import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
+import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { useTranslations } from 'i18n';
 import './cluster-url.scss';
 
-export function ClusterUrl({ onSetUrl, candidateUrl }) {
+export function ClusterUrl({ onSetUrl, candidateUrl, suggestedUrl }) {
   const { t } = useTranslations();
   const inpRef = useRef<HTMLInputElement>(null);
   return (
@@ -22,6 +22,7 @@ export function ClusterUrl({ onSetUrl, candidateUrl }) {
           initialValue={candidateUrl}
           ref={inpRef}
           className="ts-cluster-url"
+          placeholder={suggestedUrl}
         />
         <Button
           onClick={() => onSetUrl(inpRef.current.value)}

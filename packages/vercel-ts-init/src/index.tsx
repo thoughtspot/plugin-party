@@ -33,7 +33,13 @@ export function VercelTSInit({ children, setClusterUrl, clusterUrl }) {
   };
 
   if (clusterUrl.isCandidate)
-    return <ClusterUrl candidateUrl={clusterUrl.url} onSetUrl={onSetUrl} />;
+    return (
+      <ClusterUrl
+        candidateUrl={clusterUrl.url}
+        onSetUrl={onSetUrl}
+        suggestedUrl={clusterUrl.suggestedUrl}
+      />
+    );
 
   return (
     <TSAuthInit onBack={onShowSetUrl} clusterUrl={clusterUrl.url}>

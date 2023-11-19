@@ -54,7 +54,7 @@ export const getUserName = async (hostUrl) => {
     method: 'GET',
   });
   const rs = await response.json();
-  return rs.name;
+  return rs;
 };
 
 export const generateWorksheetTML = async (

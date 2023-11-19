@@ -1,24 +1,20 @@
-/* Modal content */
 .modal {
   position: relative;
   border: 1px solid #ccc;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   background-color: #fff;
-  max-width: 600px; /* Increase maximum width for larger screens */
-  text-align: center; /* Center-align the content */
+  max-width: 900px;
+  text-align: center;
   border-radius: 8px;
 }
 
-/* Header */
 .header {
   font-weight: bold;
-  margin-bottom: 20px;
   font-size: 24px;
   color: #333;
 }
 
-/* Table Styles */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -30,55 +26,33 @@ th {
 
 td {
   padding: 12px 0;
-  border-top: 1px solid #ccc;
 }
 
-/* Options */
-.options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  grid-gap: 20px; /* Increase spacing between options */
-  align-items: center;
+.subtitle {
+  color: #777E8B;
+  margin-bottom: 30px;
 }
 
-/* Option */
 .option {
   display: flex;
   align-items: center;
-  padding: 15px; /* Increase padding to make options larger */
-  font-size: 20px; /* Increase font size for options */
+  margin-bottom: 10px;
+  font-size: 20px;
 }
 
 .option input[type="radio"] {
   margin-right: 10px;
 }
 
-/* Checkbox */
 .checkbox {
   display: flex;
   align-items: center;
   margin-top: 20px;
 }
 
-/* Button Container */
 .buttonContainer {
   display: flex;
   justify-content: center;
   margin-top: 20px;
 }
 
-/* Style the "Continue" button */
-.button {
-  background-color: #007bff;
-  color: #fff;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  /* Hover state */
-  &:hover {
-    background-color: #0056b3;
-  }
-}
