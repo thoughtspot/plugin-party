@@ -9,6 +9,7 @@ export enum Routes {
   BUFFER = '/buffer',
   NEXT_PAGE = '/nextPage',
   TRUSTED_AUTH_PAGE = '/authPage',
+  SUMMARY_PAGE = '/summaryPage',
 }
 
 export const steps = [
@@ -39,6 +40,10 @@ export const steps = [
   },
   {
     title: 'Embedding Thoughtspot withTrusted Authentication',
+    isSubStep: true,
+  },
+  {
+    title: 'Summary Page',
     isSubStep: true,
   },
 ];

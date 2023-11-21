@@ -56,8 +56,6 @@ export const getEnvVariables = async () => {
     `https://api.vercel.com/v9/projects?teamId=${teamId}`,
     accessToken
   );
-  console.log(userData);
-  console.log(projectData);
 
   const projectDetails: any[] = [];
   const envPromises: any[] = [];

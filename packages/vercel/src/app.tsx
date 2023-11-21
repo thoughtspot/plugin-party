@@ -17,6 +17,7 @@ import styles from './app.module.scss';
 import { AppContextProvider } from './app.context';
 import { TrustedAuthPage } from './components/trusted-auth-page/trusted-auth-page';
 import { getCurrentUserInfo, getVercelAccessToken } from './service/vercel-api';
+import { SummaryPage } from './components/summary-page/summary-page';
 
 window.resizeTo(window.screen.width, window.screen.height);
 
@@ -115,6 +116,12 @@ export const App = () => {
                 worksheetId={worksheetId}
                 deploymentUrl={deploymentUrl}
                 path={Routes.TRUSTED_AUTH_PAGE}
+              />
+              <SummaryPage
+                hostUrl={clusterUrl}
+                worksheetId={worksheetId}
+                deploymentUrl={deploymentUrl}
+                path={Routes.SUMMARY_PAGE}
               />
             </Router>
           </AppContextProvider>

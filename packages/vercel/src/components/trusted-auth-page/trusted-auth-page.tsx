@@ -5,12 +5,15 @@ import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTranslations } from 'i18n';
 import { useEffect, useState } from 'preact/hooks';
+import { route } from 'preact-router';
 import styles from './trusted-auth-page.module.scss';
 import { formatClusterUrl } from '../full-app/full-app.utils';
 import { EmbedTemplates } from '../docs-page/embed-code-templates';
 import { getUserName } from '../../service/ts-api';
 import { saveDeployedUrlEnv } from '../../service/vercel-api';
 import { generateStackblitzURL } from '../docs-page/docs-utils';
+import { useAppContext } from '../../app.context';
+import { Routes } from '../connection/connection-utils';
 
 export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
   const { t } = useTranslations();
@@ -25,6 +28,7 @@ export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
       userName
     ),
   };
+  const { setStackBlitzUrl } = useAppContext();
 
   useEffect(() => {
     getUserName(tsHostURL)
@@ -45,15 +49,13 @@ export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
 
   const handleOpenStackBlitz = () => {
     const stackblitzURL = generateStackblitzURL(codeMap.SageEmbed);
+    setStackBlitzUrl(stackblitzURL);
     window.open(stackblitzURL, '_blank');
   };
 
   const closeVercelModal = async () => {
     await saveDeployedUrlEnv();
-    window.location.href =
-      new URLSearchParams(window.location.search.split('?')[1]).get(
-        'closeVercel'
-      ) || '';
+    route(Routes.SUMMARY_PAGE);
   };
 
   if (isLoading) {

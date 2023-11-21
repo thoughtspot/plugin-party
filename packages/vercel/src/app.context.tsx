@@ -11,6 +11,7 @@ export interface AppConfigInterface {
   relationshipId: any;
   createConnection: boolean;
   worksheetId: string;
+  stackBlitzUrl: string;
 }
 
 export enum AppConfigActions {
@@ -25,6 +26,7 @@ export enum AppConfigActions {
   RELATIONSHIP_ID,
   CREATE_CONNECTION,
   WORKSHEET_ID,
+  STACKBLITZ_URL,
 }
 
 const defaultAppConfigValues = {
@@ -39,6 +41,7 @@ const defaultAppConfigValues = {
   relationshipId: null,
   createConnection: false,
   worksheetId: '',
+  stackBlitzUrl: '',
 };
 
 const reducer: any = (state, action) => {
@@ -98,6 +101,11 @@ const reducer: any = (state, action) => {
         ...state,
         worksheetId: action.newWorksheetId,
       };
+    case AppConfigActions.STACKBLITZ_URL:
+      return {
+        ...state,
+        stackBlitzUrl: action.newStackBlitzUrl,
+      };
     default:
       return state;
   }
@@ -121,6 +129,7 @@ export const AppContextProvider = ({ children }) => {
     relationshipId,
     createConnection,
     worksheetId,
+    stackBlitzUrl,
   } = state;
   const setSelectedProject = (newSelectedProject: string) => {
     dispatch({ type: AppConfigActions.SELECTED_PROJECT, newSelectedProject });
@@ -193,6 +202,13 @@ export const AppContextProvider = ({ children }) => {
     });
   };
 
+  const setStackBlitzUrl = (newStackBlitzUrl: string) => {
+    dispatch({
+      type: AppConfigActions.STACKBLITZ_URL,
+      newStackBlitzUrl,
+    });
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -218,6 +234,8 @@ export const AppContextProvider = ({ children }) => {
         setCreateConnection,
         worksheetId,
         setWorksheetId,
+        stackBlitzUrl,
+        setStackBlitzUrl,
       }}
     >
       {children}
