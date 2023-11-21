@@ -92,7 +92,7 @@ export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
           <Button
             onClick={closeVercelModal}
             className={styles.button}
-            text={t.FINISH_SETUP}
+            text={t.NEXT_BUTTON}
           />
         </div>
       </div>

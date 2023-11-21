@@ -2,23 +2,11 @@ import React from 'preact/compat';
 import { Button } from 'widgets/lib/button';
 import { useTranslations } from 'i18n';
 import { useAppContext } from '../../app.context';
+import styles from './summary-page.module.scss';
 
 export const SummaryPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
   const { stackBlitzUrl } = useAppContext();
   const { t } = useTranslations();
-
-  const containerStyle = {
-    fontFamily: 'Arial, sans-serif',
-    padding: '20px',
-    maxWidth: '600px',
-    margin: 'auto',
-  };
-
-  const codeStyle = {
-    color: '#007BFF', // Set the color you prefer
-    textDecoration: 'underline',
-    cursor: 'pointer',
-  };
 
   const closeVercelModal = async () => {
     window.location.href =
@@ -28,20 +16,20 @@ export const SummaryPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
   };
 
   return (
-    <div style={containerStyle}>
+    <div className={styles.containerStyle}>
       <p>
         Congratulations! You can now embed analytics in your Vercel application
         using ThoughtSpot Embedding capabilities. You can now:
       </p>
       <p>
         Embed Analytics in your app with this{' '}
-        <a href={stackBlitzUrl} style={codeStyle} target="_blank">
+        <a href={stackBlitzUrl} className={styles.codeStyle} target="_blank">
           code
         </a>
       </p>
       <p>
         Create data visualizations in your{' '}
-        <a href={hostUrl} style={codeStyle} target="_blank">
+        <a href={hostUrl} style={styles.codeStyle} target="_blank">
           ThoughtSpot cluster
         </a>
         .

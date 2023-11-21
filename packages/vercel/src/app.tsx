@@ -41,7 +41,7 @@ export const App = () => {
     isCandidate: !deploymentUrl,
     suggestedUrl: '',
   });
-  if (deploymentUrl) {
+  if (deploymentUrl && currentRouteIndex !== 8) {
     route(Routes.TRUSTED_AUTH_PAGE);
   }
   useEffect(() => {
