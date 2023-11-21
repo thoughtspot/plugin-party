@@ -8,11 +8,11 @@ topbar.config({
 });
 
 const origFetch = window.fetch;
-window.fetch = (...args) => {
-  if (showLoaderOnFetch(args[0])) {
+window.fetch = ((input, init?) => {
+  if (showLoaderOnFetch(input)) {
     topbar.show();
   }
-  return origFetch(...args).then(
+  return origFetch(input, init).then(
     (resp) => {
       topbar.hide();
       return resp;
@@ -22,7 +22,7 @@ window.fetch = (...args) => {
       return err;
     }
   );
-};
+}) as typeof window.fetch;
 
 export const LoaderContext = createContext({
   show: () => topbar.show(),
