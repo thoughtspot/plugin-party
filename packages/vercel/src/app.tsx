@@ -105,7 +105,11 @@ export const App = () => {
                 vercelToken={vercelAccessToken}
                 path={Routes.DOCUMENTS}
               />
-              <NextPage hostUrl={clusterUrl} path={Routes.NEXT_PAGE} />
+              <NextPage
+                hostUrl={clusterUrl}
+                vercelToken={vercelAccessToken}
+                path={Routes.NEXT_PAGE}
+              />
               <TrustedAuthPage
                 hostUrl={clusterUrl}
                 worksheetId={worksheetId}

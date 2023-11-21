@@ -10,8 +10,9 @@ import { EmbedTemplates } from './embed-code-templates';
 import styles from './docs-page.module.scss';
 import { Routes } from '../connection/connection-utils';
 import { useAppContext } from '../../app.context';
-import { generateWorksheetTML, getUserName } from '../../service/ts-api';
+import { generateWorksheetTML } from '../../service/ts-api';
 import { formatClusterUrl } from '../full-app/full-app.utils';
+import { generateStackblitzURL } from './docs-utils';
 
 export const DocsPage = ({ hostUrl, vercelToken }) => {
   const { t } = useTranslations();
@@ -53,9 +54,9 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
     message.success('Code copied to clipboard');
   };
 
-  const openSandbox = () => {
-    const sandboxUrl = 'https://codesandbox.io/s/eager-haze-sjp5qx';
-    window.open(sandboxUrl, '_blank');
+  const handleOpenStackBlitz = () => {
+    const stackblitzURL = generateStackblitzURL(codeMap.SageEmbed);
+    window.open(stackblitzURL, '_blank');
   };
 
   const closeVercelModal = () => {
@@ -92,7 +93,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
           />
           <Button
             type="SECONDARY"
-            onClick={openSandbox}
+            onClick={handleOpenStackBlitz}
             className={styles.button}
             text={t.OPEN_SANDBOX}
           />

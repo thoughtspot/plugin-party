@@ -125,49 +125,87 @@ export const saveENV = async (hostUrl: string, vercelConfig: any) => {
     if (response.ok) {
       const rs = await response.json();
       const secretKey = rs?.Data?.token;
-
-      projectIds.forEach((projectId) => {
-        fetch(
-          `https://api.vercel.com/v10/projects/${projectId}/env?upsert=true&teamId=${teamId}`,
-          {
-            body: JSON.stringify([
-              {
-                key: 'TS_SECRET_KEY',
-                value: secretKey,
-                type: 'encrypted',
-                target: ['production', 'preview'],
-              },
-              {
-                key: 'TS_HOST',
-                value: `https://${tsHostURL}`,
-                type: 'plain',
-                target: ['production', 'preview'],
-              },
-            ]),
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
+      fetch(
+        `https://api.vercel.com/v10/projects/${projectIds}/env?upsert=true&teamId=${teamId}`,
+        {
+          body: JSON.stringify([
+            {
+              key: 'TS_SECRET_KEY',
+              value: secretKey,
+              type: 'encrypted',
+              target: ['production', 'preview'],
             },
-            method: 'post',
-          }
-        );
-      });
+            {
+              key: 'TS_HOST',
+              value: tsHostURL,
+              type: 'plain',
+              target: ['production', 'preview'],
+            },
+            {
+              key: 'DATA_SOURCE_ID',
+              value: vercelConfig.idGuid,
+              type: 'plain',
+              target: ['production', 'preview'],
+            },
+          ]),
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          method: 'post',
+        }
+      );
     }
   } catch (error) {
     console.error('Network Error:', error);
   }
 };
 
-export const getDomains = async (hostUrl, projectIds, teamId, accessToken) => {
+export const saveDeployedUrlEnv = async () => {
+  const url = window.location.search;
+  const searchParams = url.split('?');
+  const addedSearchParam = new URLSearchParams(searchParams[1]);
+  const accessToken = addedSearchParam.get('token') || '';
+  const teamId = addedSearchParam.get('teamId') || '';
+  const projectIds = addedSearchParam.get('project') || '';
+  const deploymentUrlSearchParam = new URLSearchParams(searchParams[2]);
+  const deploymentUrl = deploymentUrlSearchParam.get('deployment-url');
+  await fetch(
+    `https://api.vercel.com/v10/projects/${projectIds}/env?upsert=true&teamId=${teamId}`,
+    {
+      body: JSON.stringify([
+        {
+          key: 'AUTH_SERVICE_URL',
+          value: deploymentUrl,
+          type: 'plain',
+          target: ['production', 'preview'],
+        },
+      ]),
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      method: 'post',
+    }
+  );
+};
+
+export const getDomains = async (
+  hostUrl,
+  projectIds,
+  teamId,
+  accessToken,
+  idGuid
+) => {
   const domainConfig = await vercelPromise(
     `https://api.vercel.com/v8/projects/${projectIds}/domains?teamId=${teamId}`,
     accessToken
   );
   const tsHostURL = domainConfig.domains[0].name;
-  whiteListCSP(hostUrl, tsHostURL);
-  saveENV(hostUrl, {
+  await whiteListCSP(hostUrl, tsHostURL);
+  await saveENV(hostUrl, {
     accessToken,
     teamId,
     projectIds,
-    tsHostURL,
+    hostUrl,
+    idGuid,
   });
 };

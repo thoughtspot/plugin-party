@@ -9,6 +9,8 @@ import styles from './trusted-auth-page.module.scss';
 import { formatClusterUrl } from '../full-app/full-app.utils';
 import { EmbedTemplates } from '../docs-page/embed-code-templates';
 import { getUserName } from '../../service/ts-api';
+import { saveDeployedUrlEnv } from '../../service/vercel-api';
+import { generateStackblitzURL } from '../docs-page/docs-utils';
 
 export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
   const { t } = useTranslations();
@@ -41,12 +43,13 @@ export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
     message.success('Code copied to clipboard');
   };
 
-  const openSandbox = () => {
-    const sandboxUrl = 'https://codesandbox.io/s/eager-haze-sjp5qx';
-    window.open(sandboxUrl, '_blank');
+  const handleOpenStackBlitz = () => {
+    const stackblitzURL = generateStackblitzURL(codeMap.SageEmbed);
+    window.open(stackblitzURL, '_blank');
   };
 
-  const closeVercelModal = () => {
+  const closeVercelModal = async () => {
+    await saveDeployedUrlEnv();
     window.location.href =
       new URLSearchParams(window.location.search.split('?')[1]).get(
         'closeVercel'
@@ -62,9 +65,10 @@ export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
       <div className={styles.container}>
         <div className={styles.heading}>{t.TRUSTED_AUTH_PAGE_HEADING}</div>
         <div className={styles.divider}></div>
-        <div style={{ fontSize: '14px', lineHeight: '1.4' }}>
-          {t.TRUSTED_AUTH_PAGE_DESCRIPTION}
-        </div>
+        <div
+          style={{ fontSize: '14px', lineHeight: '1.4' }}
+          dangerouslySetInnerHTML={{ __html: t.TRUSTED_AUTH_PAGE_DESCRIPTION }}
+        />
       </div>
       <div style={{ padding: '16px' }}>
         <div>
@@ -76,7 +80,7 @@ export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
           />
           <Button
             type="SECONDARY"
-            onClick={openSandbox}
+            onClick={handleOpenStackBlitz}
             className={styles.button}
             text={t.OPEN_SANDBOX}
           />

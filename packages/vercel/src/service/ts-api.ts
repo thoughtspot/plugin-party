@@ -88,7 +88,13 @@ export const generateWorksheetTML = async (
     const idGuid = resp[0].response.header.id_guid;
     const searchParams = new URLSearchParams(window.location.search);
     const teamId = searchParams.get('teamId') || '';
-    await getDomains(hostUrl, selectedProjectName, teamId, vercelAccessToken);
+    await getDomains(
+      hostUrl,
+      selectedProjectName,
+      teamId,
+      vercelAccessToken,
+      idGuid
+    );
 
     return idGuid;
   } catch (error) {

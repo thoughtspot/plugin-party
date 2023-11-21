@@ -60,7 +60,7 @@
   "SELECT_TABLES": "Select a set of table(s) to analyze data on",
   "SELECT_TABLES_SUBTITLE": "Thoughtspot will create a worksheet(lightweight data model to base your searches on)",
   "TRUSTED_AUTH_PAGE_HEADING": "Embedding Thoughtspot with Trusted Authentication",
-  "TRUSTED_AUTH_PAGE_DESCRIPTION": "Congratulations! You can now embed analytics in your Vercel application using Thoughtspot Embedding capabilities. Copy the code below in your application to analytics powered by Natural Language Search in your app.",
+  "TRUSTED_AUTH_PAGE_DESCRIPTION": "Note: Your token request service should be secured in your domain as it will provide a token to access ThoughtSpot to any user. More information about Trusted Authentication is available <a href='https://developers.thoughtspot.com/docs/trusted-auth-token-request-service' target='_blank'>here</a>",
   "FINISH_SETUP": "Finish Setup",
   "CREATE_CONNECTION_PRIVILEGE_REQUIRED": "You need the privilege `Can manage Data` to access this extension. Please contact your administrator"
 }
