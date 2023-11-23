@@ -29,13 +29,7 @@ export const generateStackblitzURL = (code) => {
     },
     {
       newWindow: true,
-      openFile: [
-        'index.js',
-        'index.html',
-        'style.css',
-        'app.js',
-        'package.json',
-      ],
+      openFile: ['App.js'],
     }
   );
 };

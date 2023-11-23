@@ -88,7 +88,7 @@ export default function App() {
 
 init({
   thoughtSpotHost: "${tsHostURL}",
-  authType: AuthType.AuthServer,
+  authType: AuthType.TrustedAuthToken,
   getAuthToken: () => {
     return fetch("${deploymentUrl}/api/v2/gettoken/${userName}")
       .then((r) => r.text())

@@ -3,6 +3,7 @@ import { Button } from 'widgets/lib/button';
 import React, { useState } from 'preact/hooks';
 import { route } from 'preact-router';
 import { useLoader } from 'widgets/lib/loader';
+import { Vertical } from 'widgets/lib/layout/flex-layout';
 import styles from './select-table.module.scss';
 import { useAppContext } from '../../app.context';
 import findConnectedComponents, {
@@ -19,6 +20,7 @@ export const SelectTables = () => {
     setDataSourcesId,
     setRelationshipId,
     createConnection,
+    setSelectedDataSourceName,
   } = useAppContext();
 
   const sourceIds = logicalTableList.map((table) => table.header.id);
@@ -49,7 +51,8 @@ export const SelectTables = () => {
       .join(' - ');
   });
 
-  const updateDataSource = (selectDataSources: any) => {
+  const updateDataSource = (selectDataSources: string) => {
+    setSelectedDataSourceName(selectDataSources);
     const dataSourcesName = selectDataSources.split(' - ');
     const dataSourcesId = dataSourcesName.map(
       (dataSource) => tableNameToIdsMap?.[dataSource]
@@ -77,28 +80,30 @@ export const SelectTables = () => {
   };
 
   return (
-    <div className={styles.modal}>
-      <div className={styles.header}>{t.SELECT_TABLES}</div>
-      <div className={styles.subtitle}>{t.SELECT_TABLES_SUBTITLE}</div>
-      <div>
-        {connectedTablesNames.map((connectedTableName: any) => (
-          <div key={connectedTableName} className={styles.option}>
-            <input
-              type="radio"
-              checked={connectedTableName === selectedDataSources}
-              onChange={() => handleSelectDataSources(connectedTableName)}
-            />
-            {connectedTableName}
-          </div>
-        ))}
+    <Vertical className={styles.container}>
+      <div className={styles.modal}>
+        <div className={styles.header}>{t.SELECT_TABLES}</div>
+        <div className={styles.subtitle}>{t.SELECT_TABLES_SUBTITLE}</div>
+        <div>
+          {connectedTablesNames.map((connectedTableName: any) => (
+            <div key={connectedTableName} className={styles.option}>
+              <input
+                type="radio"
+                checked={connectedTableName === selectedDataSources}
+                onChange={() => handleSelectDataSources(connectedTableName)}
+              />
+              {connectedTableName}
+            </div>
+          ))}
+        </div>
+        <div className={styles.buttonContainer}>
+          <Button
+            className={styles.button}
+            onClick={() => updateDataSource(selectedDataSources)}
+            text={t.CONTINUE}
+          ></Button>
+        </div>
       </div>
-      <div className={styles.buttonContainer}>
-        <Button
-          className={styles.button}
-          onClick={() => updateDataSource(selectedDataSources)}
-          text={t.CONTINUE}
-        ></Button>
-      </div>
-    </div>
+    </Vertical>
   );
 };

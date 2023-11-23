@@ -24,6 +24,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
     selectedProject,
     setWorksheetId,
     hasAdminPrivileges,
+    selectedDataSourceName,
   } = useAppContext();
   const [newWorksheetId, setNewWorksheetId] = useState();
   const codeMap = {
@@ -36,7 +37,8 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
       vercelToken,
       dataSourcesId,
       relationshipId,
-      selectedProject
+      selectedProject,
+      selectedDataSourceName
     )
       .then((res) => {
         setWorksheetId(res);

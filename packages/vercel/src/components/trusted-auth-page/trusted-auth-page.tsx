@@ -10,7 +10,7 @@ import styles from './trusted-auth-page.module.scss';
 import { formatClusterUrl } from '../full-app/full-app.utils';
 import { EmbedTemplates } from '../docs-page/embed-code-templates';
 import { getUserName } from '../../service/ts-api';
-import { saveDeployedUrlEnv } from '../../service/vercel-api';
+import { saveDeployedUrlEnv, saveENV } from '../../service/vercel-api';
 import { generateStackblitzURL } from '../docs-page/docs-utils';
 import { useAppContext } from '../../app.context';
 import { Routes } from '../connection/connection-utils';
@@ -20,6 +20,7 @@ export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
   const [userName, setUserName] = useState();
   const tsHostURL = formatClusterUrl(hostUrl.url);
   const [isLoading, setIsLoading] = useState(true);
+  const [isEnvAdded, setIsEnvAdded] = useState(true);
   const codeMap = {
     SageEmbed: EmbedTemplates.TrustedAuthSageEmbed(
       tsHostURL,
@@ -52,13 +53,30 @@ export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
     setStackBlitzUrl(stackblitzURL);
     window.open(stackblitzURL, '_blank');
   };
+  useEffect(() => {
+    const url = window.location.search;
+    const searchParams = url.split('?');
+    const addedSearchParam = new URLSearchParams(searchParams[1]);
+    const accessToken = addedSearchParam.get('token') || '';
+    const teamId = addedSearchParam.get('teamId') || '';
+    const match = deploymentUrl.match(/https:\/\/(.*?)-/);
+    const projectIds = match[1];
+    saveENV(tsHostURL, { accessToken, teamId, projectIds, tsHostURL })
+      .then(() => {
+        setIsEnvAdded(false);
+      })
+      .catch((error) => {
+        console.log('err', error);
+        setIsEnvAdded(false);
+      });
+  }, []);
 
   const closeVercelModal = async () => {
     await saveDeployedUrlEnv();
     route(Routes.SUMMARY_PAGE);
   };
 
-  if (isLoading) {
+  if (isLoading || isEnvAdded) {
     return <div>Setting up Trusted Authentication...</div>;
   }
 

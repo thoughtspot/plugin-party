@@ -125,7 +125,7 @@ export const saveENV = async (hostUrl: string, vercelConfig: any) => {
     if (response.ok) {
       const rs = await response.json();
       const secretKey = rs?.Data?.token;
-      fetch(
+      await fetch(
         `https://api.vercel.com/v10/projects/${projectIds}/env?upsert=true&teamId=${teamId}`,
         {
           body: JSON.stringify([
@@ -137,13 +137,7 @@ export const saveENV = async (hostUrl: string, vercelConfig: any) => {
             },
             {
               key: 'TS_HOST',
-              value: tsHostURL,
-              type: 'plain',
-              target: ['production', 'preview'],
-            },
-            {
-              key: 'DATA_SOURCE_ID',
-              value: vercelConfig.idGuid,
+              value: hostUrl,
               type: 'plain',
               target: ['production', 'preview'],
             },

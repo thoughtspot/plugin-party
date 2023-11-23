@@ -1,0 +1,117 @@
+@import '../common.scss';
+
+.name {
+  align-items: center;
+  margin-top: 6px;
+  justify-content: space-between !important;
+}
+
+.row {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.evenRow {
+    background-color: #fff;
+}
+  
+.oddRow {
+    background-color: #f6f8fa;
+}
+
+.itemWrapper {
+  border-bottom: 1px solid $gray1;
+  width: 100%;
+  height: 85px;
+}
+.item-title {
+  font-weight: 700;
+  min-width: 84px !important;
+}
+.item {
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+.listItemDetails {
+  width: 100%;
+}
+
+.renderItemContainer {
+  height: 85px;
+  padding: 0 16px;
+  cursor: pointer;
+}
+
+.emptyData {
+  padding: 16px;
+  > svg {
+    height: 100px !important;
+    width: 100px !important;
+  }
+  .emptyDataText {
+    margin: 0 30px;
+  }
+}
+
+.radio {
+    margin: 0;
+}
+
+.listSearchBar {
+  width: 100%;
+  background-color: $white;
+  border-radius: 4px;
+  height: 29px;
+
+  > div > svg {
+    filter: opacity(0.4);
+    margin-left: 8px;
+  }
+  > input {
+    background-color: $white;
+    width: 100%;
+    height: 29px;
+    border-bottom: none;
+    border-radius: 4px;
+    &:focus-visible {
+      border-bottom: none;
+    }
+  }
+}
+
+.listSearchBarWrapper {
+  background-color: $gray0;
+  padding: 16px;
+}
+
+.listContent {
+  flex: 1 1 0;
+  overflow: auto;
+}
+
+.listContainer {
+  flex: 1 1 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.loader {
+  width: 100%;
+  height: 100%;
+  align-content: space-around;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.refetchLoader {
+  width: 100%;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.textIcon {
+    align-items: center;
+    min-width: 180px !important;
+}

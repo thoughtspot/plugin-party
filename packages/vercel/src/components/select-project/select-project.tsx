@@ -4,7 +4,9 @@ import { Button } from 'widgets/lib/button';
 import { useTranslations } from 'i18n';
 import { route } from 'preact-router';
 import { Vertical } from 'widgets/lib/layout/flex-layout';
+import { TableListView } from 'widgets/lib/table-list-view';
 import { BannerType, ErrorBanner } from 'widgets/lib/error-banner';
+import { Typography } from 'widgets/lib/typography';
 import { getConnectionParams, vercelPromise } from '../../service/vercel-api';
 import styles from './select-project.module.scss';
 import { useAppContext } from '../../app.context';
@@ -86,8 +88,8 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
     init();
   }, []);
 
-  const handleSelectProject = (value: string, index: number) => {
-    selectProject(value);
+  const handleSelectProject = (projectName: string, index: number) => {
+    selectProject(projectName);
     setProjectIndex(index);
   };
 
@@ -103,74 +105,61 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
   };
 
   return (
-    <Vertical>
+    <Vertical className={styles.container}>
+      {!errorMessage.visible && !errorMessage.message && (
+        <>
+          {!projects.length ? (
+            <div className={styles.loadingContainer}>
+              <h1>{t.LOADING_PROJECTS}</h1>
+              <div className={styles.loader}></div>
+            </div>
+          ) : (
+            <>
+              <Typography
+                variant="h2"
+                noMargin
+                className={styles['item-title']}
+              >
+                {t.SELECT_PROJECT_DESCRIPTION}
+              </Typography>
+              <Vertical className={styles.box}>
+                <TableListView
+                  textTitle={t.PROJECT_NAME}
+                  textWithIconTitle={t.HAS_POSTGRES}
+                  data={projects}
+                  icon={hasPostgres}
+                  onRowClick={handleSelectProject}
+                />
+              </Vertical>
+              <div className={styles.checkbox}>
+                <Checkbox
+                  onChange={() => isPostgresSelected()}
+                  checked={isConnectionPostgres}
+                >
+                  {t.USE_POSTGRES_CONNECTION}
+                </Checkbox>
+              </div>
+              <div className={styles.buttonContainer}>
+                <Button
+                  onClick={() => {
+                    updateProject();
+                  }}
+                  text={t.CONTINUE}
+                ></Button>
+              </div>
+            </>
+          )}
+        </>
+      )}
       <ErrorBanner
         errorMessage={errorMessage.message}
-        bannerType={BannerType.CARD}
+        bannerType={BannerType.MESSAGE}
         errorCardButton={{
           name: '',
         }}
         showCloseIcon={false}
         showBanner={errorMessage.visible && !!errorMessage.message}
       />
-      {!errorMessage.visible && !errorMessage.message && (
-        <>
-          {!projects.length ? (
-            <div>{t.LOADING_PROJECTS}</div>
-          ) : (
-            <div className={styles.container}>
-              <div className={styles.modal}>
-                <div className={styles.header}>
-                  {t.SELECT_PROJECT_DESCRIPTION}
-                </div>
-                <table className={styles.table}>
-                  <thead>
-                    <tr>
-                      <td className={styles.heading}>{t.PROJECT_NAME}</td>
-                      <td>{t.HAS_POSTGRES}</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {projects.map((project, index) => (
-                      <tr key={project.id}>
-                        <td>
-                          <input
-                            type="radio"
-                            id={`myCheckbox_${project.id}`}
-                            name="projectRadio"
-                            checked={selectedProject === project.id}
-                            onChange={() =>
-                              handleSelectProject(project.id, index)
-                            }
-                          />
-                          {project.name}
-                        </td>
-                        <td>{hasPostgres[index]}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className={styles.checkbox}>
-                  <Checkbox
-                    onChange={() => isPostgresSelected()}
-                    checked={isConnectionPostgres}
-                  >
-                    {t.USE_POSTGRES_CONNECTION}
-                  </Checkbox>
-                </div>
-                <div className={styles.buttonContainer}>
-                  <Button
-                    onClick={() => {
-                      updateProject();
-                    }}
-                    text={t.CONTINUE}
-                  ></Button>
-                </div>
-              </div>
-            </div>
-          )}
-        </>
-      )}
     </Vertical>
   );
 };

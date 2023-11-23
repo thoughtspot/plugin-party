@@ -62,7 +62,8 @@ export const generateWorksheetTML = async (
   vercelAccessToken,
   tableIds,
   relationships,
-  selectedProjectName
+  selectedProjectName,
+  selectedDataSourceName
 ) => {
   const formData = new URLSearchParams();
   formData.append('tableIds', JSON.stringify(tableIds));
@@ -83,7 +84,14 @@ export const generateWorksheetTML = async (
     }
 
     const result = await response.json();
-    const metadataTmls = result.object.map((test) => test.edoc);
+    let metadataTmls = result.object.map((test) => test.edoc);
+    metadataTmls = metadataTmls.map((metadata) => {
+      return metadata.replace(
+        // eslint-disable-next-line no-useless-escape
+        /\"name\": \"My Worksheet (\d+)\"/,
+        `"name": "${selectedDataSourceName} $1"`
+      );
+    });
     const resp = await ImportWorksheetTML(hostUrl, metadataTmls);
     const idGuid = resp[0].response.header.id_guid;
     const searchParams = new URLSearchParams(window.location.search);
