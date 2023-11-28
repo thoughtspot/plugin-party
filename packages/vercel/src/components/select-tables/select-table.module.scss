@@ -1,12 +1,14 @@
+@import 'widgets/lib/common.scss';
+
 .modal {
   position: relative;
   border: 1px solid #ccc;
-  padding: 20px;
+  padding: $spacing--c;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  background-color: #fff;
+  background-color: $white;
   max-width: 900px;
   text-align: center;
-  border-radius: 8px;
+  border-radius: $spacing--b;
   height: 100%;
 }
 
@@ -18,49 +20,32 @@
 }
 
 .header {
-  font-weight: bold;
+  @include rd-font--bold;
+  padding: $spacing--c;
   font-size: 24px;
-  color: #333;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th {
-  padding: 12px 0;
-}
-
-td {
-  padding: 12px 0;
 }
 
 .subtitle {
   color: #777E8B;
-  margin-bottom: 30px;
+  padding-bottom: $spacing--h;
 }
 
 .option {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
-  font-size: 20px;
-}
-
-.option input[type="radio"] {
-  margin-right: 10px;
+  margin-bottom: $spacing--c;
+  font-size: $spacing--e;
 }
 
 .checkbox {
   display: flex;
   align-items: center;
-  margin-top: 20px;
+  margin-top: $spacing--e;
 }
 
 .buttonContainer {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: $spacing--e;
 }
 

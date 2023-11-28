@@ -4,6 +4,7 @@ import React, { useState } from 'preact/hooks';
 import { route } from 'preact-router';
 import { useLoader } from 'widgets/lib/loader';
 import { Vertical } from 'widgets/lib/layout/flex-layout';
+import { Typography } from 'widgets/lib/typography';
 import styles from './select-table.module.scss';
 import { useAppContext } from '../../app.context';
 import findConnectedComponents, {
@@ -19,14 +20,14 @@ export const SelectTables = () => {
     logicalTableList,
     setDataSourcesId,
     setRelationshipId,
-    createConnection,
+    shouldCreateConnection,
     setSelectedDataSourceName,
   } = useAppContext();
 
   const sourceIds = logicalTableList.map((table) => table.header.id);
   const sourceNames = logicalTableList.map((table) => table.header.name);
   const tableRelationships = logicalTableList.map((table) => {
-    if (createConnection) {
+    if (shouldCreateConnection) {
       return table.destinationRelationships;
     }
     return table.relationships;
@@ -81,10 +82,14 @@ export const SelectTables = () => {
 
   return (
     <Vertical className={styles.container}>
-      <div className={styles.modal}>
-        <div className={styles.header}>{t.SELECT_TABLES}</div>
-        <div className={styles.subtitle}>{t.SELECT_TABLES_SUBTITLE}</div>
-        <div>
+      <Vertical className={styles.modal}>
+        <Typography variant="h2" className={styles.header} noMargin>
+          {t.SELECT_TABLES}
+        </Typography>
+        <Typography variant="h4" className={styles.subtitle} noMargin>
+          {t.SELECT_TABLES_SUBTITLE}
+        </Typography>
+        <Vertical>
           {connectedTablesNames.map((connectedTableName: any) => (
             <div key={connectedTableName} className={styles.option}>
               <input
@@ -95,15 +100,15 @@ export const SelectTables = () => {
               {connectedTableName}
             </div>
           ))}
-        </div>
-        <div className={styles.buttonContainer}>
+        </Vertical>
+        <Vertical hAlignContent="center" className={styles.buttonContainer}>
           <Button
             className={styles.button}
             onClick={() => updateDataSource(selectedDataSources)}
             text={t.CONTINUE}
           ></Button>
-        </div>
-      </div>
+        </Vertical>
+      </Vertical>
     </Vertical>
   );
 };

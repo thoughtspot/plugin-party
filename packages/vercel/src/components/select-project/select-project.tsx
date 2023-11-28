@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Checkbox } from 'antd';
 import { Button } from 'widgets/lib/button';
 import { useTranslations } from 'i18n';
 import { route } from 'preact-router';
-import { Vertical } from 'widgets/lib/layout/flex-layout';
+import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { TableListView } from 'widgets/lib/table-list-view';
 import { BannerType, ErrorBanner } from 'widgets/lib/error-banner';
 import { Typography } from 'widgets/lib/typography';
@@ -89,16 +88,22 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
   }, []);
 
   const handleSelectProject = (projectName: string, index: number) => {
-    selectProject(projectName);
+    selectProject((prevProject: string) =>
+      prevProject === projectName ? '' : projectName
+    );
     setProjectIndex(index);
   };
 
   const updateProject = () => {
-    setSelectedProject(selectedProject);
-    setHasPostgresConnection(hasPostgres[projectIndex]);
-    setProjectEnv(projectEnvs[projectIndex]);
-    setIsConnectionPostgres(isConnectionPostgres);
-    route(Routes.APP_EMBED);
+    if (selectedProject === '') {
+      setErrorMessage({ visible: false, message: t.SELECT_PROJECT_ERROR });
+    } else {
+      setSelectedProject(selectedProject);
+      setHasPostgresConnection(hasPostgres[projectIndex]);
+      setProjectEnv(projectEnvs[projectIndex]);
+      setIsConnectionPostgres(isConnectionPostgres);
+      route(Routes.APP_EMBED);
+    }
   };
   const isPostgresSelected = () => {
     setConnectionPostgres(!isConnectionPostgres);
@@ -106,7 +111,16 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
 
   return (
     <Vertical className={styles.container}>
-      {!errorMessage.visible && !errorMessage.message && (
+      <ErrorBanner
+        errorMessage={errorMessage.message}
+        bannerType={BannerType.MESSAGE}
+        errorCardButton={{
+          name: '',
+        }}
+        showCloseIcon={false}
+        showBanner={errorMessage.message !== ''}
+      />
+      {!errorMessage.visible && (
         <>
           {!projects.length ? (
             <div className={styles.loadingContainer}>
@@ -120,7 +134,7 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
                 noMargin
                 className={styles['item-title']}
               >
-                {t.SELECT_PROJECT_DESCRIPTION}
+                {t.SELECT_PROJECT_HEADING}
               </Typography>
               <Vertical className={styles.box}>
                 <TableListView
@@ -131,35 +145,29 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
                   onRowClick={handleSelectProject}
                 />
               </Vertical>
-              <div className={styles.checkbox}>
-                <Checkbox
+              <Horizontal className={styles.checkbox}>
+                <input
+                  type="checkbox"
                   onChange={() => isPostgresSelected()}
                   checked={isConnectionPostgres}
-                >
-                  {t.USE_POSTGRES_CONNECTION}
-                </Checkbox>
-              </div>
-              <div className={styles.buttonContainer}>
+                ></input>
+                <Typography variant="p">{t.USE_POSTGRES_CONNECTION}</Typography>
+              </Horizontal>
+              <Vertical
+                hAlignContent="center"
+                className={styles.buttonContainer}
+              >
                 <Button
                   onClick={() => {
                     updateProject();
                   }}
                   text={t.CONTINUE}
                 ></Button>
-              </div>
+              </Vertical>
             </>
           )}
         </>
       )}
-      <ErrorBanner
-        errorMessage={errorMessage.message}
-        bannerType={BannerType.MESSAGE}
-        errorCardButton={{
-          name: '',
-        }}
-        showCloseIcon={false}
-        showBanner={errorMessage.visible && !!errorMessage.message}
-      />
     </Vertical>
   );
 };

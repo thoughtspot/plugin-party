@@ -1,0 +1,22 @@
+.header {
+    padding: 4px 32px;
+    height: 64px;
+    background-color: #303540;
+}
+
+.headerLogo {
+    display: white;
+    height: 48px;
+    width: 48px;
+    margin-right: 24px;
+}
+
+.headerInfo {
+    display: flex;
+    flex-direction: row;
+}
+
+.headerTitle {
+    margin-top: 16px;
+    margin-bottom: 20px;
+}

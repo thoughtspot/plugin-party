@@ -12,7 +12,12 @@ export enum Routes {
   SUMMARY_PAGE = '/summaryPage',
 }
 
-export const steps = [
+interface Step {
+  title: string;
+  isSubStep?: boolean;
+}
+
+export const steps: Step[] = [
   {
     title: 'Setup Your data model in Thoughtspot',
   },
@@ -48,6 +53,13 @@ export const steps = [
   },
 ];
 
+/**
+ *
+ * @param tables
+ * @param relationships
+ * @returns An array with elements as Tables Names with joins between them
+ * as a single element
+ */
 export default function findConnectedComponents(
   tables: any,
   relationships: any

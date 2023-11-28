@@ -1,11 +1,12 @@
-.containerStyle  {
-    padding: '20px';
-    max-width: '600px';
-    margin: 'auto';
-};
+@import 'widgets/lib/common.scss';
+
+.buttonContainer {
+    margin-top: 20px;
+}
 
 .codeStyle {
-    color: '#007BFF';
-    text-decoration: 'underline';
-    cursor: 'pointer';
-};
+    display: inline;
+    color: -webkit-link;
+    cursor: pointer;
+    text-decoration: underline;
+}

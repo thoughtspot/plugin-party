@@ -9,9 +9,8 @@ export interface AppConfigInterface {
   logicalTableList: any;
   dataSourcesId: any;
   relationshipId: any;
-  createConnection: boolean;
+  shouldCreateConnection: boolean;
   worksheetId: string;
-  stackBlitzUrl: string;
   selectedDataSourceName: string;
 }
 
@@ -22,12 +21,10 @@ export enum AppConfigActions {
   PROJECT_ENV,
   IS_CONNECTION_POSTGRES,
   LOGICAL_TABLE_LIST,
-  SELECT_DATA_SOURCES,
   DATA_SOURCES_ID,
   RELATIONSHIP_ID,
   CREATE_CONNECTION,
   WORKSHEET_ID,
-  STACKBLITZ_URL,
   SELECT_DATA_SOURCE_NAME,
 }
 
@@ -38,12 +35,10 @@ const defaultAppConfigValues = {
   projectEnv: null,
   isConnectionPostgres: false,
   logicalTableList: null,
-  selectDataSources: null,
   dataSourcesId: null,
   relationshipId: null,
-  createConnection: false,
+  shouldCreateConnection: false,
   worksheetId: '',
-  stackBlitzUrl: '',
   selectedDataSourceName: '',
 };
 
@@ -79,11 +74,6 @@ const reducer: any = (state, action) => {
         ...state,
         logicalTableList: action.newLogicalTableList,
       };
-    case AppConfigActions.SELECT_DATA_SOURCES:
-      return {
-        ...state,
-        selecteDataSources: action.newSelectDataSources,
-      };
     case AppConfigActions.DATA_SOURCES_ID:
       return {
         ...state,
@@ -97,17 +87,12 @@ const reducer: any = (state, action) => {
     case AppConfigActions.CREATE_CONNECTION:
       return {
         ...state,
-        createConnection: action.newCreateConnection,
+        shouldCreateConnection: action.newCreateConnection,
       };
     case AppConfigActions.WORKSHEET_ID:
       return {
         ...state,
         worksheetId: action.newWorksheetId,
-      };
-    case AppConfigActions.STACKBLITZ_URL:
-      return {
-        ...state,
-        stackBlitzUrl: action.newStackBlitzUrl,
       };
     case AppConfigActions.SELECT_DATA_SOURCE_NAME:
       return {
@@ -132,12 +117,10 @@ export const AppContextProvider = ({ children }) => {
     projectEnv,
     isConnectionPostgres,
     logicalTableList,
-    selectDataSources,
     dataSourcesId,
     relationshipId,
-    createConnection,
+    shouldCreateConnection,
     worksheetId,
-    stackBlitzUrl,
     selectedDataSourceName,
   } = state;
   const setSelectedProject = (newSelectedProject: string) => {
@@ -176,13 +159,6 @@ export const AppContextProvider = ({ children }) => {
     });
   };
 
-  const setSelectDataSources = (newSelectDataSources: any) => {
-    dispatch({
-      type: AppConfigActions.SELECT_DATA_SOURCES,
-      newSelectDataSources,
-    });
-  };
-
   const setDataSourcesId = (newDataSourcesId: any) => {
     dispatch({
       type: AppConfigActions.DATA_SOURCES_ID,
@@ -211,13 +187,6 @@ export const AppContextProvider = ({ children }) => {
     });
   };
 
-  const setStackBlitzUrl = (newStackBlitzUrl: string) => {
-    dispatch({
-      type: AppConfigActions.STACKBLITZ_URL,
-      newStackBlitzUrl,
-    });
-  };
-
   const setSelectedDataSourceName = (newSelectedDataSourceName: string) => {
     dispatch({
       type: AppConfigActions.SELECT_DATA_SOURCE_NAME,
@@ -240,18 +209,14 @@ export const AppContextProvider = ({ children }) => {
         setIsConnectionPostgres,
         logicalTableList,
         setLogicalTableList,
-        selectDataSources,
-        setSelectDataSources,
         dataSourcesId,
         setDataSourcesId,
         relationshipId,
         setRelationshipId,
-        createConnection,
+        shouldCreateConnection,
         setCreateConnection,
         worksheetId,
         setWorksheetId,
-        stackBlitzUrl,
-        setStackBlitzUrl,
         selectedDataSourceName,
         setSelectedDataSourceName,
       }}

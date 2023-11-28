@@ -1,3 +1,5 @@
+@import 'widgets/lib/common.scss';
+
 .container {
   display: flex;
   width: 100%;
@@ -5,76 +7,36 @@
 }
 
 .item-title {
-  width: 90%;
-  border-bottom: 1px solid #eaedf2;
-  padding: 10px;
+  @include rd-font--bold;
+  padding: $spacing--b;
+  border-bottom: 1px solid $gray6;
 }
 
 .box {
-  margin-top: 40px;
+  margin-top: $spacing--i;
   height: 100%;
   box-sizing: border-box;
 }
 
 .modal {
   position: relative;
-  padding: 20px;
+  padding: $spacing--e;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  background-color: #fff;
+  background-color: $white;
   margin: 0 auto;
-  border-radius: 8px;
+  border-radius: $spacing--b;
   height: 100%;
-}
-
-.header {
-  font-weight: bold;
-  margin-bottom: 20px;
-  font-size: 24px;
-  color: #333;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th {
-  padding: 12px 0;
-}
-
-td {
-  padding: 12px 0;
-}
-
-.option {
-  display: flex;
-  padding: 15px;
-  font-size: 20px;
 }
 
 .checkbox {
   display: flex;
-  margin-top: 20px;
+  margin-top: $spacing--e;
 }
 
 .buttonContainer {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
-}
-
-.button {
-  background-color: #007bff;
-  color: #fff;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #0056b3;
-  }
+  margin-top: $spacing--e;
 }
 
 .loader {

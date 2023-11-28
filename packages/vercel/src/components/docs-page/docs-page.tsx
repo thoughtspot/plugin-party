@@ -6,6 +6,9 @@ import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useTranslations } from 'i18n';
 import { useState, useEffect } from 'preact/hooks';
+import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
+import { Typography } from 'widgets/lib/typography';
+import { BannerType, ErrorBanner } from 'widgets/lib/error-banner';
 import { EmbedTemplates } from './embed-code-templates';
 import styles from './docs-page.module.scss';
 import { Routes } from '../connection/connection-utils';
@@ -31,6 +34,11 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
     SageEmbed: EmbedTemplates.SageEmbed(tsHostURL, newWorksheetId),
   };
 
+  const [errorMessage, setErrorMessage] = useState({
+    visible: false,
+    message: '',
+  });
+
   useEffect(() => {
     generateWorksheetTML(
       tsHostURL,
@@ -47,6 +55,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
       })
       .catch((error) => {
         console.log(error);
+        setErrorMessage({ visible: true, message: t.CREATE_WORKSHEET_ERROR });
         setIsLoading(false);
       });
   }, [dataSourcesId, relationshipId]);
@@ -68,58 +77,76 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
 
   const goToTrustedAuth = async () => {
     if (!hasAdminPrivileges) {
-      console.log('To setup Trusted auth, you need administrator privilege');
+      setErrorMessage({ visible: true, message: t.ADMIN_PRIVILEGE_ISSUE });
     } else {
       route(Routes.NEXT_PAGE);
     }
   };
 
   if (isLoading) {
-    return <div>Creating Worksheet...</div>;
+    return (
+      <div className={styles.loadingContainer}>
+        <h1>{t.CREATE_WORKSHEET_LOADING}</h1>
+        <div className={styles.loader}></div>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <div className={styles.container}>
-        <div className={styles.heading}>{t.TEST_EMBED_HEADING}</div>
-        <div className={styles.divider}></div>
-        <p>{t.TEST_EMBED_DESCRIPTION}</p>
-      </div>
-      <div style={{ padding: '16px' }}>
-        <div>
-          <Button
-            type="SECONDARY"
-            onClick={handleCopyCode}
-            className={styles.button}
-            text={t.COPY_CODE}
-          />
-          <Button
-            type="SECONDARY"
-            onClick={handleOpenStackBlitz}
-            className={styles.button}
-            text={t.OPEN_SANDBOX}
-          />
-          <SyntaxHighlighter language="javascript" style={atomOneDark}>
-            {codeMap.SageEmbed}
-          </SyntaxHighlighter>
-          <div className={styles.codeSample}>
-            <p style={{ fontSize: '14px', lineHeight: '1.4' }}>
-              {t.CODE_SAMPLE_DESCRIPTION}
-            </p>
-          </div>
-          <Button
-            type="SECONDARY"
-            onClick={closeVercelModal}
-            className={styles.button}
-            text={t.EXIT_SETUP}
-          />
-          <Button
-            onClick={goToTrustedAuth}
-            className={styles.button}
-            text={t.NEXT_BUTTON}
-          />
-        </div>
-      </div>
-    </div>
+    <Vertical className={styles.container}>
+      <ErrorBanner
+        errorMessage={errorMessage.message}
+        bannerType={BannerType.MESSAGE}
+        errorCardButton={{
+          name: '',
+        }}
+        showCloseIcon={false}
+        showBanner={errorMessage.visible && !!errorMessage.message}
+      />
+      <Typography variant="h2" className={styles.heading} noMargin>
+        {t.TEST_EMBED_HEADING}
+      </Typography>
+      <Typography variant="p" className={styles.noteDescription}>
+        {t.TEST_EMBED_DESCRIPTION}
+      </Typography>
+      <Horizontal className={styles.buttonContainer}>
+        <Button
+          type="SECONDARY"
+          onClick={handleCopyCode}
+          className={styles.button}
+          text={t.COPY_CODE}
+        />
+        <Button
+          type="SECONDARY"
+          onClick={handleOpenStackBlitz}
+          className={styles.button}
+          text={t.OPEN_SANDBOX}
+        />
+      </Horizontal>
+      <SyntaxHighlighter language="javascript" style={atomOneDark}>
+        {codeMap.SageEmbed}
+      </SyntaxHighlighter>
+      <Vertical className={styles.noteContainer}>
+        <Typography className={styles.noteHeading} variant="h6" noMargin>
+          NOTE
+        </Typography>
+        <Typography variant="p" noMargin className={styles.noteDescription}>
+          {t.CODE_SAMPLE_DESCRIPTION}
+        </Typography>
+      </Vertical>
+      <Horizontal className={styles.buttonContainer}>
+        <Button
+          type="SECONDARY"
+          onClick={closeVercelModal}
+          className={styles.button}
+          text={t.EXIT_SETUP}
+        />
+        <Button
+          onClick={goToTrustedAuth}
+          className={styles.button}
+          text={t.NEXT_BUTTON}
+        />
+      </Horizontal>
+    </Vertical>
   );
 };

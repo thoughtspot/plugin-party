@@ -1,14 +1,21 @@
+@import 'widgets/lib/common.scss';
+
 .heading {
     font-size: 20px;
-    margin-bottom: 10px;
-}
-  
-.container {
-    margin: 20px;
+    margin-bottom: $spacing--c;
+    border-bottom: 1px solid $gray6;
 }
 
-.divider {
-    width: 100%;
-    border-top: 1px solid #ccc;
-    margin-bottom: 10px;
+.container {
+    padding-right: $spacing--j;
+}
+
+.buttonContainer {
+    margin: 10%;
+    text-align: center;
+}
+
+.description {
+    margin-top: $spacing--c;
+    font-size: 14px;
 }

@@ -1,31 +1,74 @@
+@import 'widgets/lib/common.scss';
+
 .container {
-    margin: 20px;
+    padding: $spacing--e;
 }
 
 .heading {
-  font-size: 20px;
-  margin-bottom: 10px;
-}
-
-.divider {
+  @include rd-font--bold;
+  font-size: $spacing--f;
+  margin-bottom: $spacing--c;
   width: 100%;
-  border-top: 1px solid #ccc;
-  margin-bottom: 10px;
-}
-
-p {
-  font-size: 14px;
+  border-bottom: 1px solid $gray6;
 }
 
 .button {
-  margin-right: 10px;
+  margin-right: $spacing--c;
 }
 
-.codeSample {
-  background-color: '#f0f0f0';
-  padding: '8px';
-  border: '1px solid #ccc';
-  border-radius: '5px';
-  margin-top: '20px';
-  margin-bottom: '20px';
+.noteContainer {
+  margin-top: $spacing--e;
+  border-left: 3px solid $gray6;
+}
+
+.noteHeading {
+  @include rd-font--bold;
+  font-size: 16px;
+  padding-bottom: $spacing--c;
+  padding-left: $spacing--c;
+}
+
+.noteDescription {
+  font-size: 14px;
+  margin-bottom: $spacing--c;
+  padding-left: $spacing--c;
+}
+
+.buttonContainer {
+  padding-top: $spacing--e;
+}
+
+.loader {
+  width: 40px;
+  aspect-ratio: 1;
+  display: grid;
+  -webkit-mask: conic-gradient(from 22deg, #0003,#000);
+          mask: conic-gradient(from 22deg, #0003,#000);
+  animation: load 1s steps(8) infinite;
+  text-align: center;
+}
+.loader,
+.loader:before {
+  --_g: linear-gradient(#6a6a73 0 0) 50%;
+  background: 
+    var(--_g)/34% 8%  space no-repeat,
+    var(--_g)/8%  34% no-repeat space;
+}
+.loader:before {
+  content: "";
+  transform: rotate(45deg);
+}
+@keyframes load {
+  from {transform: rotate(0turn)}
+  to   {transform: rotate(1turn)}
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  width: 100%;
 }

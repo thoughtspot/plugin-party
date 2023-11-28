@@ -50,12 +50,17 @@ export const getVercelAccessToken = async () => {
 };
 
 export const getCurrentUserInfo = async (accessToken: string) => {
-  const response = await fetch('https://api.vercel.com/v2/user', {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    method: 'get',
-  });
+  const searchParams = new URLSearchParams(window.location.search);
+  const teamId = searchParams.get('teamId') || '';
+  const response = await fetch(
+    `https://api.vercel.com/v2/user?teamId=${teamId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      method: 'get',
+    }
+  );
 
   return response.json();
 };
@@ -83,7 +88,9 @@ export const whiteListCSP = async (hostUrl: string, urlToWhiteList: string) => {
       configOptions: [
         {
           optionKey: 'nginx_corshosts',
-          optionValue: window.btoa(`${currentCORS.Data},${urlToWhiteList}`),
+          optionValue: window.btoa(
+            `${currentCORS.Data},${urlToWhiteList},.*.stackblitz.io`
+          ),
         },
       ],
     };
