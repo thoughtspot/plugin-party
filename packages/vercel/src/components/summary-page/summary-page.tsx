@@ -3,6 +3,7 @@ import { Button } from 'widgets/lib/button';
 import { useTranslations } from 'i18n';
 import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { Typography } from 'widgets/lib/typography';
+import { BannerType, ErrorBanner } from 'widgets/lib/error-banner';
 import styles from './summary-page.module.scss';
 import { formatClusterUrl } from '../full-app/full-app.utils';
 import { EmbedTemplates } from '../docs-page/embed-code-templates';
@@ -21,15 +22,22 @@ export const SummaryPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
       userName
     ),
   };
+  const [errorMessage, setErrorMessage] = useState({
+    visible: false,
+    message: '',
+  });
 
   useEffect(() => {
-    getUserName(tsHostURL)
-      .then((res) => {
+    const fetchUserName = async () => {
+      try {
+        const res = await getUserName(tsHostURL);
         setUserName(res.name);
-      })
-      .catch((error) => {
-        console.log('err', error);
-      });
+      } catch (error) {
+        setErrorMessage({ visible: true, message: t.TS_USER_ERROR });
+        console.error('err', error);
+      }
+    };
+    fetchUserName();
   }, []);
 
   const closeVercelModal = async () => {
@@ -45,12 +53,21 @@ export const SummaryPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
 
   return (
     <Vertical className={styles.containerStyle}>
+      <ErrorBanner
+        errorMessage={errorMessage.message}
+        bannerType={BannerType.MESSAGE}
+        errorCardButton={{
+          name: '',
+        }}
+        showCloseIcon={false}
+        showBanner={errorMessage.message !== '' && errorMessage.visible}
+      />
       <Typography variant="h2">{t.SUMMARY_PAGE_HEADING}</Typography>
       <Typography variant="p">{t.SUMMARY_PAGE_DESCRIPTION}</Typography>
       <ul>
         <li>
           <Typography variant="p">
-            Embed Analytics in your app with this{' '}
+            {t.SUMMARY_PAGE_TEXT}
             <div
               role="button"
               onClick={handleStackblitzURL}
@@ -62,7 +79,7 @@ export const SummaryPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
         </li>
         <li>
           <Typography variant="p">
-            Create data visualizations in your{' '}
+            {t.SUMMARY_PAGE_DATA_TEXT}
             <a href={tsHostURL} target="_blank">
               ThoughtSpot cluster
             </a>

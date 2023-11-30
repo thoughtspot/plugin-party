@@ -48,6 +48,7 @@ import {
   SageEmbed,
 } from '@thoughtspot/visual-embed-sdk';
 
+// Initialize ThoughtSpot - note the host points to your current ThoughtSpot cluster
 init({
   thoughtSpotHost: "${tsHostURL}",
   authType: AuthType.None,
@@ -55,7 +56,11 @@ init({
 
 const NLSEmbed = () => {
   React.useEffect(() => {
+    // Embed Sage - ThoughtSpot's natural language search
     const embed = new SageEmbed("#test", {
+      // Using the datasource created earlier as the source of natural language queries.
+      // This source can be swapped later - check out the Developer Playground 
+      // for more customization options.
       dataSource: "${worksheetId}",
       frameParams: { width: 800, height: 600 },
     });
@@ -76,33 +81,42 @@ export default function App() {
   },
   TrustedAuthSageEmbed: (tsHostURL, worksheetId, deploymentUrl, userName) => {
     const codeSnippet = `// Import ThoughtSpot SDK
-    import './style.css';
-    import React from 'react';
-    import {
-      init,
-      AuthType,
-      LiveboardEmbed,
-      EmbedEvent,
-      SageEmbed,
-    } from '@thoughtspot/visual-embed-sdk';
+import './style.css';
+import React from 'react';
+import {
+  init,
+  AuthType,
+  LiveboardEmbed,
+  EmbedEvent,
+  SageEmbed,
+} from '@thoughtspot/visual-embed-sdk';
 
+// username who wants to login to ThoughtSpot
+const TSUserName = "${userName}";
+
+// Initialize ThoughtSpot - note the host points to your current ThoughtSpot cluster
 init({
   thoughtSpotHost: "${tsHostURL}",
   authType: AuthType.TrustedAuthToken,
+  // Vercel deployed service domain so that secret key is not exposed
   getAuthToken: () => {
-    return fetch("${deploymentUrl}/api/v2/gettoken/${userName}")
+    return fetch("${deploymentUrl}/api/v2/gettoken/" + TSUserName)
       .then((r) => r.text())
       .catch((e) => {
         console.log(e);
         return "";
       });
   },
-  username: "${userName}"
+  username: TSUserName,
 });
 
 const NLSEmbed = () => {
   React.useEffect(() => {
+    // Embed Sage - ThoughtSpot's natural language search
     const embed = new SageEmbed("#test", {
+      // Using the datasource created earlier as the source of natural language queries.
+      // This source can be swapped later - check out the Developer Playground 
+      // for more customization options.
       dataSource: "${worksheetId}",
       frameParams: { width: 800, height: 600 },
     });

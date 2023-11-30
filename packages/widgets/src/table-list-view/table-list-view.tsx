@@ -16,7 +16,7 @@ export interface ListProps {
 
   textWithIconTitle?: string;
 
-  icon?: string[];
+  icon?: boolean[];
 
   /**
    * onRowClicked: callback event if row clicked
@@ -38,8 +38,8 @@ export const TableListView: React.FC<ListProps> = ({
       prevSelectedIndex === index ? null : index
     );
   };
-  const renderList = (listData) => {
-    return listData.map((item, index) => {
+  const renderList = (listData: RowDataProps[]) => {
+    return listData.map((item: RowDataProps, index: number) => {
       return (
         <Vertical
           className={cx(
@@ -53,8 +53,8 @@ export const TableListView: React.FC<ListProps> = ({
           <MemoTableListItem
             id={item.id}
             title={item.name}
-            icon={icon[index] === 'Yes' ? 'correct' : 'wrong'}
-            text={icon[index]}
+            icon={icon[index] === true ? 'correct' : 'wrong'}
+            text={icon[index] === true ? 'Yes' : 'No'}
             isChecked={selectedIndex === index}
           />
         </Vertical>

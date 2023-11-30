@@ -103,12 +103,14 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
         showCloseIcon={false}
         showBanner={errorMessage.visible && !!errorMessage.message}
       />
-      <Typography variant="h2" className={styles.heading} noMargin>
+      <Typography variant="h2" className={styles.heading}>
         {t.TEST_EMBED_HEADING}
       </Typography>
-      <Typography variant="p" className={styles.noteDescription}>
-        {t.TEST_EMBED_DESCRIPTION}
-      </Typography>
+      <Typography
+        variant="p"
+        className={styles.text}
+        htmlContent={t.TEST_EMBED_DESCRIPTION}
+      ></Typography>
       <Horizontal className={styles.buttonContainer}>
         <Button
           type="SECONDARY"

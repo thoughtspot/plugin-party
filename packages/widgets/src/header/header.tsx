@@ -5,7 +5,7 @@ import { Icon } from '../icon';
 
 export interface HeaderProps {
   headerLogoPath?: string;
-  headerTitle?: string;
+  headerTitle: string;
 }
 
 export const Header = ({ headerLogoPath, headerTitle }: HeaderProps) => {

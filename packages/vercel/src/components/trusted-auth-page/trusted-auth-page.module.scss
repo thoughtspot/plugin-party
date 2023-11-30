@@ -12,18 +12,18 @@
 
 .noteContainer {
   margin-top: $spacing--e;
+  margin-bottom: $spacing--e;
   border-left: 3px solid $red1;
 }
 
 .noteHeading {
   @include rd-font--bold;
-  font-size: 16px;
+  font-size: $spacing--d;
   padding-bottom: $spacing--c;
   padding-left: $spacing--c;
 }
 
 .noteDescription {
-  font-size: 14px;
   margin-bottom: $spacing--c;
   padding-left: $spacing--c;
 }

@@ -46,11 +46,13 @@ export const SelectTables = () => {
   for (let i = 0; i < sourceIds.length; i++) {
     tableNameToIdsMap[sourceNames[i]] = sourceIds[i];
   }
-  const connectedTablesNames = connectedTables.map((connectedTable) => {
-    return connectedTable
-      .map((connectedTableIds) => tableIdToNameMap[connectedTableIds])
-      .join(' - ');
-  });
+  const connectedTablesNames = connectedTables.map(
+    (connectedTable: string[]) => {
+      return connectedTable
+        .map((connectedTableIds) => tableIdToNameMap[connectedTableIds])
+        .join(' - ');
+    }
+  );
 
   const updateDataSource = (selectDataSources: string) => {
     setSelectedDataSourceName(selectDataSources);

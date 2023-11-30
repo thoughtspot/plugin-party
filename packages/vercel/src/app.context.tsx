@@ -3,7 +3,7 @@ import React, { createContext, useContext } from 'preact/compat';
 export interface AppConfigInterface {
   selectedProject?: string;
   hasAdminPrivileges?: boolean;
-  hasPostgresConnection?: string;
+  hasPostgresConnection?: boolean;
   projectEnv?: any;
   isConnectionPostgres?: boolean;
   logicalTableList: any;
@@ -31,7 +31,7 @@ export enum AppConfigActions {
 const defaultAppConfigValues = {
   selectedProject: '',
   hasAdminPrivileges: false,
-  hasPostgresConnection: '',
+  hasPostgresConnection: false,
   projectEnv: null,
   isConnectionPostgres: false,
   logicalTableList: null,
@@ -131,7 +131,7 @@ export const AppContextProvider = ({ children }) => {
     dispatch({ type: AppConfigActions.HAS_ADMIN_PRIVILEGES, adminPrivilege });
   };
 
-  const setHasPostgresConnection = (hasNewPostgresConnection: string) => {
+  const setHasPostgresConnection = (hasNewPostgresConnection: boolean) => {
     dispatch({
       type: AppConfigActions.HAS_POSTGRES_CONNECTION,
       hasNewPostgresConnection,

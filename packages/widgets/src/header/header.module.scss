@@ -1,14 +1,16 @@
+@import '../common.scss';
+
 .header {
-    padding: 4px 32px;
-    height: 64px;
+    padding: $spacing--a $spacing--h;
+    height: $spacing--l;
     background-color: #303540;
 }
 
 .headerLogo {
-    display: white;
-    height: 48px;
-    width: 48px;
-    margin-right: 24px;
+    display: $white;
+    height: $spacing--j;
+    width: $spacing--j;
+    margin-right: $spacing--f;
 }
 
 .headerInfo {
@@ -17,6 +19,6 @@
 }
 
 .headerTitle {
-    margin-top: 16px;
-    margin-bottom: 20px;
+    margin-top: $spacing--d;
+    margin-bottom: $spacing--e;
 }

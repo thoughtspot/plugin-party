@@ -108,8 +108,8 @@ export const whiteListCSP = async (hostUrl: string, urlToWhiteList: string) => {
       }),
     };
 
-    secuirtySettingsPromise(hostUrl, 'CORS', 'POST', updatedCORSPayload);
-    secuirtySettingsPromise(hostUrl, 'CSP', 'POST', updatedCSPPayload);
+    await secuirtySettingsPromise(hostUrl, 'CORS', 'POST', updatedCORSPayload);
+    await secuirtySettingsPromise(hostUrl, 'CSP', 'POST', updatedCSPPayload);
   } catch (error) {
     console.error('Network Error:', error);
   }

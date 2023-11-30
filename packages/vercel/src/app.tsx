@@ -80,6 +80,8 @@ export const App = () => {
   }, []);
 
   // Redirect if deploymentUrl is present and the current route is not the trusted auth page
+  // This will cause the issue when we want to go to summary page it will redirect to
+  // trusted auth, that's why added router.path index to be 8.
   if (deploymentUrl && Object.values(Routes).indexOf(router.path) !== 8) {
     route(Routes.TRUSTED_AUTH_PAGE);
   }
@@ -97,7 +99,7 @@ export const App = () => {
     <I18N>
       <VercelTSInit setClusterUrl={setClusterUrl} clusterUrl={clusterUrl}>
         <Header
-          headerTitle="Thoughtspot Integration"
+          headerTitle={t.HEADER_TITLE}
           headerLogoPath="TS-white-logo"
         ></Header>
         <Horizontal spacing="c" className={styles.docsContainer}>

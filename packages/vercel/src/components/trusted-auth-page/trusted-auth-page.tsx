@@ -58,56 +58,50 @@ export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
   };
 
   if (isLoading) {
-    return <div>Setting up Trusted Authentication...</div>;
+    return <div>{t.TRUSTED_AUTH_PAGE_LOADING}</div>;
   }
 
   return (
-    <Vertical>
-      <Vertical className={styles.container}>
-        <Typography variant="h2" className={styles.heading} noMargin>
-          {t.TRUSTED_AUTH_PAGE_HEADING}
+    <Vertical className={styles.container}>
+      <Typography variant="h2" className={styles.heading} noMargin>
+        {t.TRUSTED_AUTH_PAGE_HEADING}
+      </Typography>
+      <Vertical className={styles.noteContainer}>
+        <Typography className={styles.noteHeading} variant="h6" noMargin>
+          {t.IMPORTANT}
         </Typography>
-        <Vertical className={styles.noteContainer}>
-          <Typography className={styles.noteHeading} variant="h6" noMargin>
-            IMPORTANT
-          </Typography>
-          <Typography
-            variant="p"
-            noMargin
-            className={styles.noteDescription}
-            htmlContent={t.TRUSTED_AUTH_PAGE_DESCRIPTION}
-          >
-            {t.CODE_SAMPLE_DESCRIPTION}
-          </Typography>
-        </Vertical>
+        <Typography
+          variant="p"
+          noMargin
+          className={styles.noteDescription}
+          htmlContent={t.TRUSTED_AUTH_PAGE_DESCRIPTION}
+        >
+          {t.CODE_SAMPLE_DESCRIPTION}
+        </Typography>
       </Vertical>
-      <Vertical style={{ padding: '16px' }}>
-        <Vertical>
-          <Horizontal>
-            <Button
-              type="SECONDARY"
-              onClick={handleCopyCode}
-              className={styles.button}
-              text={t.COPY_CODE}
-            />
-            <Button
-              type="SECONDARY"
-              onClick={handleOpenStackBlitz}
-              className={styles.button}
-              text={t.OPEN_SANDBOX}
-            />
-          </Horizontal>
-          <SyntaxHighlighter language="javascript" style={atomOneDark}>
-            {codeMap.SageEmbed}
-          </SyntaxHighlighter>
-          <Vertical hAlignContent="start">
-            <Button
-              onClick={closeVercelModal}
-              className={styles.button}
-              text={t.NEXT_BUTTON}
-            />
-          </Vertical>
-        </Vertical>
+      <Horizontal>
+        <Button
+          type="SECONDARY"
+          onClick={handleCopyCode}
+          className={styles.button}
+          text={t.COPY_CODE}
+        />
+        <Button
+          type="SECONDARY"
+          onClick={handleOpenStackBlitz}
+          className={styles.button}
+          text={t.OPEN_SANDBOX}
+        />
+      </Horizontal>
+      <SyntaxHighlighter language="javascript" style={atomOneDark}>
+        {codeMap.SageEmbed}
+      </SyntaxHighlighter>
+      <Vertical hAlignContent="start">
+        <Button
+          onClick={closeVercelModal}
+          className={styles.button}
+          text={t.NEXT_BUTTON}
+        />
       </Vertical>
     </Vertical>
   );

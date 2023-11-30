@@ -21,9 +21,10 @@ interface Project {
 export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
   const { t } = useTranslations();
   const [projects, setProjects] = useState<Project[]>([]);
-  const [selectedProject, selectProject] = useState<string>('');
+  const [selectedProjects, setSelectedProjects] = useState<string>('');
   const [projectIndex, setProjectIndex] = useState(0);
-  const [hasPostgres, setHasPostgres] = useState<string[]>([]);
+  const [foundPostgresConnection, setFoundPostgresConnection] = useState(false);
+  const [hasPostgres, setHasPostgres] = useState<boolean[]>([]);
   const [projectEnvs, setProjectEnvs] = useState<any>([]);
   const [isConnectionPostgres, setConnectionPostgres] = useState(true);
   const {
@@ -39,7 +40,7 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
   });
   const tsHostURL = formatClusterUrl(hostUrl.url);
 
-  const init = async () => {
+  const hasNecessaryPrivilege = async () => {
     const tsUserInfo = await getUserName(tsHostURL);
     const userPrivilege = tsUserInfo.privileges;
     setHasAdminPrivilege(userPrivilege.includes('ADMINISTRATION'));
@@ -52,12 +53,19 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
         visible: true,
       });
     }
+  };
+
+  const fetchProjectAndEnv = async () => {
     const searchParams = new URLSearchParams(window.location.search);
     const teamId = searchParams.get('teamId') || '';
+
+    // Fetching Vercel Projects selected by user
     const projectData = await vercelPromise(
       `https://api.vercel.com/v9/projects?teamId=${teamId}`,
       vercelAccessToken
     );
+
+    // Fetching env Variables for all the selected projects
     const envVariablesPromises = projectData.projects.map((project) => {
       return vercelPromise(
         `https://api.vercel.com/v8/projects/${project.id}/env?teamId=${teamId}&decrypt=true&source=vercel-cli:pull`,
@@ -66,15 +74,20 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
     });
 
     const envVariables = await Promise.all(envVariablesPromises);
-    const hasPostgresConnection: string[] = [];
+    const hasPostgresConnection: boolean[] = [];
     const projectEnv: any = [];
     for (let index = 0; index < envVariables.length; index++) {
       const envs = envVariables[index].envs;
       const connectionParams = getConnectionParams(envs);
+
+      // We are setting connectionParams of Postgres
+      // If we are finding postgres env then only
+      // we are adding key value pair in connectionParams
       if (Object.keys(connectionParams).length === 5) {
-        hasPostgresConnection.push('Yes');
+        hasPostgresConnection.push(true);
+        setFoundPostgresConnection(true);
       } else {
-        hasPostgresConnection.push('No');
+        hasPostgresConnection.push(false);
       }
       projectEnv.push(connectionParams);
     }
@@ -84,26 +97,23 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
   };
 
   useEffect(() => {
-    init();
+    hasNecessaryPrivilege();
+    fetchProjectAndEnv();
   }, []);
 
   const handleSelectProject = (projectName: string, index: number) => {
-    selectProject((prevProject: string) =>
+    setSelectedProjects((prevProject: string) =>
       prevProject === projectName ? '' : projectName
     );
     setProjectIndex(index);
   };
 
   const updateProject = () => {
-    if (selectedProject === '') {
-      setErrorMessage({ visible: false, message: t.SELECT_PROJECT_ERROR });
-    } else {
-      setSelectedProject(selectedProject);
-      setHasPostgresConnection(hasPostgres[projectIndex]);
-      setProjectEnv(projectEnvs[projectIndex]);
-      setIsConnectionPostgres(isConnectionPostgres);
-      route(Routes.APP_EMBED);
-    }
+    setSelectedProject(selectedProjects);
+    setHasPostgresConnection(hasPostgres[projectIndex]);
+    setProjectEnv(projectEnvs[projectIndex]);
+    setIsConnectionPostgres(isConnectionPostgres);
+    route(Routes.APP_EMBED);
   };
   const isPostgresSelected = () => {
     setConnectionPostgres(!isConnectionPostgres);
@@ -118,7 +128,7 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
           name: '',
         }}
         showCloseIcon={false}
-        showBanner={errorMessage.message !== ''}
+        showBanner={errorMessage.message !== '' && errorMessage.visible}
       />
       {!errorMessage.visible && (
         <>
@@ -136,6 +146,11 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
               >
                 {t.SELECT_PROJECT_HEADING}
               </Typography>
+              <Typography
+                className={styles.description}
+                variant="p"
+                htmlContent={t.SELECT_PROJECT_SUBTITLE}
+              ></Typography>
               <Vertical className={styles.box}>
                 <TableListView
                   textTitle={t.PROJECT_NAME}
@@ -149,7 +164,8 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
                 <input
                   type="checkbox"
                   onChange={() => isPostgresSelected()}
-                  checked={isConnectionPostgres}
+                  checked={foundPostgresConnection && isConnectionPostgres}
+                  disabled={!foundPostgresConnection}
                 ></input>
                 <Typography variant="p">{t.USE_POSTGRES_CONNECTION}</Typography>
               </Horizontal>
@@ -162,6 +178,7 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
                     updateProject();
                   }}
                   text={t.CONTINUE}
+                  isDisabled={selectedProjects === ''}
                 ></Button>
               </Vertical>
             </>

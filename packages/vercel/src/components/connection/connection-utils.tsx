@@ -19,37 +19,36 @@ interface Step {
 
 export const steps: Step[] = [
   {
-    title: 'Setup Your data model in Thoughtspot',
+    title: 'Set up Your data model in ThoughtSpot',
   },
   {
-    title: 'Connect to Thoughtspot',
+    title: 'Connect to ThoughtSpot',
     isSubStep: true,
   },
   {
-    title: 'Select Data Tables',
+    title: 'Connect to your data',
     isSubStep: true,
   },
   {
-    title: 'Create Data model to analyze',
+    title: 'Create data model',
     isSubStep: true,
   },
   {
-    title: 'Test Embedding Thoughtspot',
+    title: 'Test embedding ThoughtSpot',
   },
   {
-    title: 'Embed Thoughtspot in your application',
+    title: 'Embed ThoughtSpot in your application',
   },
   {
-    title: 'Deploying the Trusted Authentication Template',
+    title: 'Deploy the Trusted Authentication template',
     isSubStep: true,
   },
   {
-    title: 'Embedding Thoughtspot withTrusted Authentication',
+    title: 'Embed ThoughtSpot with Trusted Authentication',
     isSubStep: true,
   },
   {
-    title: 'Summary Page',
-    isSubStep: true,
+    title: 'Summary',
   },
 ];
 

@@ -23,13 +23,17 @@
 
 .noteHeading {
   @include rd-font--bold;
-  font-size: 16px;
+  font-size: $spacing--d;
   padding-bottom: $spacing--c;
   padding-left: $spacing--c;
 }
 
+.text {
+  margin-bottom: $spacing--b;
+  line-height: 1.6;
+}
+
 .noteDescription {
-  font-size: 14px;
   margin-bottom: $spacing--c;
   padding-left: $spacing--c;
 }

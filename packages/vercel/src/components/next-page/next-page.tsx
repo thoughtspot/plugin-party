@@ -27,9 +27,7 @@ export const NextPage = ({ hostUrl, vercelToken }) => {
           variant="p"
           htmlContent={t.TRUSTED_AUTH_DESCRIPTION}
           className={styles.description}
-        >
-          ''
-        </Typography>
+        ></Typography>
       </Vertical>
       <a
         href={`https://vercel.com/new/clone?${vercelParams}`}

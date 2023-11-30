@@ -14,9 +14,14 @@ import { Routes } from '../connection/connection-utils';
 export const FullEmbed = ({ hostUrl }) => {
   const { t } = useTranslations();
   const embedRef = useEmbedRef();
-  const { setLogicalTableList, setCreateConnection } = useAppContext();
-  const { projectEnv, hasPostgresConnection, isConnectionPostgres } =
-    useAppContext();
+  const {
+    setLogicalTableList,
+    setCreateConnection,
+    projectEnv,
+    hasPostgresConnection,
+    isConnectionPostgres,
+  } = useAppContext();
+
   const [embedPath, setEmbedPath] = useState('');
   const [errorMessage, setErrorMessage] = useState({
     visible: false,
@@ -24,7 +29,7 @@ export const FullEmbed = ({ hostUrl }) => {
   });
 
   useEffect(() => {
-    if (hasPostgresConnection === 'Yes' && isConnectionPostgres) {
+    if (hasPostgresConnection && isConnectionPostgres) {
       createConnection(formatClusterUrl(hostUrl.url), projectEnv)
         .then((res) => {
           setEmbedPath(`/data/embrace/${res.id}/edit`);
