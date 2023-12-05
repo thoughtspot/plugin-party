@@ -16,7 +16,9 @@ export interface ListProps {
 
   textWithIconTitle?: string;
 
-  icon?: boolean[];
+  icon?: string[];
+
+  iconText?: string[];
 
   /**
    * onRowClicked: callback event if row clicked
@@ -28,6 +30,7 @@ export const TableListView: React.FC<ListProps> = ({
   textTitle,
   textWithIconTitle,
   icon,
+  iconText,
   data,
   onRowClick,
 }: ListProps) => {
@@ -53,8 +56,8 @@ export const TableListView: React.FC<ListProps> = ({
           <MemoTableListItem
             id={item.id}
             title={item.name}
-            icon={icon[index] === true ? 'correct' : 'wrong'}
-            text={icon[index] === true ? 'Yes' : 'No'}
+            icon={icon?.[index] || ''}
+            text={iconText?.[index] || ''}
             isChecked={selectedIndex === index}
           />
         </Vertical>
@@ -73,7 +76,7 @@ export const TableListView: React.FC<ListProps> = ({
               <Typography variant="p" noMargin>
                 {textTitle}
               </Typography>
-              <Horizontal spacing="a">
+              <Horizontal spacing="a" className={styles.iconTextWrapper}>
                 <Typography variant="p" noMargin>
                   {textWithIconTitle}
                 </Typography>

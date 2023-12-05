@@ -7,6 +7,7 @@ import React from 'react';
 import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { Button } from 'widgets/lib/button';
 import { Typography } from 'widgets/lib/typography';
+import { TableListView } from 'widgets/lib/table-list-view';
 import styles from './full-app.module.scss';
 import { useAppContext } from '../../app.context';
 import { createConnection, getMetadataList } from '../../service/ts-api';
@@ -25,8 +26,9 @@ export const FullEmbed = ({ hostUrl }) => {
     isExistingDataSouce,
     setWorksheetId,
   } = useAppContext();
-  const [existingDataSources, setExistingDataSources] = useState([]);
+  const [existingDataSources, setExistingDataSources] = useState<any>([]);
   const [selectedDataSource, setSelectedDataSource] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   const [embedPath, setEmbedPath] = useState('');
   const [errorMessage, setErrorMessage] = useState({
@@ -57,6 +59,7 @@ export const FullEmbed = ({ hostUrl }) => {
     } else {
       setEmbedPath('/data/embrace/connection');
     }
+    setIsLoading(false);
   }, []);
 
   const handleAllEmbedEvent = (event) => {
@@ -78,8 +81,8 @@ export const FullEmbed = ({ hostUrl }) => {
     }
   };
 
-  const handleSelectDataSources = (dataSource) => {
-    setSelectedDataSource(dataSource.id);
+  const handleSelectDataSources = (dataSourceName: string, index: number) => {
+    setSelectedDataSource(existingDataSources[index].id);
   };
 
   const updateSelectedDataSources = () => {
@@ -110,6 +113,11 @@ export const FullEmbed = ({ hostUrl }) => {
     },
   };
 
+  if (isLoading) {
+    console.log('chatgpt');
+    return <div>Fetching existing data sources...</div>;
+  }
+
   return (
     <Vertical className={styles.container}>
       <ErrorBanner
@@ -121,22 +129,21 @@ export const FullEmbed = ({ hostUrl }) => {
         showCloseIcon={false}
         showBanner={errorMessage.visible && !!errorMessage.message}
       />
-      {isExistingDataSouce ? (
+      {isExistingDataSouce && !isLoading ? (
         <>
           <Typography className={styles.heading} variant="h2">
             {t.SELECT_EXISTING_DATASOURCES}
           </Typography>
           <Vertical className={styles.modal} hAlignContent="start">
-            {existingDataSources.map((dataSource: any) => (
-              <div className={styles.option}>
-                <input
-                  type="radio"
-                  checked={dataSource.id === selectedDataSource}
-                  onChange={() => handleSelectDataSources(dataSource)}
-                />
-                {dataSource.name}
-              </div>
-            ))}
+            <TableListView
+              textTitle="DataSource Name"
+              textWithIconTitle="Type"
+              onRowClick={handleSelectDataSources}
+              data={existingDataSources}
+              iconText={existingDataSources.map((dataSource: any) => {
+                return dataSource.type === 'WORKSHEET' ? 'Worksheet' : 'Table';
+              })}
+            ></TableListView>
           </Vertical>
           <Vertical className={styles.buttonContainer} hAlignContent="center">
             <Button

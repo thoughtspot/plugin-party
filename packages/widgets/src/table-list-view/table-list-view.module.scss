@@ -25,7 +25,6 @@
   height: 85px;
 }
 .item-title {
-  @include rd-font--bold;
   min-width: 84px !important;
 }
 .item {
@@ -57,6 +56,10 @@
     margin: 0;
 }
 
+.iconTextWrapper {
+  min-width: 20% !important;
+}
+
 .listContent {
   flex: 1 1 0;
   overflow: auto;
@@ -86,5 +89,5 @@
 
 .textIcon {
     align-items: center;
-    min-width: 180px !important;
+    min-width: 20% !important;
 }

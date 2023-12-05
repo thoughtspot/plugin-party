@@ -6,7 +6,7 @@ import styles from './table-list-view.module.scss';
 
 export interface TableListProps {
   id?: string;
-  icon: string;
+  icon?: string;
   title: string;
   text: string;
   isChecked: boolean;
@@ -14,7 +14,7 @@ export interface TableListProps {
 
 export const TableListItem: React.FC<TableListProps> = ({
   id,
-  icon,
+  icon = '',
   title,
   text,
   isChecked,
@@ -33,7 +33,7 @@ export const TableListItem: React.FC<TableListProps> = ({
           </Typography>
         </Horizontal>
         <Horizontal spacing="a" className={styles.textIcon}>
-          <Icon name={`rd-icon-${icon}`} size="m" />
+          {icon && <Icon name={`rd-icon-${icon}`} size="m" />}
           <Typography variant="p" noMargin>
             {text}
           </Typography>

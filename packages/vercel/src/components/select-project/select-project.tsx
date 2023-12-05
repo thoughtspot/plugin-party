@@ -162,7 +162,12 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
                   textTitle={t.PROJECT_NAME}
                   textWithIconTitle={t.HAS_POSTGRES}
                   data={projects}
-                  icon={hasPostgres}
+                  icon={hasPostgres.map((postgres) => {
+                    return postgres ? 'correct' : 'wrong';
+                  })}
+                  iconText={hasPostgres.map((postgres) => {
+                    return postgres ? 'Yes' : 'No';
+                  })}
                   onRowClick={handleSelectProject}
                 />
               </Vertical>
