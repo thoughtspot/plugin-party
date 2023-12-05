@@ -12,6 +12,7 @@ export interface AppConfigInterface {
   shouldCreateConnection: boolean;
   worksheetId: string;
   selectedDataSourceName: string;
+  isExistingDataSouce: boolean;
 }
 
 export enum AppConfigActions {
@@ -26,6 +27,7 @@ export enum AppConfigActions {
   CREATE_CONNECTION,
   WORKSHEET_ID,
   SELECT_DATA_SOURCE_NAME,
+  IS_EXISTING_DATA_SOURCE,
 }
 
 const defaultAppConfigValues = {
@@ -40,6 +42,7 @@ const defaultAppConfigValues = {
   shouldCreateConnection: false,
   worksheetId: '',
   selectedDataSourceName: '',
+  isExistingDataSouce: false,
 };
 
 const reducer: any = (state, action) => {
@@ -99,6 +102,11 @@ const reducer: any = (state, action) => {
         ...state,
         selectedDataSourceName: action.newSelectedDataSourceName,
       };
+    case AppConfigActions.IS_EXISTING_DATA_SOURCE:
+      return {
+        ...state,
+        isExistingDataSouce: action.newIsExistingDataSouce,
+      };
     default:
       return state;
   }
@@ -122,6 +130,7 @@ export const AppContextProvider = ({ children }) => {
     shouldCreateConnection,
     worksheetId,
     selectedDataSourceName,
+    isExistingDataSouce,
   } = state;
   const setSelectedProject = (newSelectedProject: string) => {
     dispatch({ type: AppConfigActions.SELECTED_PROJECT, newSelectedProject });
@@ -194,6 +203,13 @@ export const AppContextProvider = ({ children }) => {
     });
   };
 
+  const setIsExistingDataSouce = (newIsExistingDataSouce: boolean) => {
+    dispatch({
+      type: AppConfigActions.IS_EXISTING_DATA_SOURCE,
+      newIsExistingDataSouce,
+    });
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -219,6 +235,8 @@ export const AppContextProvider = ({ children }) => {
         setWorksheetId,
         selectedDataSourceName,
         setSelectedDataSourceName,
+        isExistingDataSouce,
+        setIsExistingDataSouce,
       }}
     >
       {children}

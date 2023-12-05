@@ -23,7 +23,6 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProjects, setSelectedProjects] = useState<string>('');
   const [projectIndex, setProjectIndex] = useState(0);
-  const [foundPostgresConnection, setFoundPostgresConnection] = useState(false);
   const [hasPostgres, setHasPostgres] = useState<boolean[]>([]);
   const [projectEnvs, setProjectEnvs] = useState<any>([]);
   const [isConnectionPostgres, setConnectionPostgres] = useState(true);
@@ -32,6 +31,7 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
     setHasAdminPrivilege,
     setHasPostgresConnection,
     setProjectEnv,
+    setIsExistingDataSouce,
     setIsConnectionPostgres,
   } = useAppContext();
   const [errorMessage, setErrorMessage] = useState({
@@ -85,7 +85,6 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
       // we are adding key value pair in connectionParams
       if (Object.keys(connectionParams).length === 5) {
         hasPostgresConnection.push(true);
-        setFoundPostgresConnection(true);
       } else {
         hasPostgresConnection.push(false);
       }
@@ -108,15 +107,22 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
     setProjectIndex(index);
   };
 
-  const updateProject = () => {
+  const editConnection = () => {
     setSelectedProject(selectedProjects);
     setHasPostgresConnection(hasPostgres[projectIndex]);
     setProjectEnv(projectEnvs[projectIndex]);
-    setIsConnectionPostgres(isConnectionPostgres);
+    setIsConnectionPostgres(true);
     route(Routes.APP_EMBED);
   };
-  const isPostgresSelected = () => {
-    setConnectionPostgres(!isConnectionPostgres);
+
+  const createConnection = () => {
+    setIsConnectionPostgres(false);
+    route(Routes.APP_EMBED);
+  };
+
+  const selectExistingDataSources = () => {
+    setIsExistingDataSouce(true);
+    route(Routes.APP_EMBED);
   };
 
   return (
@@ -160,27 +166,29 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
                   onRowClick={handleSelectProject}
                 />
               </Vertical>
-              <Horizontal className={styles.checkbox}>
-                <input
-                  type="checkbox"
-                  onChange={() => isPostgresSelected()}
-                  checked={foundPostgresConnection && isConnectionPostgres}
-                  disabled={!foundPostgresConnection}
-                ></input>
-                <Typography variant="p">{t.USE_POSTGRES_CONNECTION}</Typography>
-              </Horizontal>
-              <Vertical
+              <Horizontal
                 hAlignContent="center"
                 className={styles.buttonContainer}
+                spacing="h"
               >
                 <Button
                   onClick={() => {
-                    updateProject();
+                    editConnection();
                   }}
-                  text={t.CONTINUE}
-                  isDisabled={selectedProjects === ''}
+                  text={t.EDIT_CONNECTION}
+                  isDisabled={
+                    selectedProjects === '' || !hasPostgres[projectIndex]
+                  }
                 ></Button>
-              </Vertical>
+                <Button
+                  onClick={() => selectExistingDataSources()}
+                  text={t.SELECT_EXISTING_DATASOURCES}
+                ></Button>
+                <Button
+                  onClick={() => createConnection()}
+                  text={t.CREATE_CONNECTION}
+                ></Button>
+              </Horizontal>
             </>
           )}
         </>

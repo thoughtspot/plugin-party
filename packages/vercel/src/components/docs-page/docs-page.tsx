@@ -9,6 +9,7 @@ import { useState, useEffect } from 'preact/hooks';
 import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { Typography } from 'widgets/lib/typography';
 import { BannerType, ErrorBanner } from 'widgets/lib/error-banner';
+import { useLoader } from 'widgets/lib/loader';
 import { EmbedTemplates } from './embed-code-templates';
 import styles from './docs-page.module.scss';
 import { Routes } from '../connection/connection-utils';
@@ -21,6 +22,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
   const { t } = useTranslations();
   const tsHostURL = formatClusterUrl(hostUrl.url);
   const [isLoading, setIsLoading] = useState(true);
+  const loader = useLoader();
   const {
     dataSourcesId,
     relationshipId,
@@ -28,6 +30,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
     setWorksheetId,
     hasAdminPrivileges,
     selectedDataSourceName,
+    worksheetId,
   } = useAppContext();
   const [newWorksheetId, setNewWorksheetId] = useState();
   const codeMap = {
@@ -40,24 +43,30 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
   });
 
   useEffect(() => {
-    generateWorksheetTML(
-      tsHostURL,
-      vercelToken,
-      dataSourcesId,
-      relationshipId,
-      selectedProject,
-      selectedDataSourceName
-    )
-      .then((res) => {
-        setWorksheetId(res);
-        setNewWorksheetId(res);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setErrorMessage({ visible: true, message: t.CREATE_WORKSHEET_ERROR });
-        setIsLoading(false);
-      });
+    if (worksheetId === '') {
+      generateWorksheetTML(
+        tsHostURL,
+        vercelToken,
+        dataSourcesId,
+        relationshipId,
+        selectedProject,
+        selectedDataSourceName
+      )
+        .then((res) => {
+          setWorksheetId(res);
+          setNewWorksheetId(res);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          setErrorMessage({ visible: true, message: t.CREATE_WORKSHEET_ERROR });
+          setIsLoading(false);
+        });
+    } else {
+      loader.hide();
+      setIsLoading(false);
+      setNewWorksheetId(worksheetId);
+    }
   }, [dataSourcesId, relationshipId]);
 
   const handleCopyCode = () => {

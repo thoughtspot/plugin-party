@@ -5,9 +5,11 @@ import { useTranslations } from 'i18n';
 import { BannerType, ErrorBanner } from 'widgets/lib/error-banner';
 import React from 'react';
 import { Vertical } from 'widgets/lib/layout/flex-layout';
+import { Button } from 'widgets/lib/button';
+import { Typography } from 'widgets/lib/typography';
 import styles from './full-app.module.scss';
 import { useAppContext } from '../../app.context';
-import { createConnection } from '../../service/ts-api';
+import { createConnection, getMetadataList } from '../../service/ts-api';
 import { formatClusterUrl } from './full-app.utils';
 import { Routes } from '../connection/connection-utils';
 
@@ -20,17 +22,28 @@ export const FullEmbed = ({ hostUrl }) => {
     projectEnv,
     hasPostgresConnection,
     isConnectionPostgres,
+    isExistingDataSouce,
+    setWorksheetId,
   } = useAppContext();
+  const [existingDataSources, setExistingDataSources] = useState([]);
+  const [selectedDataSource, setSelectedDataSource] = useState('');
 
   const [embedPath, setEmbedPath] = useState('');
   const [errorMessage, setErrorMessage] = useState({
     visible: false,
     message: '',
   });
+  const tsHostURL = formatClusterUrl(hostUrl.url);
 
   useEffect(() => {
-    if (hasPostgresConnection && isConnectionPostgres) {
-      createConnection(formatClusterUrl(hostUrl.url), projectEnv)
+    const fetchMetadataSources = async () => {
+      const res = await getMetadataList(tsHostURL);
+      setExistingDataSources(res.headers);
+    };
+    if (isExistingDataSouce) {
+      fetchMetadataSources();
+    } else if (hasPostgresConnection && isConnectionPostgres) {
+      createConnection(formatClusterUrl(tsHostURL), projectEnv)
         .then((res) => {
           setEmbedPath(`/data/embrace/${res.id}/edit`);
         })
@@ -44,7 +57,7 @@ export const FullEmbed = ({ hostUrl }) => {
     } else {
       setEmbedPath('/data/embrace/connection');
     }
-  }, [hasPostgresConnection, isConnectionPostgres]);
+  }, []);
 
   const handleAllEmbedEvent = (event) => {
     if (
@@ -63,6 +76,15 @@ export const FullEmbed = ({ hostUrl }) => {
       }
       route(Routes.OPTIONS);
     }
+  };
+
+  const handleSelectDataSources = (dataSource) => {
+    setSelectedDataSource(dataSource.id);
+  };
+
+  const updateSelectedDataSources = () => {
+    setWorksheetId(selectedDataSource);
+    route(Routes.DOCUMENTS);
   };
 
   const customization = {
@@ -99,17 +121,43 @@ export const FullEmbed = ({ hostUrl }) => {
         showCloseIcon={false}
         showBanner={errorMessage.visible && !!errorMessage.message}
       />
-      <AppEmbed
-        frameParams={{
-          height: '100%',
-          width: '100%',
-        }}
-        className={styles.fullApp}
-        ref={embedRef}
-        path={embedPath}
-        onALL={handleAllEmbedEvent}
-        customizations={customization}
-      ></AppEmbed>
+      {isExistingDataSouce ? (
+        <>
+          <Typography className={styles.heading} variant="h2">
+            {t.SELECT_EXISTING_DATASOURCES}
+          </Typography>
+          <Vertical className={styles.modal} hAlignContent="start">
+            {existingDataSources.map((dataSource: any) => (
+              <div className={styles.option}>
+                <input
+                  type="radio"
+                  checked={dataSource.id === selectedDataSource}
+                  onChange={() => handleSelectDataSources(dataSource)}
+                />
+                {dataSource.name}
+              </div>
+            ))}
+          </Vertical>
+          <Vertical className={styles.buttonContainer} hAlignContent="center">
+            <Button
+              onClick={updateSelectedDataSources}
+              text={t.CONTINUE}
+            ></Button>
+          </Vertical>
+        </>
+      ) : (
+        <AppEmbed
+          frameParams={{
+            height: '100%',
+            width: '100%',
+          }}
+          className={styles.fullApp}
+          ref={embedRef}
+          path={embedPath}
+          onALL={handleAllEmbedEvent}
+          customizations={customization}
+        ></AppEmbed>
+      )}
     </Vertical>
   );
 };

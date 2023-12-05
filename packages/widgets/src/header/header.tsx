@@ -11,7 +11,7 @@ export interface HeaderProps {
 export const Header = ({ headerLogoPath, headerTitle }: HeaderProps) => {
   return (
     <Vertical className={styles.header}>
-      <Horizontal className={styles.headerInfo}>
+      <Horizontal className={styles.headerInfo} spacing="d">
         {headerLogoPath && <Icon name={headerLogoPath} size="xl" />}
         <Typography
           variant="h4"

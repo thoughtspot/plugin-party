@@ -79,5 +79,9 @@
   "SUMMARY_PAGE_TEXT": "Embed Analytics in your app with this ",
   "SUMMARY_PAGE_DATA_TEXT": "Create data visualizations in your ",
   "TRUSTED_AUTH_PAGE_LOADING": "Setting up Trusted Authentication...",
-  "IMPORTANT": "IMPORTANT"
+  "IMPORTANT": "IMPORTANT",
+  "SELECT_EXISTING_DATASOURCES": "Select existing datasources",
+  "EDIT_CONNECTION": "Edit Connection",
+  "CREATE_CONNECTION": "Create Connection",
+  "SELECT_EXISTING_DATA_SOURCES": "Select existing data Sources"
 }

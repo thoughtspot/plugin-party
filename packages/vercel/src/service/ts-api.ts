@@ -26,6 +26,34 @@ export const createConnection = async (
   return res;
 };
 
+export const getMetadataList = async (hostUrl) => {
+  const params = {
+    category: 'ALL',
+    offset: '0',
+    pattern: '',
+    showHidden: 'false',
+    sort: 'MODIFIED',
+    sortAscending: 'false',
+    type: 'LOGICAL_TABLE',
+  };
+
+  const queryParams = new URLSearchParams(params);
+
+  const response = await fetch(
+    `${hostUrl}/callosum/v1/metadata/list?${queryParams}`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      method: 'GET',
+    }
+  );
+  const res = await response.json();
+  return res;
+};
+
 const ImportWorksheetTML = async (hostUrl, request: any) => {
   const payload = {
     metadata_tmls: request,
