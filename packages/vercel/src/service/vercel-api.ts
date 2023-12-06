@@ -155,10 +155,13 @@ export const saveENV = async (hostUrl: string, vercelConfig: any) => {
           method: 'post',
         }
       );
+
+      return secretKey;
     }
   } catch (error) {
     console.error('Network Error:', error);
   }
+  return null;
 };
 
 export const saveDeployedUrlEnv = async () => {
@@ -202,11 +205,13 @@ export const getDomains = async (
   );
   const tsHostURL = domainConfig.domains[0].name;
   await whiteListCSP(hostUrl, tsHostURL);
-  await saveENV(hostUrl, {
+  const secretKey = await saveENV(hostUrl, {
     accessToken,
     teamId,
     projectIds,
     hostUrl,
     idGuid,
   });
+
+  return secretKey;
 };

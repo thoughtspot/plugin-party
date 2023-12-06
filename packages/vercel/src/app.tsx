@@ -6,13 +6,14 @@ import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { I18N, useTranslations } from 'i18n';
 import { Stepper } from 'widgets/lib/stepper';
 import { useLoader } from 'widgets/lib/loader';
+import { CircularLoader } from 'widgets/lib/circular-loader';
 import { Header } from 'widgets/lib/header';
 import { useEffect, useState } from 'preact/hooks';
 import { SelectProject } from './components/select-project/select-project';
 import { Routes, steps } from './components/connection/connection-utils';
 import { FullEmbed } from './components/full-app/full-app';
 import { SelectTables } from './components/select-tables/select-tables';
-import { DocsPage } from './components/docs-page/docs-page';
+import { DocsPage } from './components/auth-type-none-page/auth-type-none-page';
 import { NextPage } from './components/next-page/next-page';
 import styles from './app.module.scss';
 import { AppContextProvider } from './app.context';
@@ -21,7 +22,11 @@ import { getCurrentUserInfo, getVercelAccessToken } from './service/vercel-api';
 import { SummaryPage } from './components/summary-page/summary-page';
 
 // Resize the window to its initial size
-window.resizeTo(window.screen.width, window.screen.height);
+const width = Math.min(window.screen.width, 1280);
+const height = Math.min(window.screen.height, 790);
+window.innerWidth = width;
+window.innerHeight = height;
+window.resizeTo(width, height);
 
 export const App = () => {
   const { t } = useTranslations();
@@ -32,18 +37,33 @@ export const App = () => {
   const [router] = useRouter();
   const [vercelAccessToken, setVercelAccessToken] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [redirectUrl, setRedirectUrl] = useState('');
   const currentRouteIndex = Object.values(Routes).indexOf(router.path);
 
   // Extracting query parameters from the URL
   const url = window.location.search;
   const searchParams = url.split('?');
   const addedSearchParam = new URLSearchParams(searchParams[1]);
-  const TSClusterId = addedSearchParam.get('clusterUrl');
+  const configurationId = addedSearchParam.get('configurationId');
+  const code = addedSearchParam.get('code');
+  let TSClusterId = addedSearchParam.get('clusterUrl');
   const worksheetId = addedSearchParam.get('worksheetId');
   const deploymentUrlSearchParam = new URLSearchParams(searchParams[2]);
-  const deploymentUrl = deploymentUrlSearchParam.get('deployment-url');
-  const domain = deploymentUrl?.split('-') || [];
-  const domainUrl = `${domain[0]}-${domain[2]}`;
+  let deploymentUrl = deploymentUrlSearchParam.get('deployment-url');
+
+  // Creating broadcast channel to interact with the new tab
+  // opened when we open vercel deploy page on a new tab
+  const bc = new BroadcastChannel('test_channel');
+
+  // This is done to redirect to summary page when integration is
+  // completed and user clicks on configure button at the page
+  // which comes up after the integration is successful
+  if (configurationId && !code) {
+    deploymentUrl = localStorage.getItem('deploymentUrl') || '';
+    setRedirectUrl(deploymentUrl);
+    TSClusterId = localStorage.getItem('clusterUrl');
+    route(Routes.SUMMARY_PAGE);
+  }
 
   const [clusterUrl, setClusterUrl] = useState({
     url: deploymentUrl ? TSClusterId : '',
@@ -75,24 +95,20 @@ export const App = () => {
         setIsLoading(false);
       }
     };
-
+    if (deploymentUrl && worksheetId) {
+      bc.postMessage(window.location.href);
+      window.close();
+    } else if (code) {
+      bc.onmessage = (event) => {
+        setRedirectUrl(event.data);
+        route(Routes.TRUSTED_AUTH_PAGE);
+      };
+    }
     fetchData();
   }, []);
 
-  // Redirect if deploymentUrl is present and the current route is not the trusted auth page
-  // This will cause the issue when we want to go to summary page it will redirect to
-  // trusted auth, that's why added router.path index to be 8.
-  if (deploymentUrl && Object.values(Routes).indexOf(router.path) !== 8) {
-    route(Routes.TRUSTED_AUTH_PAGE);
-  }
-
   if (isLoading) {
-    return (
-      <div className={styles.loadingContainer}>
-        <h1>{t.LOADING}</h1>
-        <div className={styles.loader}></div>
-      </div>
-    );
+    return <CircularLoader loadingText={t.LOADING}></CircularLoader>;
   }
 
   return (
@@ -124,14 +140,12 @@ export const App = () => {
               />
               <TrustedAuthPage
                 hostUrl={clusterUrl}
-                worksheetId={worksheetId}
-                deploymentUrl={domainUrl}
+                deploymentUrl={redirectUrl}
                 path={Routes.TRUSTED_AUTH_PAGE}
               />
               <SummaryPage
                 hostUrl={clusterUrl}
-                worksheetId={worksheetId}
-                deploymentUrl={domainUrl}
+                deploymentUrl={redirectUrl}
                 path={Routes.SUMMARY_PAGE}
               />
             </Router>

@@ -8,25 +8,34 @@ import { useEffect, useState } from 'preact/hooks';
 import { route } from 'preact-router';
 import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { Typography } from 'widgets/lib/typography';
+import { CircularLoader } from 'widgets/lib/circular-loader';
 import styles from './trusted-auth-page.module.scss';
 import { formatClusterUrl } from '../full-app/full-app.utils';
-import { EmbedTemplates } from '../docs-page/embed-code-templates';
+import { EmbedTemplates } from '../auth-type-none-page/embed-code-templates';
 import { getUserName } from '../../service/ts-api';
 import { saveDeployedUrlEnv } from '../../service/vercel-api';
-import { generateStackblitzURL } from '../docs-page/docs-utils';
-import { useAppContext } from '../../app.context';
+import { generateStackblitzURL } from '../auth-type-none-page/docs-utils';
 import { Routes } from '../connection/connection-utils';
 
-export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
+export const TrustedAuthPage = ({ hostUrl, deploymentUrl }) => {
   const { t } = useTranslations();
   const [userName, setUserName] = useState();
   const tsHostURL = formatClusterUrl(hostUrl.url);
   const [isLoading, setIsLoading] = useState(true);
+
+  const searchParams = deploymentUrl.split('?');
+  const addedSearchParam = new URLSearchParams(searchParams[1]);
+  const worksheetId = addedSearchParam.get('worksheetId');
+  const deploymentUrlSearchParam = new URLSearchParams(searchParams[2]);
+  const deploymentUrls = deploymentUrlSearchParam.get('deployment-url');
+  const domain = deploymentUrls?.split('-') || [];
+  const domainUrl = `${domain[0]}-${domain[2]}`;
+
   const codeMap = {
     SageEmbed: EmbedTemplates.TrustedAuthSageEmbed(
       tsHostURL,
       worksheetId,
-      deploymentUrl,
+      domainUrl,
       userName
     ),
   };
@@ -58,7 +67,11 @@ export const TrustedAuthPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
   };
 
   if (isLoading) {
-    return <div>{t.TRUSTED_AUTH_PAGE_LOADING}</div>;
+    return (
+      <CircularLoader
+        loadingText={t.TRUSTED_AUTH_PAGE_LOADING}
+      ></CircularLoader>
+    );
   }
 
   return (

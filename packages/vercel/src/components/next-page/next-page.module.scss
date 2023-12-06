@@ -19,3 +19,32 @@
     margin-top: $spacing--c;
     line-height: 1.6;
 }
+
+.noteContainer {
+    margin-top: $spacing--e;
+    margin-bottom: $spacing--e;
+    border-left: 3px solid $red1;
+  }
+  
+.noteHeading {
+    @include rd-font--bold;
+    font-size: $spacing--d;
+    padding-bottom: $spacing--c;
+    padding-left: $spacing--c;
+}
+  
+.noteDescription {
+    padding-left: $spacing--c;
+}
+
+.noteText {
+    padding-left: $spacing--c;
+    margin-bottom: 0px;
+}
+  
+.noteHeading {
+    @include rd-font--bold;
+    font-size: $spacing--d;
+    padding-bottom: $spacing--c;
+    padding-left: $spacing--c;
+}

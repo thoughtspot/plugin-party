@@ -83,5 +83,7 @@
   "SELECT_EXISTING_DATASOURCES": "Select existing datasources",
   "EDIT_CONNECTION": "Edit Connection",
   "CREATE_CONNECTION": "Create Connection",
-  "SELECT_EXISTING_DATA_SOURCES": "Select existing data Sources"
+  "SELECT_EXISTING_DATA_SOURCES": "Select existing data Sources",
+  "COPY_TEXT": "Copy these values to add environment variables in your trusted auth service -",
+  "FULL_APP_LOADER": "Fetching existing data sources..."
 }

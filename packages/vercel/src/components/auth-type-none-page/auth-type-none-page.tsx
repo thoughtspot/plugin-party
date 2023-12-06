@@ -10,11 +10,12 @@ import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { Typography } from 'widgets/lib/typography';
 import { BannerType, ErrorBanner } from 'widgets/lib/error-banner';
 import { useLoader } from 'widgets/lib/loader';
+import { CircularLoader } from 'widgets/lib/circular-loader';
 import { EmbedTemplates } from './embed-code-templates';
-import styles from './docs-page.module.scss';
+import styles from './auth-type-none-page.module.scss';
 import { Routes } from '../connection/connection-utils';
 import { useAppContext } from '../../app.context';
-import { generateWorksheetTML } from '../../service/ts-api';
+import { generateSecretKey, generateWorksheetTML } from '../../service/ts-api';
 import { formatClusterUrl } from '../full-app/full-app.utils';
 import { generateStackblitzURL } from './docs-utils';
 
@@ -31,6 +32,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
     hasAdminPrivileges,
     selectedDataSourceName,
     worksheetId,
+    setSecretKey,
   } = useAppContext();
   const [newWorksheetId, setNewWorksheetId] = useState();
   const codeMap = {
@@ -43,31 +45,49 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
   });
 
   useEffect(() => {
-    if (worksheetId === '') {
-      generateWorksheetTML(
-        tsHostURL,
-        vercelToken,
-        dataSourcesId,
-        relationshipId,
-        selectedProject,
-        selectedDataSourceName
-      )
-        .then((res) => {
-          setWorksheetId(res);
-          setNewWorksheetId(res);
+    const fetchData = async () => {
+      try {
+        if (worksheetId === '') {
+          const worksheetRes = await generateWorksheetTML(
+            tsHostURL,
+            dataSourcesId,
+            relationshipId,
+            selectedDataSourceName
+          );
+
+          setWorksheetId(worksheetRes);
+          setNewWorksheetId(worksheetRes.idGuid);
+          setSecretKey(worksheetRes.secretKey);
           setIsLoading(false);
-        })
-        .catch((error) => {
-          console.log(error);
-          setErrorMessage({ visible: true, message: t.CREATE_WORKSHEET_ERROR });
+
+          const secretKey = await generateSecretKey(
+            tsHostURL,
+            vercelToken,
+            selectedProject,
+            worksheetRes.idGuid
+          );
+          setSecretKey(secretKey);
+        } else {
+          const secretKey = await generateSecretKey(
+            tsHostURL,
+            vercelToken,
+            selectedProject,
+            worksheetId
+          );
+          loader.hide();
           setIsLoading(false);
-        });
-    } else {
-      loader.hide();
-      setIsLoading(false);
-      setNewWorksheetId(worksheetId);
-    }
-  }, [dataSourcesId, relationshipId]);
+          setNewWorksheetId(worksheetId);
+          setSecretKey(secretKey);
+        }
+      } catch (error) {
+        console.error(error);
+        setErrorMessage({ visible: true, message: t.CREATE_WORKSHEET_ERROR });
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(codeMap.SageEmbed);
@@ -94,10 +114,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
 
   if (isLoading) {
     return (
-      <div className={styles.loadingContainer}>
-        <h1>{t.CREATE_WORKSHEET_LOADING}</h1>
-        <div className={styles.loader}></div>
-      </div>
+      <CircularLoader loadingText={t.CREATE_WORKSHEET_LOADING}></CircularLoader>
     );
   }
 

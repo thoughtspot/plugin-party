@@ -87,10 +87,8 @@ export const getUserName = async (hostUrl) => {
 
 export const generateWorksheetTML = async (
   hostUrl,
-  vercelAccessToken,
   tableIds,
   relationships,
-  selectedProjectName,
   selectedDataSourceName
 ) => {
   const formData = new URLSearchParams();
@@ -122,19 +120,30 @@ export const generateWorksheetTML = async (
     });
     const resp = await ImportWorksheetTML(hostUrl, metadataTmls);
     const idGuid = resp[0].response.header.id_guid;
-    const searchParams = new URLSearchParams(window.location.search);
-    const teamId = searchParams.get('teamId') || '';
-    await getDomains(
-      hostUrl,
-      selectedProjectName,
-      teamId,
-      vercelAccessToken,
-      idGuid
-    );
 
     return idGuid;
   } catch (error) {
     console.error('An error occurred:', error);
     throw error;
   }
+};
+
+export const generateSecretKey = async (
+  hostUrl,
+  vercelAccessToken,
+  selectedProjectName,
+  idGuid
+) => {
+  console.log('insideapi', selectedProjectName);
+  const searchParams = new URLSearchParams(window.location.search);
+  const teamId = searchParams.get('teamId') || '';
+  const secretKey = await getDomains(
+    hostUrl,
+    selectedProjectName,
+    teamId,
+    vercelAccessToken,
+    idGuid
+  );
+
+  return secretKey;
 };

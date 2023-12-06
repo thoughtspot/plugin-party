@@ -13,6 +13,7 @@ export interface AppConfigInterface {
   worksheetId: string;
   selectedDataSourceName: string;
   isExistingDataSouce: boolean;
+  secretKey: string;
 }
 
 export enum AppConfigActions {
@@ -28,6 +29,7 @@ export enum AppConfigActions {
   WORKSHEET_ID,
   SELECT_DATA_SOURCE_NAME,
   IS_EXISTING_DATA_SOURCE,
+  SECRET_KEY,
 }
 
 const defaultAppConfigValues = {
@@ -43,6 +45,7 @@ const defaultAppConfigValues = {
   worksheetId: '',
   selectedDataSourceName: '',
   isExistingDataSouce: false,
+  secretKey: '',
 };
 
 const reducer: any = (state, action) => {
@@ -107,6 +110,11 @@ const reducer: any = (state, action) => {
         ...state,
         isExistingDataSouce: action.newIsExistingDataSouce,
       };
+    case AppConfigActions.SECRET_KEY:
+      return {
+        ...state,
+        secretKey: action.newSecretKey,
+      };
     default:
       return state;
   }
@@ -131,6 +139,7 @@ export const AppContextProvider = ({ children }) => {
     worksheetId,
     selectedDataSourceName,
     isExistingDataSouce,
+    secretKey,
   } = state;
   const setSelectedProject = (newSelectedProject: string) => {
     dispatch({ type: AppConfigActions.SELECTED_PROJECT, newSelectedProject });
@@ -210,6 +219,13 @@ export const AppContextProvider = ({ children }) => {
     });
   };
 
+  const setSecretKey = (newSecretKey: string) => {
+    dispatch({
+      type: AppConfigActions.SECRET_KEY,
+      newSecretKey,
+    });
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -237,6 +253,8 @@ export const AppContextProvider = ({ children }) => {
         setSelectedDataSourceName,
         isExistingDataSouce,
         setIsExistingDataSouce,
+        secretKey,
+        setSecretKey,
       }}
     >
       {children}

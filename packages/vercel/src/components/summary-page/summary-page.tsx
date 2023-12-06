@@ -6,19 +6,37 @@ import { Typography } from 'widgets/lib/typography';
 import { BannerType, ErrorBanner } from 'widgets/lib/error-banner';
 import styles from './summary-page.module.scss';
 import { formatClusterUrl } from '../full-app/full-app.utils';
-import { EmbedTemplates } from '../docs-page/embed-code-templates';
+import { EmbedTemplates } from '../auth-type-none-page/embed-code-templates';
 import { getUserName } from '../../service/ts-api';
-import { generateStackblitzURL } from '../docs-page/docs-utils';
+import { generateStackblitzURL } from '../auth-type-none-page/docs-utils';
 
-export const SummaryPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
+export const SummaryPage = ({ hostUrl, deploymentUrl }) => {
   const tsHostURL = formatClusterUrl(hostUrl.url);
   const [userName, setUserName] = useState();
   const { t } = useTranslations();
+
+  const searchParams = deploymentUrl.split('?');
+  const addedSearchParam = new URLSearchParams(searchParams[1]);
+  const worksheetId = addedSearchParam.get('worksheetId');
+  const deploymentUrlSearchParam = new URLSearchParams(searchParams[2]);
+  const deploymentUrls = deploymentUrlSearchParam.get('deployment-url');
+  const domain = deploymentUrls?.split('-') || [];
+  const domainUrl = `${domain[0]}-${domain[2]}`;
+  const url = window.location.search.split('?');
+  const configuration = new URLSearchParams(url[1]);
+  const configurationId = configuration.get('configurationId');
+  const code = configuration.get('code');
+
+  if (configurationId && code) {
+    localStorage.setItem('clusterUrl', tsHostURL);
+    localStorage.setItem('deploymentUrl', deploymentUrl);
+  }
+
   const codeMap = {
     SageEmbed: EmbedTemplates.TrustedAuthSageEmbed(
       tsHostURL,
       worksheetId,
-      deploymentUrl,
+      domainUrl,
       userName
     ),
   };
@@ -40,11 +58,9 @@ export const SummaryPage = ({ hostUrl, worksheetId, deploymentUrl }) => {
     fetchUserName();
   }, []);
 
-  const closeVercelModal = async () => {
+  const closeVercelModal = () => {
     window.location.href =
-      new URLSearchParams(window.location.search.split('?')[1]).get(
-        'closeVercel'
-      ) || '';
+      new URLSearchParams(window.location.search).get('next') || '';
   };
 
   const handleStackblitzURL = () => {

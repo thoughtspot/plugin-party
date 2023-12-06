@@ -6,6 +6,7 @@ import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { TableListView } from 'widgets/lib/table-list-view';
 import { BannerType, ErrorBanner } from 'widgets/lib/error-banner';
 import { Typography } from 'widgets/lib/typography';
+import { CircularLoader } from 'widgets/lib/circular-loader';
 import { getConnectionParams, vercelPromise } from '../../service/vercel-api';
 import styles from './select-project.module.scss';
 import { useAppContext } from '../../app.context';
@@ -25,7 +26,6 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
   const [projectIndex, setProjectIndex] = useState(0);
   const [hasPostgres, setHasPostgres] = useState<boolean[]>([]);
   const [projectEnvs, setProjectEnvs] = useState<any>([]);
-  const [isConnectionPostgres, setConnectionPostgres] = useState(true);
   const {
     setSelectedProject,
     setHasAdminPrivilege,
@@ -116,11 +116,15 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
   };
 
   const createConnection = () => {
+    setSelectedProject(selectedProjects);
+    setProjectEnv(projectEnvs[projectIndex]);
     setIsConnectionPostgres(false);
     route(Routes.APP_EMBED);
   };
 
   const selectExistingDataSources = () => {
+    setSelectedProject(selectedProjects);
+    setProjectEnv(projectEnvs[projectIndex]);
     setIsExistingDataSouce(true);
     route(Routes.APP_EMBED);
   };
@@ -139,10 +143,7 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
       {!errorMessage.visible && (
         <>
           {!projects.length ? (
-            <div className={styles.loadingContainer}>
-              <h1>{t.LOADING_PROJECTS}</h1>
-              <div className={styles.loader}></div>
-            </div>
+            <CircularLoader loadingText={t.LOADING_PROJECTS} />
           ) : (
             <>
               <Typography

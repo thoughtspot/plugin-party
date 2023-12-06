@@ -8,6 +8,7 @@ import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { Button } from 'widgets/lib/button';
 import { Typography } from 'widgets/lib/typography';
 import { TableListView } from 'widgets/lib/table-list-view';
+import { CircularLoader } from 'widgets/lib/circular-loader';
 import styles from './full-app.module.scss';
 import { useAppContext } from '../../app.context';
 import { createConnection, getMetadataList } from '../../service/ts-api';
@@ -62,23 +63,18 @@ export const FullEmbed = ({ hostUrl }) => {
     setIsLoading(false);
   }, []);
 
-  const handleAllEmbedEvent = (event) => {
-    if (
-      event.type === 'updateConnection' ||
-      event.type === 'createConnection'
-    ) {
-      const res =
-        event.type === 'updateConnection'
-          ? event.data.data.updateConnection.dataSource.logicalTableList
-          : event.data.data.createConnection.logicalTableList;
-      setLogicalTableList(res);
-      if (event.type === 'createConnection') {
-        setCreateConnection(true);
-      } else {
-        setCreateConnection(false);
-      }
-      route(Routes.OPTIONS);
-    }
+  const handleCreateConnectionEvent = (event) => {
+    const res = event.data.data.createConnection.logicalTableList;
+    setLogicalTableList(res);
+    setCreateConnection(true);
+    route(Routes.OPTIONS);
+  };
+
+  const handleUpdateConnectionEvent = (event) => {
+    const res = event.data.data.updateConnection.dataSource.logicalTableList;
+    setLogicalTableList(res);
+    setCreateConnection(false);
+    route(Routes.OPTIONS);
   };
 
   const handleSelectDataSources = (dataSourceName: string, index: number) => {
@@ -114,8 +110,7 @@ export const FullEmbed = ({ hostUrl }) => {
   };
 
   if (isLoading) {
-    console.log('chatgpt');
-    return <div>Fetching existing data sources...</div>;
+    return <CircularLoader loadingText={t.FULL_APP_LOADER}></CircularLoader>;
   }
 
   return (
@@ -161,7 +156,8 @@ export const FullEmbed = ({ hostUrl }) => {
           className={styles.fullApp}
           ref={embedRef}
           path={embedPath}
-          onALL={handleAllEmbedEvent}
+          onCreateConnection={handleCreateConnectionEvent}
+          onUpdateConnection={handleUpdateConnectionEvent}
           customizations={customization}
         ></AppEmbed>
       )}
