@@ -54,9 +54,8 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
             relationshipId,
             selectedDataSourceName
           );
-
           setWorksheetId(worksheetRes);
-          setNewWorksheetId(worksheetRes.idGuid);
+          setNewWorksheetId(worksheetRes);
           setSecretKey(worksheetRes.secretKey);
           setIsLoading(false);
 

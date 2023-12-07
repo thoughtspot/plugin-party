@@ -115,11 +115,28 @@ export const whiteListCSP = async (hostUrl: string, urlToWhiteList: string) => {
   }
 };
 
+export const isOrgsEnabled = async (hostUrl) => {
+  const response = await fetch(`${hostUrl}/callosum/v1/session/info`, {
+    headers: {
+      Accept: 'application/json',
+    },
+    credentials: 'include',
+    method: 'GET',
+  });
+  const rs = await response.json();
+  return rs.configInfo.orgsConfiguration.enabled;
+};
+
 export const saveENV = async (hostUrl: string, vercelConfig: any) => {
+  const isOrgsUiEnabled = await isOrgsEnabled(hostUrl);
+  let viewMode = 'all';
+  if (isOrgsUiEnabled) {
+    viewMode = 'primary';
+  }
   const { accessToken, teamId, projectIds, tsHostURL } = vercelConfig;
   try {
     const response = await fetch(
-      `${hostUrl}/managementconsole/admin-api/tokenauth?view_mode=all`,
+      `${hostUrl}/managementconsole/admin-api/tokenauth?view_mode=${viewMode}`,
       {
         headers: {
           accept: 'application/json',
