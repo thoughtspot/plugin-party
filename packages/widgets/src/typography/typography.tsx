@@ -1,6 +1,7 @@
 import cx from 'classnames';
 import _ from 'lodash';
 import React, { FC, useCallback, useEffect, useState } from 'preact/compat';
+import DOMPurify from 'dompurify';
 import styles from './typography.module.scss';
 
 export const variantToLineHeightMapping = {
@@ -152,10 +153,19 @@ export const Typography: FC<TypographyProps> = ({
     style: showEllipsis ? { WebkitLineClamp: `${ellipsis?.rows}` } : {},
     ...restProps,
   };
-  const element = htmlContent ? (
-    <div dangerouslySetInnerHTML={{ __html: htmlContent }} {...props} />
+
+  const sanitizedHtmlContent = htmlContent
+    ? DOMPurify.sanitize(htmlContent)
+    : '';
+
+  const element = sanitizedHtmlContent ? (
+    <div
+      dangerouslySetInnerHTML={{ __html: sanitizedHtmlContent }}
+      {...props}
+    />
   ) : (
     React.createElement(currentTag as any, props, children)
   );
+
   return element;
 };

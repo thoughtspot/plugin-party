@@ -134,7 +134,6 @@ export const generateSecretKey = async (
   selectedProjectName,
   idGuid
 ) => {
-  console.log('insideapi', selectedProjectName);
   const searchParams = new URLSearchParams(window.location.search);
   const teamId = searchParams.get('teamId') || '';
   const secretKey = await getDomains(
