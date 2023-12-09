@@ -22,8 +22,8 @@ import { generateStackblitzURL } from './docs-utils';
 export const DocsPage = ({ hostUrl, vercelToken }) => {
   const { t } = useTranslations();
   const tsHostURL = formatClusterUrl(hostUrl.url);
-  const [isLoading, setIsLoading] = useState(true);
   const loader = useLoader();
+  loader.hide();
   const {
     dataSourcesId,
     relationshipId,
@@ -34,6 +34,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
     worksheetId,
     setSecretKey,
   } = useAppContext();
+  const [isLoading, setIsLoading] = useState(worksheetId === '');
   const [newWorksheetId, setNewWorksheetId] = useState();
   const codeMap = {
     SageEmbed: EmbedTemplates.SageEmbed(tsHostURL, newWorksheetId),
