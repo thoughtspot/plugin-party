@@ -2,8 +2,8 @@ import React from 'preact';
 import { route } from 'preact-router';
 import { message } from 'antd';
 import { Button } from 'widgets/lib/button';
-import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useTranslations } from 'i18n';
 import { useState, useEffect } from 'preact/hooks';
 import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
@@ -151,7 +151,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
           text={t.OPEN_SANDBOX}
         />
       </Horizontal>
-      <SyntaxHighlighter language="javascript" style={atomOneDark}>
+      <SyntaxHighlighter language="javascript" style={oneDark}>
         {codeMap.SageEmbed}
       </SyntaxHighlighter>
       <Vertical className={styles.noteContainer}>
