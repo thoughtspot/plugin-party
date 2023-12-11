@@ -6,7 +6,12 @@ import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { useTranslations } from 'i18n';
 import './cluster-url.scss';
 
-export function ClusterUrl({ onSetUrl, candidateUrl, isUrlValid = true }) {
+export function ClusterUrl({
+  onSetUrl,
+  candidateUrl,
+  suggestedUrl = '',
+  isUrlValid = true,
+}) {
   const { t } = useTranslations();
   const inpRef = useRef<HTMLInputElement>(null);
   return (
@@ -23,6 +28,7 @@ export function ClusterUrl({ onSetUrl, candidateUrl, isUrlValid = true }) {
           initialValue={candidateUrl}
           ref={inpRef}
           className="ts-cluster-url"
+          placeholder={suggestedUrl}
         />
         {!isUrlValid && (
           <Typography

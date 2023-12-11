@@ -1,0 +1,34 @@
+@import 'widgets/lib/common.scss';
+
+.header {
+    padding: $spacing--a $spacing--h;
+    height: $spacing--l;
+    background-color: #000000;
+}
+
+.headerLogo {
+    display: $white;
+    height: $spacing--j;
+    width: $spacing--j;
+    margin-right: $spacing--f;
+}
+
+.headerInfo {
+    display: flex;
+    flex-direction: row;
+    margin-top: $spacing--a;
+}
+
+.headerTitle {
+    margin-top: $spacing--d;
+    margin-bottom: $spacing--e;
+    font-size: 18px;
+}
+
+.menu {
+    margin-top: 10px;
+}
+
+.icon {
+    margin-top: $spacing--b;
+}

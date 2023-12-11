@@ -1,0 +1,38 @@
+@import 'widgets/lib/common.scss';
+
+.container {
+    margin: $spacing--e;
+}
+
+.heading {
+  font-size: 24px;
+  @include rd-font--bold;
+  margin-bottom: $spacing--c;
+  border-bottom: 1px solid $gray6;
+}
+
+.noteContainer {
+  margin-top: $spacing--e;
+  margin-bottom: $spacing--e;
+  border-left: 3px solid $red1;
+}
+
+.font {
+  font-size: 14px;
+}
+
+.noteHeading {
+  @include rd-font--bold;
+  font-size: $spacing--d;
+  padding-bottom: $spacing--c;
+  padding-left: $spacing--c;
+}
+
+.noteDescription {
+  margin-bottom: $spacing--c;
+  padding-left: $spacing--c;
+}
+
+.button {
+  margin-right: $spacing--c;
+}

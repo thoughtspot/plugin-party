@@ -1,6 +1,7 @@
 import cx from 'classnames';
 import _ from 'lodash';
 import React, { FC, useCallback, useEffect, useState } from 'preact/compat';
+import DOMPurify from 'dompurify';
 import styles from './typography.module.scss';
 
 export const variantToLineHeightMapping = {
@@ -85,6 +86,8 @@ export interface TypographyProps {
    * On click function
    */
   onClick?: any;
+
+  htmlContent?: string;
 }
 
 export const Typography: FC<TypographyProps> = ({
@@ -96,6 +99,7 @@ export const Typography: FC<TypographyProps> = ({
   preserveWhitespace = true,
   noMargin = false,
   wrapContent = false,
+  htmlContent,
   ...restProps
 }: TypographyProps) => {
   const [contentRef, setContentRef] = useState<HTMLElement | null>(null);
@@ -149,6 +153,12 @@ export const Typography: FC<TypographyProps> = ({
     style: showEllipsis ? { WebkitLineClamp: `${ellipsis?.rows}` } : {},
     ...restProps,
   };
-  const element = React.createElement(currentTag as any, props, children);
+
+  const element = htmlContent ? (
+    <div dangerouslySetInnerHTML={{ __html: htmlContent }} {...props} />
+  ) : (
+    React.createElement(currentTag as any, props, children)
+  );
+
   return element;
 };
