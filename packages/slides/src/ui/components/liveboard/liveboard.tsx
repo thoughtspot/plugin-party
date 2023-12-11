@@ -139,6 +139,14 @@ const PrerenderedLiveboardShell = () => {
               '.answer-content-module__answerContent': {
                 'pointer-events': 'none !important',
               },
+              '.pinboard-tab-module__tabNameEditor': {
+                // Adding this to make carousel work properly, in scaligent
+                // this value is set to 16.1428571429rem
+                // As total width in plugin is approx 2x of above max width
+                // carousel may hit corner case, lastVisible item is treated as not visible by IntersectionObserver
+                // when interaction is just below threshold and item before that is considered as lastVisible.
+                'max-width': '9.6857rem !important',
+              },
             },
           },
         },

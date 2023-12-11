@@ -40,8 +40,10 @@ function fixProps<T extends AnyLayoutProps>(props: T): T {
 export const View: FunctionComponent<LayoutProps> = (props) => {
   const { spacing, className, ...flexProps } = fixProps(props);
   const spacingClassName = spacing ? styles[`spacing-${spacing}`] : '';
+  // Done to avoid the type error, which doesn't seem to be fixable.
+  const FlexViewAny: any = FlexView;
   return (
-    <FlexView className={cx(className, spacingClassName)} {...flexProps} />
+    <FlexViewAny className={cx(className, spacingClassName)} {...flexProps} />
   );
 };
 
