@@ -7,8 +7,8 @@ import { I18N, useTranslations } from 'i18n';
 import { Stepper } from 'widgets/lib/stepper';
 import { useLoader } from 'widgets/lib/loader';
 import { CircularLoader } from 'widgets/lib/circular-loader';
-import { Header } from 'widgets/lib/header';
 import { useEffect, useState } from 'preact/hooks';
+import { Header } from './components/header';
 import { SelectProject } from './components/select-project/select-project';
 import { Routes, steps } from './components/connection/connection-utils';
 import { FullEmbed } from './components/full-app/full-app';
@@ -61,7 +61,7 @@ export const App = () => {
   if (configurationId && !code) {
     deploymentUrl = localStorage.getItem('deploymentUrl') || '';
     setRedirectUrl(deploymentUrl);
-    TSClusterId = localStorage.getItem('clusterUrl');
+    TSClusterId = localStorage.getItem('clusterUrl') || '';
     route(Routes.SUMMARY_PAGE);
   }
 

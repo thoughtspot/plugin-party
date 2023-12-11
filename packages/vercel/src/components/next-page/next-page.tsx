@@ -5,6 +5,7 @@ import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { Typography } from 'widgets/lib/typography';
 import { Button } from 'widgets/lib/button';
 import { RiFileCopy2Fill } from 'react-icons/ri';
+import { Icon } from 'widgets/lib/icon';
 import styles from './next-page.module.scss';
 import { useAppContext } from '../../app.context';
 import { formatClusterUrl } from '../full-app/full-app.utils';
@@ -49,23 +50,47 @@ export const NextPage = ({ hostUrl, vercelToken }) => {
         <Typography variant="p" noMargin className={styles.noteDescription}>
           {t.COPY_TEXT}
         </Typography>
-        <Horizontal>
-          <Typography variant="p" className={styles.noteDescription}>
-            TS_HOST: {tsHostURL}
+        <Horizontal className={styles.textWrapper}>
+          <Typography variant="p" className={styles.noteTitle} noMargin>
+            TS_HOST
           </Typography>
-          <RiFileCopy2Fill
-            onClick={() => copyToClipboard(tsHostURL)}
-            className={styles.copyIcon}
-          />
+          <Typography
+            variant="p"
+            className={styles.noteDescriptionText}
+            noMargin
+          >
+            <input
+              className={styles.noteText}
+              value={tsHostURL}
+              readOnly
+              disabled={true}
+            ></input>
+          </Typography>
+          <Horizontal className={styles.icon}>
+            <Icon
+              name="rd-icon-copy"
+              size="s"
+              onClick={() => copyToClipboard(tsHostURL)}
+            ></Icon>
+          </Horizontal>
         </Horizontal>
-        <Horizontal>
-          <Typography variant="p" className={styles.noteText}>
-            TS_SECRET_KEY: {secretKey}
+        <Horizontal className={styles.textWrapper}>
+          <Typography variant="p" className={styles.noteTitle} noMargin>
+            TS_SECRET_KEY
           </Typography>
-          <RiFileCopy2Fill
-            onClick={() => copyToClipboard(secretKey)}
-            className={styles.copyIcon}
-          />
+          <input
+            className={styles.noteText}
+            value={secretKey}
+            readOnly
+            disabled={true}
+          ></input>
+          <Horizontal className={styles.icon}>
+            <Icon
+              name="rd-icon-copy"
+              size="s"
+              onClick={() => copyToClipboard(secretKey)}
+            ></Icon>
+          </Horizontal>
         </Horizontal>
       </Vertical>
       <Vertical hAlignContent="center">

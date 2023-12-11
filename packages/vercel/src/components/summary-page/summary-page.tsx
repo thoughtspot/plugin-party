@@ -78,18 +78,22 @@ export const SummaryPage = ({ hostUrl, deploymentUrl }) => {
         showCloseIcon={false}
         showBanner={errorMessage.message !== '' && errorMessage.visible}
       />
-      <Typography variant="h2">{t.SUMMARY_PAGE_HEADING}</Typography>
-      <Typography variant="p">{t.SUMMARY_PAGE_DESCRIPTION}</Typography>
+      <Typography variant="h2" className={styles.heading}>
+        {t.SUMMARY_PAGE_HEADING}
+      </Typography>
+      <Typography variant="p" className={styles.description}>
+        {t.SUMMARY_PAGE_DESCRIPTION}
+      </Typography>
       <ul>
         <li>
-          <Typography variant="p">
+          <Typography variant="p" className={styles.subText}>
             {t.SUMMARY_PAGE_TEXT}
             <div
               role="button"
               onClick={handleStackblitzURL}
               className={styles.codeStyle}
             >
-              code
+              {t.SUMMARY_PAGE_SUBTEXT}
             </div>
           </Typography>
         </li>
@@ -97,21 +101,31 @@ export const SummaryPage = ({ hostUrl, deploymentUrl }) => {
           <Typography variant="p">
             {t.SUMMARY_PAGE_DATA_TEXT}
             <a href={tsHostURL} target="_blank">
-              ThoughtSpot cluster
+              {tsHostURL}
             </a>
           </Typography>
         </li>
         <li>
           <Typography variant="p">
             {t.SUMMARY_PAGE_TRUSTED_AUTH_SERVICE}
+            <a href={domainUrl} target="_blank">
+              {domainUrl}
+            </a>
           </Typography>
+          <ul>
+            <li>
+              <Typography variant="p" className={styles.description}>
+                {t.SUMMARY_PAGE_AUTHENTICATION_TEXT}
+              </Typography>
+            </li>
+          </ul>
         </li>
       </ul>
       <Typography
         variant="p"
         htmlContent={t.SUMMARY_PAGE_DOCUMENTATION}
       ></Typography>
-      <Vertical className={styles.buttonContainer} hAlignContent="start">
+      <Vertical className={styles.buttonContainer} hAlignContent="center">
         <Button onClick={closeVercelModal} text={t.FINISH_SETUP} />
       </Vertical>
     </Vertical>

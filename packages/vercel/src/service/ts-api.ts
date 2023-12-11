@@ -136,7 +136,7 @@ export const generateSecretKey = async (
 ) => {
   const searchParams = new URLSearchParams(window.location.search);
   const teamId = searchParams.get('teamId') || '';
-  const secretKey = await getDomains(
+  const { secretKey, userVercelDomain } = await getDomains(
     hostUrl,
     selectedProjectName,
     teamId,
@@ -144,5 +144,5 @@ export const generateSecretKey = async (
     idGuid
   );
 
-  return secretKey;
+  return { secretKey, userVercelDomain };
 };

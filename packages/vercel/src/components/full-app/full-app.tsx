@@ -16,6 +16,7 @@ import { formatClusterUrl } from './full-app.utils';
 import { Routes } from '../connection/connection-utils';
 
 export const FullEmbed = ({ hostUrl }) => {
+  localStorage.clear();
   const { t } = useTranslations();
   const embedRef = useEmbedRef();
   const {
@@ -78,7 +79,11 @@ export const FullEmbed = ({ hostUrl }) => {
   };
 
   const handleSelectDataSources = (dataSourceName: string, index: number) => {
-    setSelectedDataSource(existingDataSources[index].id);
+    setSelectedDataSource((prevSelectedDataSource) =>
+      prevSelectedDataSource === existingDataSources[index].id
+        ? ''
+        : existingDataSources[index].id
+    );
   };
 
   const updateSelectedDataSources = () => {
@@ -127,7 +132,7 @@ export const FullEmbed = ({ hostUrl }) => {
       {isExistingDataSouce && !isLoading ? (
         <>
           <Typography className={styles.heading} variant="h2">
-            {t.SELECT_EXISTING_DATASOURCES}
+            {t.SELECT_EXISTING_DATA_SOURCES}
           </Typography>
           <Vertical className={styles.modal} hAlignContent="start">
             <TableListView
@@ -144,6 +149,7 @@ export const FullEmbed = ({ hostUrl }) => {
             <Button
               onClick={updateSelectedDataSources}
               text={t.CONTINUE}
+              isDisabled={selectedDataSource === ''}
             ></Button>
           </Vertical>
         </>

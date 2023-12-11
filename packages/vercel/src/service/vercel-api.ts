@@ -220,8 +220,7 @@ export const getDomains = async (
     `https://api.vercel.com/v8/projects/${projectIds}/domains?teamId=${teamId}`,
     accessToken
   );
-  const tsHostURL = domainConfig.domains[0].name;
-  await whiteListCSP(hostUrl, tsHostURL);
+  const userVercelDomain = domainConfig.domains[0].name;
   const secretKey = await saveENV(hostUrl, {
     accessToken,
     teamId,
@@ -230,5 +229,5 @@ export const getDomains = async (
     idGuid,
   });
 
-  return secretKey;
+  return { secretKey, userVercelDomain };
 };

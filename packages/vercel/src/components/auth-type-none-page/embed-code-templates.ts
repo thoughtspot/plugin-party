@@ -38,15 +38,9 @@ export const EmbedTemplates = {
   },
   SageEmbed: (tsHostURL, worksheetId) => {
     const codeSnippet = `// Import ThoughtSpot SDK
-import './style.css';
 import React from 'react';
-import {
-  init,
-  AuthType,
-  LiveboardEmbed,
-  EmbedEvent,
-  SageEmbed,
-} from '@thoughtspot/visual-embed-sdk';
+import './style.css';
+import { init, AuthType, SageEmbed } from '@thoughtspot/visual-embed-sdk/react';
 
 // Initialize ThoughtSpot - note the host points to your current ThoughtSpot cluster
 init({
@@ -54,44 +48,36 @@ init({
   authType: AuthType.None,
 });
 
-const NLSEmbed = () => {
-  React.useEffect(() => {
-    // Embed Sage - ThoughtSpot's natural language search
-    const embed = new SageEmbed("#test", {
-      // Using the datasource created earlier as the source of natural language queries.
-      // This source can be swapped later - check out the Developer Playground 
-      // for more customization options.
-      dataSource: "${worksheetId}",
-      frameParams: { width: 800, height: 600 },
-    });
-
-    embed
-      .on(EmbedEvent.Init, () => console.log('Embed initialized'))
-      .on(EmbedEvent.Load, () => console.log('Embed loaded'))
-      .render();
-  }, []);
-  return <div className="test" id="test"></div>;
-}
-
 export default function App() {
-  return <div className="App">{NLSEmbed()}</div>;
+  return (
+    <div>
+    {/* ThoughtSpot Natural Language Search Embed */}
+      <SageEmbed
+        frameParams={{
+          height: 1200,
+        }}
+        /* Using the datasource created earlier as the source of natural language queries.
+         This source can be swapped later - check out the Developer Playground 
+         for more customization options. */
+        dataSource="${worksheetId}"
+      />
+    </div>
+  );
 }
 `;
     return `${codeSnippet}`;
   },
   TrustedAuthSageEmbed: (tsHostURL, worksheetId, deploymentUrl, userName) => {
     const codeSnippet = `// Import ThoughtSpot SDK
-import './style.css';
-import React from 'react';
-import {
-  init,
-  AuthType,
-  LiveboardEmbed,
-  EmbedEvent,
-  SageEmbed,
-} from '@thoughtspot/visual-embed-sdk';
+    import React from 'react';
+    import './style.css';
+    import { init, AuthType, SageEmbed } from '@thoughtspot/visual-embed-sdk/react';
 
-// username who wants to login to ThoughtSpot
+/*
+Specify the username of the ThoughtSpot user you wish to use for logging in.
+If the userName doesn't exist in ThoughtSpot, you can set auto_complete parameter
+true to create a user just-in-time.
+*/
 const TSUserName = "${userName}";
 
 // Initialize ThoughtSpot - note the host points to your current ThoughtSpot cluster
@@ -100,6 +86,12 @@ init({
   authType: AuthType.TrustedAuthToken,
   // Vercel deployed service domain so that secret key is not exposed
   getAuthToken: () => {
+    /*
+    You can add the group names with group_identifiers as attribute
+    This attribute can be used in conjunction with auto_create to 
+    dynamically assign groups and privileges to a user.
+    Refer to this doc for more info - https://developers.thoughtspot.com/docs/api-authv2#trusted-auth-v2
+    */
     return fetch("${deploymentUrl}/api/v2/gettoken/" + TSUserName)
       .then((r) => r.text())
       .catch((e) => {
@@ -110,27 +102,21 @@ init({
   username: TSUserName,
 });
 
-const NLSEmbed = () => {
-  React.useEffect(() => {
-    // Embed Sage - ThoughtSpot's natural language search
-    const embed = new SageEmbed("#test", {
-      // Using the datasource created earlier as the source of natural language queries.
-      // This source can be swapped later - check out the Developer Playground 
-      // for more customization options.
-      dataSource: "${worksheetId}",
-      frameParams: { width: 800, height: 600 },
-    });
-
-    embed
-      .on(EmbedEvent.Init, () => console.log('Embed initialized'))
-      .on(EmbedEvent.Load, () => console.log('Embed loaded'))
-      .render();
-  }, []);
-  return <div className="test" id="test"></div>;
-}
-
 export default function App() {
-  return <div className="App">{NLSEmbed()}</div>;
+  return (
+    <div>
+    {/* ThoughtSpot Natural Language Search Embed */}
+      <SageEmbed
+        frameParams={{
+          height: 1200,
+        }}
+        /* Using the datasource created earlier as the source of natural language queries.
+         This source can be swapped later - check out the Developer Playground 
+         for more customization options. */
+        dataSource="${worksheetId}"
+      />
+    </div>
+  );
 }
 `;
     return `${codeSnippet}`;

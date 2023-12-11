@@ -1,9 +1,9 @@
-@import '../common.scss';
+@import 'widgets/lib/common.scss';
 
 .header {
     padding: $spacing--a $spacing--h;
     height: $spacing--l;
-    background-color: #303540;
+    background-color: #000000;
 }
 
 .headerLogo {
@@ -22,4 +22,13 @@
 .headerTitle {
     margin-top: $spacing--d;
     margin-bottom: $spacing--e;
+    font-size: 18px;
+}
+
+.menu {
+    margin-top: 10px;
+}
+
+.icon {
+    margin-top: $spacing--b;
 }

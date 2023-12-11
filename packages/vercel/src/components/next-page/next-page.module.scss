@@ -1,7 +1,8 @@
 @import 'widgets/lib/common.scss';
 
 .heading {
-    font-size: 20px;
+    @include rd-font--bold;
+    font-size: $spacing--f;
     margin-bottom: $spacing--c;
     border-bottom: 1px solid $gray6;
 }
@@ -32,14 +33,39 @@
     padding-bottom: $spacing--c;
     padding-left: $spacing--c;
 }
+
+.noteTitle {
+    @include rd-font--bold;
+    padding-left: $spacing--c;
+    padding-top: $spacing--b;
+}
+
+.textWrapper {
+    margin-top: $spacing--d;
+}
   
 .noteDescription {
     padding-left: $spacing--c;
+    width: 100%;
+}
+
+.noteDescriptionText {
+    padding-left: 53px;
+    width: 100%;
 }
 
 .noteText {
-    padding-left: $spacing--c;
+    padding-left: $spacing--b;
+    width: 100%;
     margin-bottom: 0px;
+    margin-left: $spacing--c;
+    border-style: inset;
+    height: 24px;
+    border-color: rgba(118, 118, 118, 0.3);
+    background-color: $gray0;
+    border-right: 0px;
+    border-bottom-left-radius: $spacing--a;
+    border-top-left-radius: $spacing--a;
 }
   
 .noteHeading {
@@ -47,4 +73,20 @@
     font-size: $spacing--d;
     padding-bottom: $spacing--c;
     padding-left: $spacing--c;
+}
+
+.iconWrapper {
+    padding-left: $spacing--c;
+    padding-top: $spacing--c;
+}
+
+.icon {
+    border-width: 2px;
+    border-left: 0px;
+    padding-right: 6px;
+    background: $gray0;
+    border-style: inset;
+    border-color: rgba(118, 118, 118, 0.3);
+    border-bottom-right-radius: $spacing--a;
+    border-top-right-radius: $spacing--a;
 }

@@ -19,10 +19,10 @@ interface Step {
 
 export const steps: Step[] = [
   {
-    title: 'Set up Your data model in ThoughtSpot',
+    title: 'Set up your data model in ThoughtSpot',
   },
   {
-    title: 'Connect to ThoughtSpot',
+    title: 'Select a project to connect to ThoughtSpot',
     isSubStep: true,
   },
   {
@@ -48,7 +48,7 @@ export const steps: Step[] = [
     isSubStep: true,
   },
   {
-    title: 'Summary',
+    title: 'ThoughtSpot Integration Summary',
   },
 ];
 

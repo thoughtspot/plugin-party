@@ -154,15 +154,8 @@ export const Typography: FC<TypographyProps> = ({
     ...restProps,
   };
 
-  const sanitizedHtmlContent = htmlContent
-    ? DOMPurify.sanitize(htmlContent)
-    : '';
-
-  const element = sanitizedHtmlContent ? (
-    <div
-      dangerouslySetInnerHTML={{ __html: sanitizedHtmlContent }}
-      {...props}
-    />
+  const element = htmlContent ? (
+    <div dangerouslySetInnerHTML={{ __html: htmlContent }} {...props} />
   ) : (
     React.createElement(currentTag as any, props, children)
   );

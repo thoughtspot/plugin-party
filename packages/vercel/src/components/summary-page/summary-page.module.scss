@@ -4,6 +4,21 @@
     margin-top: 20px;
 }
 
+.heading {
+    font-size: 24px;
+    @include rd-font--bold;
+    margin-bottom: $spacing--c;
+    border-bottom: 1px solid $gray6;
+}
+
+.description {
+    margin-bottom: 0px;
+}
+
+.subText {
+    margin-top: 0px;
+}
+
 .codeStyle {
     display: inline;
     color: -webkit-link;

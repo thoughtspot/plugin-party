@@ -1,8 +1,8 @@
 import React from 'preact';
 import { message } from 'antd';
 import { Button } from 'widgets/lib/button';
-import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useTranslations } from 'i18n';
 import { useEffect, useState } from 'preact/hooks';
 import { route } from 'preact-router';
@@ -88,9 +88,7 @@ export const TrustedAuthPage = ({ hostUrl, deploymentUrl }) => {
           noMargin
           className={styles.noteDescription}
           htmlContent={t.TRUSTED_AUTH_PAGE_DESCRIPTION}
-        >
-          {t.CODE_SAMPLE_DESCRIPTION}
-        </Typography>
+        ></Typography>
       </Vertical>
       <Horizontal>
         <Button
@@ -106,7 +104,11 @@ export const TrustedAuthPage = ({ hostUrl, deploymentUrl }) => {
           text={t.OPEN_SANDBOX}
         />
       </Horizontal>
-      <SyntaxHighlighter language="javascript" style={atomOneDark}>
+      <SyntaxHighlighter
+        className={styles.font}
+        language="javascript"
+        style={oneDark}
+      >
         {codeMap.SageEmbed}
       </SyntaxHighlighter>
       <Vertical hAlignContent="start">

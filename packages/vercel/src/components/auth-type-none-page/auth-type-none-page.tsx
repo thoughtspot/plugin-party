@@ -18,6 +18,7 @@ import { useAppContext } from '../../app.context';
 import { generateSecretKey, generateWorksheetTML } from '../../service/ts-api';
 import { formatClusterUrl } from '../full-app/full-app.utils';
 import { generateStackblitzURL } from './docs-utils';
+import { whiteListCSP } from '../../service/vercel-api';
 
 export const DocsPage = ({ hostUrl, vercelToken }) => {
   const { t } = useTranslations();
@@ -35,7 +36,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
     setSecretKey,
   } = useAppContext();
   const [isLoading, setIsLoading] = useState(worksheetId === '');
-  const [newWorksheetId, setNewWorksheetId] = useState();
+  const [newWorksheetId, setNewWorksheetId] = useState(worksheetId);
   const codeMap = {
     SageEmbed: EmbedTemplates.SageEmbed(tsHostURL, newWorksheetId),
   };
@@ -57,27 +58,9 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
           );
           setWorksheetId(worksheetRes);
           setNewWorksheetId(worksheetRes);
-          setSecretKey(worksheetRes.secretKey);
           setIsLoading(false);
-
-          const secretKey = await generateSecretKey(
-            tsHostURL,
-            vercelToken,
-            selectedProject,
-            worksheetRes.idGuid
-          );
-          setSecretKey(secretKey);
         } else {
-          const secretKey = await generateSecretKey(
-            tsHostURL,
-            vercelToken,
-            selectedProject,
-            worksheetId
-          );
           loader.hide();
-          setIsLoading(false);
-          setNewWorksheetId(worksheetId);
-          setSecretKey(secretKey);
         }
       } catch (error) {
         console.error(error);
@@ -86,7 +69,24 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
       }
     };
 
+    const whiteListCSPAndGenerateSecretKey = async () => {
+      try {
+        const { secretKey, userVercelDomain } = await generateSecretKey(
+          tsHostURL,
+          vercelToken,
+          selectedProject,
+          worksheetId
+        );
+        await whiteListCSP(tsHostURL, userVercelDomain);
+        setSecretKey(secretKey);
+      } catch (error) {
+        console.error(error);
+        setErrorMessage({ visible: true, message: t.WHITELIST_CSP_ERROR });
+      }
+    };
+
     fetchData();
+    whiteListCSPAndGenerateSecretKey();
   }, []);
 
   const handleCopyCode = () => {
@@ -151,16 +151,23 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
           text={t.OPEN_SANDBOX}
         />
       </Horizontal>
-      <SyntaxHighlighter language="javascript" style={oneDark}>
+      <SyntaxHighlighter
+        className={styles.font}
+        language="javascript"
+        style={oneDark}
+      >
         {codeMap.SageEmbed}
       </SyntaxHighlighter>
       <Vertical className={styles.noteContainer}>
         <Typography className={styles.noteHeading} variant="h6" noMargin>
           NOTE
         </Typography>
-        <Typography variant="p" noMargin className={styles.noteDescription}>
-          {t.CODE_SAMPLE_DESCRIPTION}
-        </Typography>
+        <Typography
+          variant="p"
+          noMargin
+          className={styles.noteDescription}
+          htmlContent={t.CODE_SAMPLE_DESCRIPTION}
+        ></Typography>
       </Vertical>
       <Horizontal className={styles.buttonContainer}>
         <Button
