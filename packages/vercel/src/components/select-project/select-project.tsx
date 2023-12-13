@@ -171,35 +171,37 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
                   })}
                   onRowClick={handleSelectProject}
                 />
+                <Horizontal className={styles.checkbox}>
+                  <input
+                    type="checkbox"
+                    onChange={() => isPostgresSelected()}
+                    checked={foundPostgresConnection && isConnectionPostgres}
+                    disabled={!foundPostgresConnection}
+                  ></input>
+                  <Typography variant="p">
+                    {t.USE_POSTGRES_CONNECTION}
+                  </Typography>
+                </Horizontal>
+                <Horizontal
+                  hAlignContent="center"
+                  className={styles.buttonContainer}
+                  spacing="a"
+                >
+                  <Button
+                    type="SECONDARY"
+                    onClick={() => selectExistingDataSources()}
+                    text={t.SELECT_EXISTING_DATASOURCES}
+                    isDisabled={selectedProjects === ''}
+                  ></Button>
+                  <Button
+                    onClick={() => {
+                      updateProject();
+                    }}
+                    text={t.EDIT_CONNECTION}
+                    isDisabled={selectedProjects === ''}
+                  ></Button>
+                </Horizontal>
               </Vertical>
-              <Horizontal className={styles.checkbox}>
-                <input
-                  type="checkbox"
-                  onChange={() => isPostgresSelected()}
-                  checked={foundPostgresConnection && isConnectionPostgres}
-                  disabled={!foundPostgresConnection}
-                ></input>
-                <Typography variant="p">{t.USE_POSTGRES_CONNECTION}</Typography>
-              </Horizontal>
-              <Horizontal
-                hAlignContent="center"
-                className={styles.buttonContainer}
-                spacing="a"
-              >
-                <Button
-                  type="SECONDARY"
-                  onClick={() => selectExistingDataSources()}
-                  text={t.SELECT_EXISTING_DATASOURCES}
-                  isDisabled={selectedProjects === ''}
-                ></Button>
-                <Button
-                  onClick={() => {
-                    updateProject();
-                  }}
-                  text={t.EDIT_CONNECTION}
-                  isDisabled={selectedProjects === ''}
-                ></Button>
-              </Horizontal>
             </>
           )}
         </>
