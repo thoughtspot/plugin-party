@@ -15,10 +15,14 @@ import { EmbedTemplates } from './embed-code-templates';
 import styles from './auth-type-none-page.module.scss';
 import { Routes } from '../connection/connection-utils';
 import { useAppContext } from '../../app.context';
-import { generateSecretKey, generateWorksheetTML } from '../../service/ts-api';
+import {
+  generateSecretKey,
+  generateWorksheetTML,
+  getUserName,
+} from '../../service/ts-api';
 import { formatClusterUrl } from '../full-app/full-app.utils';
 import { generateStackblitzURL } from './docs-utils';
-import { whiteListCSP } from '../../service/vercel-api';
+import { whiteListCSP, fetchSecretKey } from '../../service/vercel-api';
 
 export const DocsPage = ({ hostUrl, vercelToken }) => {
   const { t } = useTranslations();
@@ -34,8 +38,10 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
     selectedDataSourceName,
     worksheetId,
     setSecretKey,
+    setHasAdminPrivilege,
   } = useAppContext();
   const [isLoading, setIsLoading] = useState(worksheetId === '');
+  console.log('isLoad', isLoading);
   const localStorageWorksheet = localStorage.getItem('worksheetId');
   const [newWorksheetId, setNewWorksheetId] = useState(
     localStorageWorksheet || worksheetId
@@ -82,16 +88,37 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
         );
         await whiteListCSP(tsHostURL, userVercelDomain);
         setSecretKey(secretKey);
+        setIsLoading(false);
       } catch (error) {
+        setIsLoading(false);
         console.error(error);
         setErrorMessage({ visible: true, message: t.WHITELIST_CSP_ERROR });
       }
     };
     if (!localStorageWorksheet) {
+      console.log('si', isLoading);
       fetchData();
+      console.log('si2', isLoading);
       whiteListCSPAndGenerateSecretKey();
+      console.log('si3', isLoading);
+    } else {
+      const TSClusterId = localStorage.getItem('clusterUrl') || '';
+      const fetchPrivilege = async () => {
+        try {
+          const tsUserInfo = await getUserName(TSClusterId);
+          const userPrivilege = tsUserInfo.privileges;
+          setHasAdminPrivilege(userPrivilege.includes('ADMINISTRATION'));
+          const res = await fetchSecretKey(TSClusterId);
+          setSecretKey(res.Data.token);
+          setIsLoading(false);
+        } catch (error) {
+          console.log(error);
+          setIsLoading(false);
+          setErrorMessage({ visible: true, message: t.ADMIN_PRIVILEGE_ISSUE });
+        }
+      };
+      fetchPrivilege();
     }
-    setIsLoading(false);
   }, []);
 
   const handleCopyCode = () => {

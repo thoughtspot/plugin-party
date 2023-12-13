@@ -70,11 +70,11 @@ export const App = () => {
   if (configurationId && !code) {
     isDocsPage = localStorage.getItem('isDocsPage') || '';
     deploymentUrl = localStorage.getItem('deploymentUrl') || '';
-    setRedirectUrl(deploymentUrl);
+    if (deploymentUrl !== '') setRedirectUrl(deploymentUrl);
     TSClusterId = localStorage.getItem('clusterUrl') || '';
-    if (isDocsPage === 'true') {
+    if (isDocsPage === 'true' && currentRouteIndex <= 5) {
       route(Routes.DOCUMENTS);
-    } else {
+    } else if (isDocsPage !== 'true') {
       route(Routes.SUMMARY_PAGE);
     }
   }
@@ -112,7 +112,7 @@ export const App = () => {
     if (deploymentUrl && worksheetId) {
       bc.postMessage(window.location.href);
       window.close();
-    } else if (code) {
+    } else if (code || localStorage.getItem('isDocsPage') === 'true') {
       bc.onmessage = (event) => {
         setRedirectUrl(event.data);
         route(Routes.TRUSTED_AUTH_PAGE);

@@ -127,6 +127,28 @@ export const isOrgsEnabled = async (hostUrl) => {
   return rs.configInfo.orgsConfiguration.enabled;
 };
 
+export const fetchSecretKey = async (hostUrl: string) => {
+  const isOrgsUiEnabled = await isOrgsEnabled(hostUrl);
+  let viewMode = 'all';
+  if (isOrgsUiEnabled) {
+    viewMode = 'primary';
+  }
+
+  const response = await fetch(
+    `${hostUrl}/managementconsole/admin-api/tokenauth?view_mode=${viewMode}`,
+    {
+      headers: {
+        accept: 'application/json',
+        'content-Type': 'application/x-www-form-urlencoded',
+      },
+      credentials: 'include',
+      method: 'POST',
+    }
+  );
+  const rs = await response.json();
+  return rs;
+};
+
 export const saveENV = async (hostUrl: string, vercelConfig: any) => {
   const isOrgsUiEnabled = await isOrgsEnabled(hostUrl);
   let viewMode = 'all';
