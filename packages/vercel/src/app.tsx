@@ -58,16 +58,29 @@ export const App = () => {
   // This is done to redirect to summary page when integration is
   // completed and user clicks on configure button at the page
   // which comes up after the integration is successful
+  const isDocsPage = localStorage.getItem('isDocsPage') || '';
+  if (configurationId && code) {
+    // Clearing Local Storage stored variables after
+    // setup is completed
+    localStorage.removeItem('clusterId');
+    localStorage.removeItem('isDocsPage');
+    localStorage.removeItem('worksheetId');
+    localStorage.removeItem('deploymentUrl');
+  }
   if (configurationId && !code) {
     deploymentUrl = localStorage.getItem('deploymentUrl') || '';
     setRedirectUrl(deploymentUrl);
     TSClusterId = localStorage.getItem('clusterUrl') || '';
-    route(Routes.SUMMARY_PAGE);
+    if (isDocsPage === 'true') {
+      route(Routes.DOCUMENTS);
+    } else {
+      route(Routes.SUMMARY_PAGE);
+    }
   }
 
   const [clusterUrl, setClusterUrl] = useState({
-    url: deploymentUrl ? TSClusterId : '',
-    isCandidate: !deploymentUrl,
+    url: deploymentUrl || isDocsPage === 'true' ? TSClusterId : '',
+    isCandidate: !deploymentUrl && !(isDocsPage === 'true'),
     suggestedUrl: '',
   });
 
