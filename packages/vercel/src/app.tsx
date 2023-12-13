@@ -58,7 +58,7 @@ export const App = () => {
   // This is done to redirect to summary page when integration is
   // completed and user clicks on configure button at the page
   // which comes up after the integration is successful
-  const isDocsPage = localStorage.getItem('isDocsPage') || '';
+  let isDocsPage = '';
   if (configurationId && code) {
     // Clearing Local Storage stored variables after
     // setup is completed
@@ -68,6 +68,7 @@ export const App = () => {
     localStorage.removeItem('deploymentUrl');
   }
   if (configurationId && !code) {
+    isDocsPage = localStorage.getItem('isDocsPage') || '';
     deploymentUrl = localStorage.getItem('deploymentUrl') || '';
     setRedirectUrl(deploymentUrl);
     TSClusterId = localStorage.getItem('clusterUrl') || '';
