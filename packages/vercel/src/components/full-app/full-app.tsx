@@ -16,7 +16,6 @@ import { formatClusterUrl } from './full-app.utils';
 import { Routes } from '../connection/connection-utils';
 
 export const FullEmbed = ({ hostUrl }) => {
-  localStorage.clear();
   const { t } = useTranslations();
   const embedRef = useEmbedRef();
   const {
