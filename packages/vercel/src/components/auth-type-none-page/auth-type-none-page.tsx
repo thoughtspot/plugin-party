@@ -36,7 +36,10 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
     setSecretKey,
   } = useAppContext();
   const [isLoading, setIsLoading] = useState(worksheetId === '');
-  const [newWorksheetId, setNewWorksheetId] = useState(worksheetId);
+  const localStorageWorksheet = localStorage.getItem('worksheetId');
+  const [newWorksheetId, setNewWorksheetId] = useState(
+    localStorageWorksheet || worksheetId
+  );
   const codeMap = {
     SageEmbed: EmbedTemplates.SageEmbed(tsHostURL, newWorksheetId),
   };
@@ -84,9 +87,11 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
         setErrorMessage({ visible: true, message: t.WHITELIST_CSP_ERROR });
       }
     };
-
-    fetchData();
-    whiteListCSPAndGenerateSecretKey();
+    if (!localStorageWorksheet) {
+      fetchData();
+      whiteListCSPAndGenerateSecretKey();
+    }
+    setIsLoading(false);
   }, []);
 
   const handleCopyCode = () => {
@@ -100,6 +105,9 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
   };
 
   const closeVercelModal = () => {
+    localStorage.setItem('isDocsPage', 'true');
+    localStorage.setItem('worksheetId', newWorksheetId);
+    localStorage.setItem('clusterUrl', tsHostURL);
     window.location.href =
       new URLSearchParams(window.location.search).get('next') || '';
   };

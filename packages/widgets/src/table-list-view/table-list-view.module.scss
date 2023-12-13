@@ -61,12 +61,10 @@
 }
 
 .listContent {
-  flex: 1 1 0;
   overflow: auto;
 }
 
 .listContainer {
-  flex: 1 1 auto;
   width: 100%;
   display: flex;
   flex-direction: column;
