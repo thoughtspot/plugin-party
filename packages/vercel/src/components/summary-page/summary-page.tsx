@@ -27,10 +27,11 @@ export const SummaryPage = ({ hostUrl, deploymentUrl }) => {
   const configurationId = configuration.get('configurationId');
   const code = configuration.get('code');
 
-  if (configurationId && code) {
+  if ((configurationId && code) || localStorage.getItem('worksheetId')) {
     localStorage.setItem('clusterUrl', tsHostURL);
     localStorage.setItem('deploymentUrl', deploymentUrl);
   }
+  localStorage.setItem('isDocsPage', 'false');
 
   const codeMap = {
     SageEmbed: EmbedTemplates.TrustedAuthSageEmbed(

@@ -14,7 +14,7 @@ export interface HeaderProps {
 
 const headerLinks = [
   {
-    name: 'Document',
+    name: 'Docs',
     link: 'https://developers.thoughtspot.com/docs/',
     external: true,
   },

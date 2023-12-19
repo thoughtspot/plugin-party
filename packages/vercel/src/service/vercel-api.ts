@@ -8,6 +8,13 @@ const envMapping = {
   PGDATABASE: 'database',
 };
 
+const envMappingForPostgres = {
+  POSTGRES_USER: 'user',
+  POSTGRES_PASSWORD: 'password',
+  POSTGRES_HOST: 'host',
+  POSTGRES_DATABASE: 'database',
+};
+
 export const getConnectionParams = (envParams) => {
   const paramObj: any = {};
   envParams.forEach((element) => {
@@ -16,6 +23,13 @@ export const getConnectionParams = (envParams) => {
     }
   });
   paramObj.port = '5432';
+  if (Object.keys(paramObj).length !== 5) {
+    envParams.forEach((element) => {
+      if (envMappingForPostgres[element.key]) {
+        paramObj[envMappingForPostgres[element.key]] = element.value;
+      }
+    });
+  }
   return paramObj;
 };
 
@@ -125,6 +139,28 @@ export const isOrgsEnabled = async (hostUrl) => {
   });
   const rs = await response.json();
   return rs.configInfo.orgsConfiguration.enabled;
+};
+
+export const fetchSecretKey = async (hostUrl: string) => {
+  const isOrgsUiEnabled = await isOrgsEnabled(hostUrl);
+  let viewMode = 'all';
+  if (isOrgsUiEnabled) {
+    viewMode = 'primary';
+  }
+
+  const response = await fetch(
+    `${hostUrl}/managementconsole/admin-api/tokenauth?view_mode=${viewMode}`,
+    {
+      headers: {
+        accept: 'application/json',
+        'content-Type': 'application/x-www-form-urlencoded',
+      },
+      credentials: 'include',
+      method: 'POST',
+    }
+  );
+  const rs = await response.json();
+  return rs;
 };
 
 export const saveENV = async (hostUrl: string, vercelConfig: any) => {

@@ -42,15 +42,18 @@ export const FullEmbed = ({ hostUrl }) => {
     const fetchMetadataSources = async () => {
       const res = await getMetadataList(tsHostURL);
       setExistingDataSources(res.headers);
+      setIsLoading(false);
     };
     if (isExistingDataSouce) {
       fetchMetadataSources();
     } else if (hasPostgresConnection && isConnectionPostgres) {
       createConnection(formatClusterUrl(tsHostURL), projectEnv)
         .then((res) => {
+          setIsLoading(false);
           setEmbedPath(`/data/embrace/${res.id}/edit`);
         })
         .catch((error) => {
+          setIsLoading(false);
           console.log(error);
           setErrorMessage({
             visible: true,
@@ -60,7 +63,6 @@ export const FullEmbed = ({ hostUrl }) => {
     } else {
       setEmbedPath('/data/embrace/connection');
     }
-    setIsLoading(false);
   }, []);
 
   const handleCreateConnectionEvent = (event) => {
@@ -114,7 +116,11 @@ export const FullEmbed = ({ hostUrl }) => {
   };
 
   if (isLoading) {
-    return <CircularLoader loadingText={t.FULL_APP_LOADER}></CircularLoader>;
+    return (
+      <CircularLoader
+        loadingText={isExistingDataSouce ? t.FULL_APP_LOADER : t.LOADING}
+      ></CircularLoader>
+    );
   }
 
   return (

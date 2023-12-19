@@ -48,7 +48,7 @@ export const steps: Step[] = [
     isSubStep: true,
   },
   {
-    title: 'ThoughtSpot Integration Summary',
+    title: 'ThoughtSpot integration summary',
   },
 ];
 
