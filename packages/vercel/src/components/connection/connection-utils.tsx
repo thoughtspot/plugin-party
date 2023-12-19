@@ -83,6 +83,7 @@ export default function findConnectedComponents(
   const components: string[][] = [];
 
   function dfs(node: string, component: string[]) {
+    if (visited[node]) return;
     visited[node] = true;
     component.push(node);
 

@@ -60,19 +60,18 @@ export const SelectTables = () => {
     const dataSourcesId = dataSourcesName.map(
       (dataSource) => tableNameToIdsMap?.[dataSource]
     );
+    const checker = [].concat(...tableRelationships) as any;
 
-    const relationshipIds = tableRelationships
-      ?.filter((dataSourceRelationship) => {
-        if (
-          dataSourceRelationship.length > 0 &&
-          dataSourcesId.includes(dataSourceRelationship[0]?.sourceTable) &&
-          dataSourcesId.includes(dataSourceRelationship[0]?.destinationTable)
-        ) {
-          return true;
-        }
-        return false;
-      })
-      .map((dataSourceRelationship) => dataSourceRelationship[0]);
+    const relationshipIds = checker?.filter((dataSourceRelationship) => {
+      if (
+        dataSourcesId.includes(dataSourceRelationship.sourceTable) &&
+        dataSourcesId.includes(dataSourceRelationship.destinationTable)
+      ) {
+        return true;
+      }
+      return false;
+    });
+
     setDataSourcesId(dataSourcesId);
     setRelationshipId(relationshipIds);
     route(Routes.DOCUMENTS);
@@ -96,6 +95,7 @@ export const SelectTables = () => {
             <div key={connectedTableName} className={styles.option}>
               <input
                 type="radio"
+                className={styles.radioButton}
                 checked={connectedTableName === selectedDataSources}
                 onChange={() => handleSelectDataSources(connectedTableName)}
               />
