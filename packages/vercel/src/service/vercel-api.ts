@@ -8,6 +8,13 @@ const envMapping = {
   PGDATABASE: 'database',
 };
 
+const envMappingForPostgres = {
+  POSTGRES_USER: 'user',
+  POSTGRES_PASSWORD: 'password',
+  POSTGRES_HOST: 'host',
+  POSTGRES_DATABASE: 'database',
+};
+
 export const getConnectionParams = (envParams) => {
   const paramObj: any = {};
   envParams.forEach((element) => {
@@ -16,6 +23,13 @@ export const getConnectionParams = (envParams) => {
     }
   });
   paramObj.port = '5432';
+  if (Object.keys(paramObj).length !== 5) {
+    envParams.forEach((element) => {
+      if (envMappingForPostgres[element.key]) {
+        paramObj[envMappingForPostgres[element.key]] = element.value;
+      }
+    });
+  }
   return paramObj;
 };
 

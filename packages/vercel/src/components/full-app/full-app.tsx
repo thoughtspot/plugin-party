@@ -116,7 +116,11 @@ export const FullEmbed = ({ hostUrl }) => {
   };
 
   if (isLoading) {
-    return <CircularLoader loadingText={t.FULL_APP_LOADER}></CircularLoader>;
+    return (
+      <CircularLoader
+        loadingText={isExistingDataSouce ? t.FULL_APP_LOADER : t.LOADING}
+      ></CircularLoader>
+    );
   }
 
   return (

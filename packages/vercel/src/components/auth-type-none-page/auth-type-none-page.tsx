@@ -40,12 +40,9 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
     setSecretKey,
     setHasAdminPrivilege,
   } = useAppContext();
-  const [isLoading, setIsLoading] = useState(worksheetId === '');
-  console.log('isLoad', isLoading);
+  const [isLoading, setIsLoading] = useState(true);
   const localStorageWorksheet = localStorage.getItem('worksheetId');
-  const [newWorksheetId, setNewWorksheetId] = useState(
-    localStorageWorksheet || worksheetId
-  );
+  const [newWorksheetId, setNewWorksheetId] = useState(worksheetId);
   const codeMap = {
     SageEmbed: EmbedTemplates.SageEmbed(tsHostURL, newWorksheetId),
   };
@@ -69,6 +66,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
           setNewWorksheetId(worksheetRes);
           setIsLoading(false);
         } else {
+          setIsLoading(false);
           loader.hide();
         }
       } catch (error) {
@@ -96,13 +94,11 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
       }
     };
     if (!localStorageWorksheet) {
-      console.log('si', isLoading);
       fetchData();
-      console.log('si2', isLoading);
       whiteListCSPAndGenerateSecretKey();
-      console.log('si3', isLoading);
     } else {
       const TSClusterId = localStorage.getItem('clusterUrl') || '';
+      setNewWorksheetId(localStorageWorksheet);
       const fetchPrivilege = async () => {
         try {
           const tsUserInfo = await getUserName(TSClusterId);

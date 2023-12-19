@@ -62,11 +62,15 @@ export const App = () => {
   if (configurationId && code) {
     // Clearing Local Storage stored variables after
     // setup is completed
-    localStorage.removeItem('clusterId');
+    localStorage.removeItem('clusterUrl');
     localStorage.removeItem('isDocsPage');
     localStorage.removeItem('worksheetId');
     localStorage.removeItem('deploymentUrl');
   }
+
+  // Logic of when user clicks on configure button after
+  // setup is completed and we need to redirect them
+  // to code snippet or summary page
   if (configurationId && !code) {
     isDocsPage = localStorage.getItem('isDocsPage') || '';
     deploymentUrl = localStorage.getItem('deploymentUrl') || '';
