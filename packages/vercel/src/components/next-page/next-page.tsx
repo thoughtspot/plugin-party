@@ -14,6 +14,7 @@ export const NextPage = ({ hostUrl, vercelToken }) => {
   const { worksheetId, secretKey } = useAppContext();
   const redirectUrl = formatClusterUrl(window.location.href);
   const tsHostURL = formatClusterUrl(hostUrl.url);
+
   const localStorageWorksheetId =
     localStorage.getItem('worksheetId') || worksheetId;
 
