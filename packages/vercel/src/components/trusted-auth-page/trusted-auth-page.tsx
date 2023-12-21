@@ -28,14 +28,12 @@ export const TrustedAuthPage = ({ hostUrl, deploymentUrl }) => {
   const worksheetId = addedSearchParam.get('worksheetId');
   const deploymentUrlSearchParam = new URLSearchParams(searchParams[2]);
   const deploymentUrls = deploymentUrlSearchParam.get('deployment-url');
-  const domain = deploymentUrls?.split('-') || [];
-  const domainUrl = `${domain[0]}${domain[2] ? `-${domain[2]}` : ''}`;
 
   const codeMap = {
     SageEmbed: EmbedTemplates.TrustedAuthSageEmbed(
       tsHostURL,
       worksheetId,
-      domainUrl,
+      deploymentUrls,
       userName
     ),
   };

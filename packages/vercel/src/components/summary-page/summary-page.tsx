@@ -20,8 +20,8 @@ export const SummaryPage = ({ hostUrl, deploymentUrl }) => {
   const worksheetId = addedSearchParam.get('worksheetId');
   const deploymentUrlSearchParam = new URLSearchParams(searchParams[2]);
   const deploymentUrls = deploymentUrlSearchParam.get('deployment-url');
-  const domain = deploymentUrls?.split('-') || [];
-  const domainUrl = `${domain[0]}-${domain[2]}`;
+  const deploymentDashboardUrl =
+    deploymentUrlSearchParam.get('deployment-dashboard-url') || '';
   const url = window.location.search.split('?');
   const configuration = new URLSearchParams(url[1]);
   const configurationId = configuration.get('configurationId');
@@ -37,7 +37,7 @@ export const SummaryPage = ({ hostUrl, deploymentUrl }) => {
     SageEmbed: EmbedTemplates.TrustedAuthSageEmbed(
       tsHostURL,
       worksheetId,
-      domainUrl,
+      deploymentUrls,
       userName
     ),
   };
@@ -109,8 +109,8 @@ export const SummaryPage = ({ hostUrl, deploymentUrl }) => {
         <li>
           <Typography variant="p">
             {t.SUMMARY_PAGE_TRUSTED_AUTH_SERVICE}
-            <a href={domainUrl} target="_blank">
-              {domainUrl}
+            <a href={deploymentDashboardUrl} target="_blank">
+              {deploymentDashboardUrl}
             </a>
           </Typography>
           <ul>
