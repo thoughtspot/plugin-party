@@ -11,17 +11,13 @@ import { formatClusterUrl } from '../full-app/full-app.utils';
 
 export const NextPage = ({ hostUrl, vercelToken }) => {
   const { t } = useTranslations();
-  const { worksheetId, selectedProject, secretKey } = useAppContext();
+  const { worksheetId, secretKey } = useAppContext();
   const redirectUrl = formatClusterUrl(window.location.href);
   const tsHostURL = formatClusterUrl(hostUrl.url);
-  const vercelModalClose =
-    new URLSearchParams(window.location.search).get('next') || '';
-  const searchParams = new URLSearchParams(window.location.search);
-  const teamId = searchParams.get('teamId') || '';
   const localStorageWorksheetId =
     localStorage.getItem('worksheetId') || worksheetId;
 
-  const vercelParams = `env=TS_HOST,TS_SECRET_KEY&repository-url=https%3A%2F%2Fgithub.com%2Fthoughtspot%2Ftoken-auth-service&redirect-url=${redirectUrl}%2F%3FworksheetId=${localStorageWorksheetId}%26token=${vercelToken}%26clusterUrl=${tsHostURL}%26project=${selectedProject}%26teamId=${teamId}%26closeVercel=${vercelModalClose}&output-directory=.`;
+  const vercelParams = `env=TS_HOST,TS_SECRET_KEY&repository-url=https%3A%2F%2Fgithub.com%2Fthoughtspot%2Ftoken-auth-service&output-directory=.&redirect-url=${redirectUrl}%2F%3FworksheetId=${localStorageWorksheetId}`;
 
   const openVercelDeployPage = () => {
     window.open(`https://vercel.com/new/clone?${vercelParams}`, '_blank');

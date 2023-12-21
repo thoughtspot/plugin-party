@@ -87,10 +87,14 @@ init({
   // Vercel deployed service domain so that secret key is not exposed
   getAuthToken: () => {
     /*
+    This is your trusted auth service url which we have deployed
+    in the previous step to generate ThoughtSpot token. Refer to this
+    github repo for more info - https://github.com/thoughtspot/token-auth-service
     You can add the group names with group_identifiers as attribute
     This attribute can be used in conjunction with auto_create to 
     dynamically assign groups and privileges to a user.
-    Refer to this doc for more info - https://developers.thoughtspot.com/docs/api-authv2#trusted-auth-v2
+    If you are using orgs, please mention orgId in the code snippet
+    as well. Refer docs for more info - https://developers.thoughtspot.com/docs/api-authv2#trusted-auth-v2
     */
     return fetch("${deploymentUrl}/api/v2/gettoken/" + TSUserName)
       .then((r) => r.text())
