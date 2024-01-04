@@ -62,6 +62,7 @@ export const FullEmbed = ({ hostUrl }) => {
         });
     } else {
       setEmbedPath('/data/embrace/connection');
+      setIsLoading(false);
     }
   }, []);
 
