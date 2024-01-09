@@ -5,16 +5,18 @@ import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { Typography } from 'widgets/lib/typography';
 import { Button } from 'widgets/lib/button';
 import { Icon } from 'widgets/lib/icon';
+import { useLoader } from 'widgets/lib/loader';
 import styles from './next-page.module.scss';
 import { useAppContext } from '../../app.context';
 import { formatClusterUrl } from '../full-app/full-app.utils';
 
 export const NextPage = ({ hostUrl, vercelToken }) => {
   const { t } = useTranslations();
+  const loader = useLoader();
+  loader.hide();
   const { worksheetId, secretKey } = useAppContext();
   const redirectUrl = formatClusterUrl(window.location.href);
   const tsHostURL = formatClusterUrl(hostUrl.url);
-
   const localStorageWorksheetId =
     localStorage.getItem('worksheetId') || worksheetId;
 

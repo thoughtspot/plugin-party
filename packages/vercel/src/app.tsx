@@ -76,7 +76,7 @@ export const App = () => {
     deploymentUrl = localStorage.getItem('deploymentUrl') || '';
     if (deploymentUrl !== '') setRedirectUrl(deploymentUrl);
     TSClusterId = localStorage.getItem('clusterUrl') || '';
-    if (TSClusterId === '' || deploymentUrl === '') {
+    if ((TSClusterId === '' || deploymentUrl === '') && isDocsPage !== 'true') {
       window.location.href = 'https://developers.thoughtspot.com/docs/';
     } else if (isDocsPage === 'true' && currentRouteIndex <= 5) {
       route(Routes.DOCUMENTS);

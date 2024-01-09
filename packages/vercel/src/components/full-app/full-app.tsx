@@ -2,6 +2,7 @@ import { AppEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
 import { useEffect, useState } from 'preact/hooks';
 import { route } from 'preact-router';
 import { useTranslations } from 'i18n';
+import { useLoader } from 'widgets/lib/loader';
 import { BannerType, ErrorBanner } from 'widgets/lib/error-banner';
 import React from 'react';
 import { Vertical } from 'widgets/lib/layout/flex-layout';
@@ -17,6 +18,8 @@ import { Routes } from '../connection/connection-utils';
 
 export const FullEmbed = ({ hostUrl }) => {
   const { t } = useTranslations();
+  const loader = useLoader();
+  loader.hide();
   const embedRef = useEmbedRef();
   const {
     setLogicalTableList,
