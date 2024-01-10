@@ -78,7 +78,9 @@ export const SelectTables = () => {
   };
 
   const handleSelectDataSources = (connectedTableName: string) => {
-    setSelectedDataSources(connectedTableName);
+    setSelectedDataSources(
+      selectedDataSources === connectedTableName ? '' : connectedTableName
+    );
   };
 
   return (
@@ -108,6 +110,7 @@ export const SelectTables = () => {
             className={styles.button}
             onClick={() => updateDataSource(selectedDataSources)}
             text={t.CONTINUE}
+            isDisabled={selectedDataSources === ''}
           ></Button>
         </Vertical>
       </Vertical>
