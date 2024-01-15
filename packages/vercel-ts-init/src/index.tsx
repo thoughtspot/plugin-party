@@ -2,6 +2,7 @@ import { useTranslations } from 'i18n';
 import { ClusterUrl } from 'ts-init/src/cluster-url/cluster-url';
 import { TSAuthInit } from 'ts-init/src/ts-auth-init/ts-auth-init';
 import { getConfig } from './services/config';
+import { FreeTrial } from './free-trial/free-trial';
 
 export function VercelTSInit({ children, setClusterUrl, clusterUrl }) {
   const { t } = useTranslations();
@@ -34,7 +35,7 @@ export function VercelTSInit({ children, setClusterUrl, clusterUrl }) {
 
   if (clusterUrl.isCandidate)
     return (
-      <ClusterUrl
+      <FreeTrial
         candidateUrl={clusterUrl.url}
         onSetUrl={onSetUrl}
         isUrlValid={!clusterUrl.isError}
