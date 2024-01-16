@@ -74,7 +74,7 @@ const ImportWorksheetTML = async (hostUrl, request: any) => {
 };
 
 export const getUserName = async (hostUrl) => {
-  const response = await fetch(`${hostUrl}/api/rest/2.0/auth/session/user`, {
+  const response = await fetch(`${hostUrl}/callosum/v1/session/info`, {
     headers: {
       Accept: 'application/json',
     },

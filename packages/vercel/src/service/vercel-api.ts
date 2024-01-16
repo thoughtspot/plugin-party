@@ -126,6 +126,7 @@ export const whiteListCSP = async (hostUrl: string, urlToWhiteList: string) => {
     await secuirtySettingsPromise(hostUrl, 'CSP', 'POST', updatedCSPPayload);
   } catch (error) {
     console.error('Network Error:', error);
+    throw error;
   }
 };
 

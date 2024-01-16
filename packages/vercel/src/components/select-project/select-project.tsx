@@ -45,7 +45,10 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
   const hasNecessaryPrivilege = async () => {
     const tsUserInfo = await getUserName(tsHostURL);
     const userPrivilege = tsUserInfo.privileges;
-    setHasAdminPrivilege(userPrivilege.includes('ADMINISTRATION'));
+    setHasAdminPrivilege(
+      userPrivilege.includes('ADMINISTRATION') ||
+        userPrivilege.includes('CONTROL_TRUSTED_AUTH')
+    );
     if (
       !userPrivilege.includes('ADMINISTRATION') &&
       !userPrivilege.includes('DATAMANAGEMENT')
