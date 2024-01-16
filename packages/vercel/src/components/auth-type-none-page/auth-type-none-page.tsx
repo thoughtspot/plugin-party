@@ -103,7 +103,10 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
         try {
           const tsUserInfo = await getUserName(TSClusterId);
           const userPrivilege = tsUserInfo.privileges;
-          setHasAdminPrivilege(userPrivilege.includes('ADMINISTRATION'));
+          setHasAdminPrivilege(
+            userPrivilege.includes('ADMINISTRATION') ||
+              userPrivilege.includes('CONTROL_TRUSTED_AUTH')
+          );
           const res = await fetchSecretKey(TSClusterId);
           setSecretKey(res.Data.token);
           setIsLoading(false);
