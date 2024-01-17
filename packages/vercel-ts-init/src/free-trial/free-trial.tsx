@@ -2,6 +2,7 @@ import { useTranslations } from 'i18n';
 import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { Typography } from 'widgets/lib/typography';
 import { Card } from 'widgets/lib/card';
+import { Icon } from 'widgets/lib/icon';
 import { ClusterUrl } from 'ts-init/src/cluster-url/cluster-url';
 import { Modal } from 'antd';
 import './free-trial.scss';
@@ -40,21 +41,22 @@ export function FreeTrial({
     <>
       {!showLoginPage ? (
         <Vertical hAlignContent="center" className="free-trial">
-          <img
-            className="ts-logo"
-            src="https://www.thoughtspot.com/images/logo-black-with-r.svg"
-            id="ts-logo"
-            width="160"
-          ></img>
+          <Horizontal className="icon-wrapper">
+            <Icon name="rd-icon-ts-logo-with-text"></Icon>
+            <TypographyAny variant="h2" className="plus-sign">
+              +
+            </TypographyAny>
+            <Icon name="rd-icon-vercel"></Icon>
+          </Horizontal>
           <TypographyAny
             className="text"
             variant="p"
             htmlContent={t.FREE_TRIAL_DESCRIPTION}
           ></TypographyAny>
-          <Horizontal spacing="h" className="horizontalWrapper">
+          <Horizontal className="card-wrapper">
             <Card
               id={0}
-              className="card"
+              className="first-card"
               title={t.FIRST_CARD_TITLE}
               titleClassName="title"
               subTitle={t.FIRST_CARD_DESCRIPTION}
@@ -65,7 +67,7 @@ export function FreeTrial({
             ></Card>
             <Card
               id={1}
-              className="card"
+              className="second-card"
               title={t.SECOND_CARD_TITLE}
               titleClassName="title"
               subTitle={t.SECOND_CARD_DESCRIPTION}

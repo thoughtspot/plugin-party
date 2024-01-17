@@ -9,8 +9,8 @@
     margin: 8px;
 }
 
-.horizontalWrapper {
-    padding-top: 24px;
+.icon-wrapper {
+    max-width: 616px;
 }
 
 .text {
@@ -18,11 +18,29 @@
     line-height: 24px;
 }
 
-.card {
+.first-card {
     background-color: #fff;
+    margin-right: 32px;
+    border-radius: 8px;
+    min-width: 283px;
+}
+
+.second-card {
+    background-color: #fff;
+    border-radius: 8px;
 }
 
 .title {
     color: #000;
     font-size: 20px;
+}
+
+.card-wrapper {
+    padding-top: 32px;
+}
+
+.plus-sign {
+    padding-top: 7%;
+    padding-left: 40px;
+    font-weight: 700;
 }

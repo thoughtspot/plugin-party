@@ -37,9 +37,7 @@ export const TableListView: React.FC<ListProps> = ({
   const [selectedIndex, setSelectedIndex] = useState(null);
   const handleRowSelection = (projectName: string, index: number) => {
     onRowClick(projectName, index);
-    setSelectedIndex((prevSelectedIndex) =>
-      prevSelectedIndex === index ? null : index
-    );
+    setSelectedIndex(index);
   };
   const renderList = (listData: RowDataProps[]) => {
     return listData.map((item: RowDataProps, index: number) => {
@@ -58,7 +56,9 @@ export const TableListView: React.FC<ListProps> = ({
             title={item.name}
             icon={icon?.[index] || ''}
             text={iconText?.[index] || ''}
-            isChecked={selectedIndex === index}
+            isChecked={
+              selectedIndex === null ? index === 0 : selectedIndex === index
+            }
           />
         </Vertical>
       );
