@@ -5,6 +5,7 @@ import Router, { useRouter, route } from 'preact-router';
 import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { I18N, useTranslations } from 'i18n';
 import { Stepper } from 'widgets/lib/stepper';
+import { Analytics } from '@vercel/analytics/react';
 import { useLoader } from 'widgets/lib/loader';
 import { CircularLoader } from 'widgets/lib/circular-loader';
 import { useEffect, useState } from 'preact/hooks';
@@ -139,6 +140,7 @@ export const App = () => {
           headerLogoPath="TS-white-logo"
         ></Header>
         <Horizontal spacing="c" className={styles.docsContainer}>
+          <Analytics />
           <AppContextProvider>
             <Router history={history}>
               <SelectProject

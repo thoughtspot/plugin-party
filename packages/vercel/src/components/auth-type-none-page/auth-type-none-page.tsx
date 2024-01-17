@@ -51,6 +51,10 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
     visible: false,
     message: '',
   });
+  const [cspErrorMessage, setCspErrorMessage] = useState({
+    visible: false,
+    message: '',
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,7 +70,6 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
           setNewWorksheetId(worksheetRes);
           setIsLoading(false);
         } else {
-          setIsLoading(false);
           loader.hide();
         }
       } catch (error) {
@@ -90,12 +93,18 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
       } catch (error) {
         setIsLoading(false);
         console.error(error);
-        setErrorMessage({ visible: true, message: t.WHITELIST_CSP_ERROR });
+        setCspErrorMessage({ visible: true, message: t.WHITELIST_CSP_ERROR });
       }
     };
     if (!localStorageWorksheet) {
       fetchData();
       whiteListCSPAndGenerateSecretKey();
+      if (!hasAdminPrivileges) {
+        setErrorMessage({
+          visible: true,
+          message: t.ADMIN_PRIVILEGE_ISSUE,
+        });
+      }
     } else {
       const TSClusterId = localStorage.getItem('clusterUrl') || '';
       setNewWorksheetId(localStorageWorksheet);
@@ -148,12 +157,27 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
 
   if (isLoading) {
     return (
-      <CircularLoader loadingText={t.CREATE_WORKSHEET_LOADING}></CircularLoader>
+      <CircularLoader
+        loadingText={
+          worksheetId === ''
+            ? t.CREATE_WORKSHEET_LOADING
+            : t.WHITELISTING_DOMAIN_LOADING
+        }
+      ></CircularLoader>
     );
   }
 
   return (
     <Vertical className={styles.container}>
+      <ErrorBanner
+        errorMessage={cspErrorMessage.message}
+        bannerType={BannerType.MESSAGE}
+        errorCardButton={{
+          name: '',
+        }}
+        showCloseIcon={false}
+        showBanner={cspErrorMessage.visible && !!cspErrorMessage.message}
+      ></ErrorBanner>
       <ErrorBanner
         errorMessage={errorMessage.message}
         bannerType={BannerType.MESSAGE}
@@ -214,6 +238,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
           onClick={goToTrustedAuth}
           className={styles.button}
           text={t.NEXT_BUTTON}
+          isDisabled={!hasAdminPrivileges}
         />
       </Horizontal>
     </Vertical>
