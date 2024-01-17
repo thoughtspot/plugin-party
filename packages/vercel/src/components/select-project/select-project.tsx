@@ -107,9 +107,7 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
   }, []);
 
   const handleSelectProject = (projectName: string, index: number) => {
-    setSelectedProjects((prevProject: string) =>
-      prevProject === projectName ? '' : projectName
-    );
+    setSelectedProjects(projectName);
     setProjectIndex(index);
   };
 
@@ -194,14 +192,12 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
                     type="SECONDARY"
                     onClick={() => selectExistingDataSources()}
                     text={t.SELECT_EXISTING_DATASOURCES}
-                    isDisabled={selectedProjects === ''}
                   ></Button>
                   <Button
                     onClick={() => {
                       updateProject();
                     }}
                     text={t.EDIT_CONNECTION}
-                    isDisabled={selectedProjects === ''}
                   ></Button>
                 </Horizontal>
               </Vertical>
