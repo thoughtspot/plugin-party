@@ -87,8 +87,8 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
           selectedProject,
           worksheetId
         );
-        await whiteListCSP(tsHostURL, userVercelDomain);
         setSecretKey(secretKey);
+        await whiteListCSP(tsHostURL, userVercelDomain);
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
