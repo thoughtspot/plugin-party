@@ -71,6 +71,7 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
     );
 
     // Fetching env Variables for all the selected projects
+    setSelectedProjects(projectData.projects[0].id);
     const envVariablesPromises = projectData.projects.map((project) => {
       return vercelPromise(
         `https://api.vercel.com/v8/projects/${project.id}/env?teamId=${teamId}&decrypt=true&source=vercel-cli:pull`,

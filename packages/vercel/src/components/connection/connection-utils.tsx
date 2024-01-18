@@ -67,15 +67,12 @@ export default function findConnectedComponents(
 
   for (const relation of relationships) {
     for (const edge of relation) {
+      // Creating only Directed edges so that
+      // multiple root joins doesn't come up
       if (!graph[edge.sourceTable]) {
         graph[edge.sourceTable] = [];
       }
       graph[edge.sourceTable].push(edge.destinationTable);
-
-      if (!graph[edge.destinationTable]) {
-        graph[edge.destinationTable] = [];
-      }
-      graph[edge.destinationTable].push(edge.sourceTable);
     }
   }
 

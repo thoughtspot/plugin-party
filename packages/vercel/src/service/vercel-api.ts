@@ -1,3 +1,5 @@
+import { getSessionInfo } from '@thoughtspot/visual-embed-sdk';
+
 const CLIENT_ID = 'oac_ZRDkEzGSa8knXCmJ8XNAbkkN';
 const CLIENT_SECRET = 'u7y8OoZROu3h1ymreAnCA7QV';
 
@@ -79,8 +81,20 @@ export const getCurrentUserInfo = async (accessToken: string) => {
   return response.json();
 };
 
+export const isOrgsEnabled = async (hostUrl) => {
+  const rs = await getSessionInfo();
+  console.log('rs', rs);
+  return rs.configInfo.orgsConfiguration.enabled;
+};
+
 const secuirtySettingsPromise = async (hostUrl, type, method, payload?) => {
-  const endpoint = type === 'CSP' ? 'nginxcsp' : 'nginxcors?view_mode=all';
+  const isOrgsUiEnabled = await isOrgsEnabled(hostUrl);
+  let viewMode = 'all';
+  if (isOrgsUiEnabled) {
+    viewMode = 'primary';
+  }
+  const endpoint =
+    type === 'CSP' ? 'nginxcsp' : `nginxcors?view_mode=${viewMode}`;
   return fetch(`${hostUrl}/managementconsole/admin-api/${endpoint}`, {
     headers: {
       accept: 'application/json',
@@ -93,53 +107,38 @@ const secuirtySettingsPromise = async (hostUrl, type, method, payload?) => {
 };
 
 export const whiteListCSP = async (hostUrl: string, urlToWhiteList: string) => {
-  try {
-    const currentCSP = await secuirtySettingsPromise(hostUrl, 'CSP', 'GET');
-    const currentCORS = await secuirtySettingsPromise(hostUrl, 'CORS', 'GET');
+  const currentCORS = await secuirtySettingsPromise(hostUrl, 'CORS', 'GET');
 
-    const updatedCORSPayload = {
-      configOperation: 'add',
-      configOptions: [
-        {
-          optionKey: 'nginx_corshosts',
-          optionValue: window.btoa(
-            `${currentCORS.Data},${urlToWhiteList},.*.stackblitz.io`
-          ),
-        },
-      ],
-    };
+  const updatedCORSPayload = {
+    configOperation: 'add',
+    configOptions: [
+      {
+        optionKey: 'nginx_corshosts',
+        optionValue: window.btoa(
+          `${currentCORS.Data},${urlToWhiteList},.*.stackblitz.io`
+        ),
+      },
+    ],
+  };
 
-    const updatedCSPPayload = {
-      configOperation: 'add',
-      configOptions: currentCSP.Data.configs.map((config) => {
-        let value = config.value;
-        if (config.configName === 'nginx_csp_frame_ancestors')
-          value = `${value},https://${urlToWhiteList}`;
-        return {
-          optionKey: config.configName,
-          optionValue: window.btoa(value),
-        };
-      }),
-    };
+  await secuirtySettingsPromise(hostUrl, 'CORS', 'POST', updatedCORSPayload);
 
-    await secuirtySettingsPromise(hostUrl, 'CORS', 'POST', updatedCORSPayload);
-    await secuirtySettingsPromise(hostUrl, 'CSP', 'POST', updatedCSPPayload);
-  } catch (error) {
-    console.error('Network Error:', error);
-    throw error;
-  }
-};
+  const currentCSP = await secuirtySettingsPromise(hostUrl, 'CSP', 'GET');
 
-export const isOrgsEnabled = async (hostUrl) => {
-  const response = await fetch(`${hostUrl}/callosum/v1/session/info`, {
-    headers: {
-      Accept: 'application/json',
-    },
-    credentials: 'include',
-    method: 'GET',
-  });
-  const rs = await response.json();
-  return rs.configInfo.orgsConfiguration.enabled;
+  const updatedCSPPayload = {
+    configOperation: 'add',
+    configOptions: currentCSP.Data.configs.map((config) => {
+      let value = config.value;
+      if (config.configName === 'nginx_csp_frame_ancestors')
+        value = `${value},https://${urlToWhiteList}`;
+      return {
+        optionKey: config.configName,
+        optionValue: window.btoa(value),
+      };
+    }),
+  };
+
+  await secuirtySettingsPromise(hostUrl, 'CSP', 'POST', updatedCSPPayload);
 };
 
 export const fetchSecretKey = async (hostUrl: string) => {
