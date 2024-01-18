@@ -45,6 +45,9 @@ export const FullEmbed = ({ hostUrl }) => {
     const fetchMetadataSources = async () => {
       const res = await getMetadataList(tsHostURL);
       setExistingDataSources(res.headers);
+      if (res.headers.length) {
+        setSelectedDataSource(res.headers[0].id);
+      }
       setIsLoading(false);
     };
     if (isExistingDataSouce) {
