@@ -11,6 +11,7 @@ export function ClusterUrl({
   candidateUrl,
   suggestedUrl = '',
   isUrlValid = true,
+  isVercelEnabled = false,
 }) {
   const { t } = useTranslations();
   const inpRef = useRef<HTMLInputElement>(null);
@@ -24,6 +25,16 @@ export function ClusterUrl({
       ></img>
       <Vertical className="set-url-container" spacing="c" hAlignContent="start">
         <div>{t.THOUGHTSPOT_INSTANCE}</div>
+        {isVercelEnabled ? (
+          <div
+            className="ts-instance-msg"
+            dangerouslySetInnerHTML={{
+              __html: t.THOUGHTSPOT_INSTANCE_MSG,
+            }}
+          ></div>
+        ) : (
+          <></>
+        )}
         <Input
           initialValue={candidateUrl}
           ref={inpRef}
@@ -44,10 +55,19 @@ export function ClusterUrl({
           onClick={() => onSetUrl(inpRef.current.value)}
           text={t.CONTINUE}
         ></Button>
-        <div
-          className="free-trial-msg"
-          dangerouslySetInnerHTML={{ __html: t.START_FREE_TRIAL }}
-        ></div>
+        {!isVercelEnabled ? (
+          <div
+            className="free-trial-msg"
+            dangerouslySetInnerHTML={{ __html: t.START_FREE_TRIAL }}
+          ></div>
+        ) : (
+          <div
+            className="description"
+            dangerouslySetInnerHTML={{
+              __html: t.THOUGHTSPOT_INSTANCE_DESCRIPTION,
+            }}
+          ></div>
+        )}
       </Vertical>
     </Vertical>
   );

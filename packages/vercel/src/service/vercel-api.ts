@@ -83,7 +83,6 @@ export const getCurrentUserInfo = async (accessToken: string) => {
 
 export const isOrgsEnabled = async (hostUrl) => {
   const rs = await getSessionInfo();
-  console.log('rs', rs);
   return rs.configInfo.orgsConfiguration.enabled;
 };
 

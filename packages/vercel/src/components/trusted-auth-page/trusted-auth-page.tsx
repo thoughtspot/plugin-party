@@ -41,7 +41,7 @@ export const TrustedAuthPage = ({ hostUrl, deploymentUrl }) => {
   useEffect(() => {
     getUserName(tsHostURL)
       .then((res) => {
-        setUserName(res.name);
+        setUserName(res.userName);
         setIsLoading(false);
       })
       .catch((error) => {

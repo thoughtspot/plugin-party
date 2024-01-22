@@ -1,7 +1,9 @@
 {
   "THOUGHTSPOT_INSTANCE": "ThoughtSpot instance",
+  "THOUGHTSPOT_INSTANCE_MSG": "Enter the URL of your ThoughtSpot instance.<br>ex: https://team2.thoughtspot.cloud",
   "CONTINUE": "Continue",
   "START_FREE_TRIAL": "Do not have a ThoughtSpot account? Start a <a href=\"https://www.thoughtspot.com/trial\" target=\"_blank\"> free trial </a>.",
+  "THOUGHTSPOT_INSTANCE_DESCRIPTION": "Need help finding out your ThoughtSpot instance?<br><a href=\"https://developers.thoughtspot.com/docs/faqs#_about_thoughtspot_everywhere\" target=\"_blank\">Click here</a>",
   "SIGN_IN_SSO": "Sign in with SSO",
   "OR": "OR",
   "USERNAME": "Username",
