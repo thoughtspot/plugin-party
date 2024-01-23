@@ -9,6 +9,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { useLoader } from 'widgets/lib/loader';
 import { CircularLoader } from 'widgets/lib/circular-loader';
 import { useEffect, useState } from 'preact/hooks';
+import { H } from 'highlight.run';
 import { Header } from './components/header';
 import { SelectProject } from './components/select-project/select-project';
 import { Routes, steps } from './components/connection/connection-utils';
@@ -90,6 +91,21 @@ export const App = () => {
     url: deploymentUrl || isDocsPage === 'true' ? TSClusterId : '',
     isCandidate: !deploymentUrl && !(isDocsPage === 'true'),
     suggestedUrl: '',
+  });
+
+  // Added Highlight.io for tracking
+  H.init('odz63ole', {
+    serviceName: 'frontend-app',
+    tracingOrigins: true,
+    networkRecording: {
+      enabled: true,
+      recordHeadersAndBody: true,
+      urlBlocklist: [
+        // insert full or partial urls that you don't want to record here
+        // Out of the box, Highlight will not record these URLs (they can be safely removed):
+        '/managementconsole/admin-api/',
+      ],
+    },
   });
 
   useEffect(() => {

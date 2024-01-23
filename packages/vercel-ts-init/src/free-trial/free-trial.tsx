@@ -84,6 +84,7 @@ export function FreeTrial({
           onSetUrl={onSetUrl}
           suggestedUrl={suggestedUrl}
           isUrlValid={isUrlValid}
+          isVercelEnabled={true}
         ></ClusterUrl>
       )}
       <Modal

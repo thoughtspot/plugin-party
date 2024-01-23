@@ -20,9 +20,11 @@
         "test": "vitest run"
     },
     "dependencies": {
+        "@highlight-run/react": "^3.2.1",
         "@stackblitz/sdk": "^1.9.0",
         "antd": "^5.8.5",
         "build-utils": "0.0.0",
+        "highlight.run": "^8.4.0",
         "i18n": "0.0.0",
         "preact": "^10.11.13",
         "vercel-ts-init": "0.0.0",
