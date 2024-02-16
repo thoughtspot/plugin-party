@@ -23,9 +23,11 @@
   border-bottom: 1px solid $gray1;
   width: 100%;
   height: 85px;
+  text-align: left;
 }
 .item-title {
   min-width: 84px !important;
+  font-weight: 700;
 }
 .item {
   padding-bottom: $spacing--b;
@@ -86,6 +88,11 @@
 }
 
 .textIcon {
-    align-items: center;
-    min-width: 20% !important;
+  align-items: center;
+  min-width: 20% !important;
+}
+
+.heading {
+  color: #777E8B;
+  font-weight: 700;
 }

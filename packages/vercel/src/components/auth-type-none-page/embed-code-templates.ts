@@ -67,7 +67,13 @@ export default function App() {
 `;
     return `${codeSnippet}`;
   },
-  TrustedAuthSageEmbed: (tsHostURL, worksheetId, deploymentUrl, userName) => {
+  TrustedAuthSageEmbed: (
+    tsHostURL,
+    worksheetId,
+    deploymentUrl,
+    userName,
+    currentOrgId
+  ) => {
     const codeSnippet = `// Import ThoughtSpot SDK
     import React from 'react';
     import './style.css';
@@ -96,7 +102,13 @@ init({
     If you are using orgs, please mention orgId in the code snippet
     as well. Refer docs for more info - https://developers.thoughtspot.com/docs/api-authv2#trusted-auth-v2
     */
-    return fetch("${deploymentUrl}/api/v2/gettoken/" + TSUserName)
+    return fetch("${deploymentUrl}/api/v2/gettoken/" + TSUserName, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({orgId: ${currentOrgId}})
+    })
       .then((r) => r.text())
       .catch((e) => {
         console.log(e);

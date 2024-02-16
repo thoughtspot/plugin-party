@@ -5,6 +5,7 @@ import { route } from 'preact-router';
 import { useLoader } from 'widgets/lib/loader';
 import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { Typography } from 'widgets/lib/typography';
+import { TableListView } from 'widgets/lib/table-list-view';
 import styles from './select-table.module.scss';
 import { useAppContext } from '../../app.context';
 import findConnectedComponents, {
@@ -15,7 +16,6 @@ export const SelectTables = () => {
   const loader = useLoader();
   loader.hide();
   const { t } = useTranslations();
-  const [selectedDataSources, setSelectedDataSources] = useState<string>('');
   const {
     logicalTableList,
     setDataSourcesId,
@@ -48,10 +48,16 @@ export const SelectTables = () => {
   }
   const connectedTablesNames = connectedTables.map(
     (connectedTable: string[]) => {
-      return connectedTable
-        .map((connectedTableIds) => tableIdToNameMap[connectedTableIds])
-        .join(' - ');
+      return {
+        name: connectedTable
+          .map((connectedTableIds) => tableIdToNameMap[connectedTableIds])
+          .join(' - '),
+        joins: connectedTable.length > 1 ? 'Yes' : 'No',
+      };
     }
+  );
+  const [selectedDataSources, setSelectedDataSources] = useState(
+    connectedTablesNames[0].name
   );
 
   const updateDataSource = (selectDataSources: string) => {
@@ -78,41 +84,35 @@ export const SelectTables = () => {
   };
 
   const handleSelectDataSources = (connectedTableName: string) => {
-    setSelectedDataSources(
-      selectedDataSources === connectedTableName ? '' : connectedTableName
-    );
+    setSelectedDataSources(connectedTableName);
   };
 
   return (
     <Vertical className={styles.container}>
-      <Vertical className={styles.modal}>
-        <Typography variant="h2" className={styles.header} noMargin>
-          {t.SELECT_TABLES}
-        </Typography>
-        <Typography variant="h4" className={styles.subtitle} noMargin>
-          {t.SELECT_TABLES_SUBTITLE}
-        </Typography>
-        <Vertical>
-          {connectedTablesNames.map((connectedTableName: any) => (
-            <div key={connectedTableName} className={styles.option}>
-              <input
-                type="radio"
-                className={styles.radioButton}
-                checked={connectedTableName === selectedDataSources}
-                onChange={() => handleSelectDataSources(connectedTableName)}
-              />
-              {connectedTableName}
-            </div>
-          ))}
-        </Vertical>
-        <Vertical hAlignContent="center" className={styles.buttonContainer}>
-          <Button
-            className={styles.button}
-            onClick={() => updateDataSource(selectedDataSources)}
-            text={t.CONTINUE}
-            isDisabled={selectedDataSources === ''}
-          ></Button>
-        </Vertical>
+      <Typography variant="h2" className={styles.header} noMargin>
+        {t.SELECT_TABLES}
+      </Typography>
+      <Typography variant="h4" className={styles.subtitle} noMargin>
+        {t.SELECT_TABLES_SUBTITLE}
+      </Typography>
+      <Vertical className={styles.tableWrapper}>
+        <TableListView
+          textTitle="Tables Name"
+          textWithIconTitle="Joins"
+          onRowClick={handleSelectDataSources}
+          data={connectedTablesNames}
+          iconText={connectedTablesNames.map((tables: any) => {
+            return tables.joins;
+          })}
+        ></TableListView>
+      </Vertical>
+      <Vertical hAlignContent="center" className={styles.buttonContainer}>
+        <Button
+          className={styles.button}
+          onClick={() => updateDataSource(selectedDataSources)}
+          text={t.CONTINUE}
+          isDisabled={selectedDataSources === ''}
+        ></Button>
       </Vertical>
     </Vertical>
   );

@@ -14,13 +14,15 @@ export const NextPage = ({ hostUrl, vercelToken }) => {
   const { t } = useTranslations();
   const loader = useLoader();
   loader.hide();
-  const { worksheetId, secretKey } = useAppContext();
+  const { worksheetId, secretKey, currentOrgId } = useAppContext();
   const redirectUrl = formatClusterUrl(window.location.href);
   const tsHostURL = formatClusterUrl(hostUrl.url);
   const localStorageWorksheetId =
     localStorage.getItem('worksheetId') || worksheetId;
+  const localStorageOrgId =
+    localStorage.getItem('currentOrgId') || currentOrgId;
 
-  const vercelParams = `env=TS_HOST,TS_SECRET_KEY&repository-url=https%3A%2F%2Fgithub.com%2Fthoughtspot%2Ftoken-auth-service&output-directory=.&redirect-url=${redirectUrl}%2F%3FworksheetId=${localStorageWorksheetId}`;
+  const vercelParams = `env=TS_HOST,TS_SECRET_KEY&repository-url=https%3A%2F%2Fgithub.com%2Fthoughtspot%2Ftoken-auth-service&output-directory=.&redirect-url=${redirectUrl}%2F%3FworksheetId=${localStorageWorksheetId}%26currentOrgId=${localStorageOrgId}`;
 
   const openVercelDeployPage = () => {
     window.open(`https://vercel.com/new/clone?${vercelParams}`, '_blank');

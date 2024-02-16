@@ -89,9 +89,9 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
         );
         setSecretKey(secretKey);
         await whiteListCSP(tsHostURL, userVercelDomain);
-        setIsLoading(false);
+        if (worksheetId !== '') setIsLoading(false);
       } catch (error) {
-        setIsLoading(false);
+        if (worksheetId !== '') setIsLoading(false);
         console.error(error);
         setCspErrorMessage({ visible: true, message: t.WHITELIST_CSP_ERROR });
       }

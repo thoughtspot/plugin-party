@@ -35,6 +35,7 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
     setProjectEnv,
     setIsExistingDataSouce,
     setIsConnectionPostgres,
+    setCurrentOrgId,
   } = useAppContext();
   const [errorMessage, setErrorMessage] = useState({
     visible: false,
@@ -45,6 +46,8 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
   const hasNecessaryPrivilege = async () => {
     const tsUserInfo = await getUserName(tsHostURL);
     const userPrivilege = tsUserInfo.privileges;
+    setCurrentOrgId(tsUserInfo.currentOrgId);
+    localStorage.setItem('currentOrgId', tsUserInfo.currentOrgId);
     setHasAdminPrivilege(
       userPrivilege.includes('ADMINISTRATION') ||
         userPrivilege.includes('CONTROL_TRUSTED_AUTH')

@@ -73,11 +73,11 @@ export const TableListView: React.FC<ListProps> = ({
         >
           <Vertical vAlignContent="center" className={styles.itemWrapper}>
             <Horizontal className={styles.row} spacing="d">
-              <Typography variant="p" noMargin>
+              <Typography className={styles.heading} variant="p" noMargin>
                 {textTitle}
               </Typography>
               <Horizontal spacing="a" className={styles.iconTextWrapper}>
-                <Typography variant="p" noMargin>
+                <Typography variant="p" className={styles.heading} noMargin>
                   {textWithIconTitle}
                 </Typography>
               </Horizontal>

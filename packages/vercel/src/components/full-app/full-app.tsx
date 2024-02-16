@@ -87,11 +87,7 @@ export const FullEmbed = ({ hostUrl }) => {
   };
 
   const handleSelectDataSources = (dataSourceName: string, index: number) => {
-    setSelectedDataSource((prevSelectedDataSource) =>
-      prevSelectedDataSource === existingDataSources[index].id
-        ? ''
-        : existingDataSources[index].id
-    );
+    setSelectedDataSource(existingDataSources[index].id);
   };
 
   const updateSelectedDataSources = () => {
@@ -151,7 +147,9 @@ export const FullEmbed = ({ hostUrl }) => {
               textTitle="DataSource Name"
               textWithIconTitle="Type"
               onRowClick={handleSelectDataSources}
-              data={existingDataSources}
+              data={existingDataSources.sort((a, b) =>
+                a.name.localeCompare(b.name)
+              )}
               iconText={existingDataSources.map((dataSource: any) => {
                 return dataSource.type === 'WORKSHEET' ? 'Worksheet' : 'Table';
               })}

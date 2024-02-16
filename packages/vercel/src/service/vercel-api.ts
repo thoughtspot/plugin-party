@@ -81,17 +81,23 @@ export const getCurrentUserInfo = async (accessToken: string) => {
   return response.json();
 };
 
-export const isOrgsEnabled = async (hostUrl) => {
+export const isOrgsEnabled = async () => {
   const rs = await getSessionInfo();
   return rs.configInfo.orgsConfiguration.enabled;
 };
 
+export const isFreeTrialEnabled = async () => {
+  const rs = await getSessionInfo();
+  return rs.configInfo.freeTrialActivationEnabled;
+};
+
 const secuirtySettingsPromise = async (hostUrl, type, method, payload?) => {
-  const isOrgsUiEnabled = await isOrgsEnabled(hostUrl);
+  const isOrgsUiEnabled = await isOrgsEnabled();
   let viewMode = 'all';
   if (isOrgsUiEnabled) {
     viewMode = 'primary';
   }
+
   const endpoint =
     type === 'CSP' ? 'nginxcsp' : `nginxcors?view_mode=${viewMode}`;
   return fetch(`${hostUrl}/managementconsole/admin-api/${endpoint}`, {
@@ -106,6 +112,7 @@ const secuirtySettingsPromise = async (hostUrl, type, method, payload?) => {
 };
 
 export const whiteListCSP = async (hostUrl: string, urlToWhiteList: string) => {
+  const isFreeTrial = await isFreeTrialEnabled();
   const currentCORS = await secuirtySettingsPromise(hostUrl, 'CORS', 'GET');
 
   const updatedCORSPayload = {
@@ -114,7 +121,7 @@ export const whiteListCSP = async (hostUrl: string, urlToWhiteList: string) => {
       {
         optionKey: 'nginx_corshosts',
         optionValue: window.btoa(
-          `${currentCORS.Data},${urlToWhiteList},.*.stackblitz.io`
+          `${currentCORS.Data},${urlToWhiteList},.*.stackblitz.io,.*.vercel.app`
         ),
       },
     ],
@@ -122,26 +129,28 @@ export const whiteListCSP = async (hostUrl: string, urlToWhiteList: string) => {
 
   await secuirtySettingsPromise(hostUrl, 'CORS', 'POST', updatedCORSPayload);
 
-  const currentCSP = await secuirtySettingsPromise(hostUrl, 'CSP', 'GET');
+  if (!isFreeTrial) {
+    const currentCSP = await secuirtySettingsPromise(hostUrl, 'CSP', 'GET');
 
-  const updatedCSPPayload = {
-    configOperation: 'add',
-    configOptions: currentCSP.Data.configs.map((config) => {
-      let value = config.value;
-      if (config.configName === 'nginx_csp_frame_ancestors')
-        value = `${value},https://${urlToWhiteList}`;
-      return {
-        optionKey: config.configName,
-        optionValue: window.btoa(value),
-      };
-    }),
-  };
+    const updatedCSPPayload = {
+      configOperation: 'add',
+      configOptions: currentCSP.Data.configs.map((config) => {
+        let value = config.value;
+        if (config.configName === 'nginx_csp_frame_ancestors')
+          value = `${value},https://${urlToWhiteList},*`;
+        return {
+          optionKey: config.configName,
+          optionValue: window.btoa(value),
+        };
+      }),
+    };
 
-  await secuirtySettingsPromise(hostUrl, 'CSP', 'POST', updatedCSPPayload);
+    await secuirtySettingsPromise(hostUrl, 'CSP', 'POST', updatedCSPPayload);
+  }
 };
 
 export const fetchSecretKey = async (hostUrl: string) => {
-  const isOrgsUiEnabled = await isOrgsEnabled(hostUrl);
+  const isOrgsUiEnabled = await isOrgsEnabled();
   let viewMode = 'all';
   if (isOrgsUiEnabled) {
     viewMode = 'primary';
@@ -163,7 +172,7 @@ export const fetchSecretKey = async (hostUrl: string) => {
 };
 
 export const saveENV = async (hostUrl: string, vercelConfig: any) => {
-  const isOrgsUiEnabled = await isOrgsEnabled(hostUrl);
+  const isOrgsUiEnabled = await isOrgsEnabled();
   let viewMode = 'all';
   if (isOrgsUiEnabled) {
     viewMode = 'primary';

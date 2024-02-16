@@ -14,6 +14,7 @@ export interface AppConfigInterface {
   selectedDataSourceName: string;
   isExistingDataSouce: boolean;
   secretKey: string;
+  currentOrgId: number;
 }
 
 export enum AppConfigActions {
@@ -30,6 +31,7 @@ export enum AppConfigActions {
   SELECT_DATA_SOURCE_NAME,
   IS_EXISTING_DATA_SOURCE,
   SECRET_KEY,
+  CURRENT_ORG_ID,
 }
 
 const defaultAppConfigValues = {
@@ -46,6 +48,7 @@ const defaultAppConfigValues = {
   selectedDataSourceName: '',
   isExistingDataSouce: false,
   secretKey: '',
+  currentOrgId: 0,
 };
 
 const reducer: any = (state, action) => {
@@ -115,6 +118,11 @@ const reducer: any = (state, action) => {
         ...state,
         secretKey: action.newSecretKey,
       };
+    case AppConfigActions.CURRENT_ORG_ID:
+      return {
+        ...state,
+        currentOrgId: action.orgId,
+      };
     default:
       return state;
   }
@@ -140,6 +148,7 @@ export const AppContextProvider = ({ children }) => {
     selectedDataSourceName,
     isExistingDataSouce,
     secretKey,
+    currentOrgId,
   } = state;
   const setSelectedProject = (newSelectedProject: string) => {
     dispatch({ type: AppConfigActions.SELECTED_PROJECT, newSelectedProject });
@@ -226,6 +235,13 @@ export const AppContextProvider = ({ children }) => {
     });
   };
 
+  const setCurrentOrgId = (orgId: number) => {
+    dispatch({
+      type: AppConfigActions.CURRENT_ORG_ID,
+      orgId,
+    });
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -255,6 +271,8 @@ export const AppContextProvider = ({ children }) => {
         setIsExistingDataSouce,
         secretKey,
         setSecretKey,
+        currentOrgId,
+        setCurrentOrgId,
       }}
     >
       {children}
