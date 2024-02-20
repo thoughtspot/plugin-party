@@ -45,18 +45,18 @@
   "INVALID_INSTANCE_ERROR": "Please input valid ThoughtSpot Instance",
 
   "HEADER_TITLE": "ThoughtSpot Integration",
-  "FREE_TRIAL_DESCRIPTION": "Sign up to a ThoughtSpot free trial account or login to your existing account in order to <br> start embedding analytics in your application. Once you have signed up to a free trial,<br>you will be able to log into your account by resuming the ThoughtSpot integration setup",
+  "FREE_TRIAL_DESCRIPTION": "Sign up for a ThoughtSpot free trial account or login to your existing account to begin<br>embedding analytics in your application. Once you have signed up for the free trial,<br>you will be able to log into your account and resume the ThoughtSpot integration setup",
   "FIRST_CARD_TITLE": "Sign up for a free trial",
-  "FIRST_CARD_DESCRIPTION": "Sign up to a free 30-day trial of<br>ThoughtSpot experience<br>search and AI-driven analytics<br>directly in your app.",
+  "FIRST_CARD_DESCRIPTION": "Sign up for a free 30-day trial of<br>ThoughtSpot to experience<br>search and AI-driven analytics<br>directly in your app.",
   "SIGN_UP": "Sign Up",
   "LOGIN": "Login",
   "SECOND_CARD_TITLE": "Sign in to an existing account",
-  "SECOND_CARD_DESCRIPTION": "Sign into your Thoughtspot account<br>and start embedding natural<br>language search in your Vercel app<br>within minutes",
+  "SECOND_CARD_DESCRIPTION": "Sign in to your Thoughtspot account<br>and start embedding natural<br>language search in your Vercel app<br>within minutes",
   "MODAL_DESCRIPTION": "Once you have created your free trial account, resume the setup to log into your account and connect to your data.",
   "RESUME": "Resume",
   "RESUME_SETUP": "Resume setup?",
   "TEST_EMBED_HEADING": "Test embedding ThoughtSpot",
-  "TEST_EMBED_DESCRIPTION": "The code below will embed natural language search, using your ThoughtSpot cluster and the data source created previously in your application.<br> You can embed other ThoughtSpot components as well such as Liveboards and Answers with our SDK. Find out more <a href='https://developers.thoughtspot.com/docs/embed-liveboard' target='_blank'>here</a>.<br> Note that this embed will not have user authentication set up.",
+  "TEST_EMBED_DESCRIPTION": "The code below will embed natural language search, using your ThoughtSpot cluster and the data source created previously in your application.<br>Additionally, You can embed other ThoughtSpot components as well such as Liveboards and Answers with our SDK. Find out more <a href='https://developers.thoughtspot.com/docs/embed-liveboard' target='_blank'>here</a>.<br> Note that this embed will not have user authentication set up.",
   "NEXT_BUTTON": "Next",
   "EXIT_SETUP": "Exit Setup",
   "CODE_SAMPLE_DESCRIPTION": "Finish deploying ThoughtSpot into your application by setting up authentication for your end users. The next step use the Trusted Authentication method.<br> ThoughtSpot supports several authentication options such as SAML, Open ID, and passthrough authentication to match your deployment preferences.<br> Learn more about support authentication options <a href='https://developers.thoughtspot.com/docs/embed-auth' target='_blank' rel='noopener noreferrer'>here</a>.",
@@ -100,5 +100,6 @@
   "SELECT_EXISTING_DATA_SOURCES": "Select a existing datasource to embed ThoughtSpot",
   "COPY_TEXT": "Copy and paste these values on next page to add environment variables in your trusted auth service -",
   "FULL_APP_LOADER": "Fetching existing data sources...",
-  "SUMMARY_PAGE_AUTHENTICATION_TEXT": "Remember to secure the Trusted Authentication project listed above behind your app’s authentication."
+  "SUMMARY_PAGE_AUTHENTICATION_TEXT": "Remember to secure the Trusted Authentication project listed above behind your app’s authentication.",
+  "VERCEL_DEMO_APP": "Explore your liveboard and Natural Language Search by deploying your new vercel app"
 }

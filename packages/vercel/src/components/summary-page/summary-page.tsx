@@ -4,6 +4,10 @@ import { useTranslations } from 'i18n';
 import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { Typography } from 'widgets/lib/typography';
 import { BannerType, ErrorBanner } from 'widgets/lib/error-banner';
+import {
+  uploadMixpanelEvent,
+  MIXPANEL_EVENT,
+} from '@thoughtspot/visual-embed-sdk/src/mixpanel-service';
 import styles from './summary-page.module.scss';
 import { formatClusterUrl } from '../full-app/full-app.utils';
 import { EmbedTemplates } from '../auth-type-none-page/embed-code-templates';
@@ -26,19 +30,25 @@ export const SummaryPage = ({ hostUrl, deploymentUrl }) => {
   const configuration = new URLSearchParams(url[1]);
   const configurationId = configuration.get('configurationId');
   const code = configuration.get('code');
+  const vercelParams =
+    'env=REACT_APP_TS_HOST,REACT_APP_AUTH_SERVICE_URL,REACT_APP_TS_USER_NAME,REACT_APP_TS_ORG_ID&repository-url=https%3A%2F%2Fgithub.com%2Fadityamittal3107%2Fmini-demo-app';
 
   if ((configurationId && code) || localStorage.getItem('worksheetId')) {
     localStorage.setItem('clusterUrl', tsHostURL);
     localStorage.setItem('deploymentUrl', deploymentUrl);
   }
   localStorage.setItem('isDocsPage', 'false');
+  const currentOrgId =
+    localStorage.getItem('currentOrgId') ||
+    addedSearchParam.get('currentOrgId');
 
   const codeMap = {
     SageEmbed: EmbedTemplates.TrustedAuthSageEmbed(
       tsHostURL,
       worksheetId,
       deploymentUrls,
-      userName
+      userName,
+      currentOrgId
     ),
   };
   const [errorMessage, setErrorMessage] = useState({
@@ -60,6 +70,7 @@ export const SummaryPage = ({ hostUrl, deploymentUrl }) => {
   }, []);
 
   const closeVercelModal = () => {
+    // uploadMixpanelEvent(MIXPANEL_EVENT.VERCEL_INTEGRATION_COMPLETED);
     window.location.href =
       new URLSearchParams(window.location.search).get('next') || '';
   };
@@ -86,6 +97,17 @@ export const SummaryPage = ({ hostUrl, deploymentUrl }) => {
         {t.SUMMARY_PAGE_DESCRIPTION}
       </Typography>
       <ul>
+        <li>
+          <Typography variant="p" className={styles.subText}>
+            {t.VERCEL_DEMO_APP}{' '}
+            <a
+              href={`https://vercel.com/new/clone?${vercelParams}`}
+              target="_blank"
+            >
+              here
+            </a>
+          </Typography>
+        </li>
         <li>
           <Typography variant="p" className={styles.subText}>
             {t.SUMMARY_PAGE_TEXT}
