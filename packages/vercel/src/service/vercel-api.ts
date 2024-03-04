@@ -9,7 +9,6 @@ const envMapping = {
   PGHOST: 'host',
   PGDATABASE: 'database',
 };
-
 const envMappingForPostgres = {
   POSTGRES_USER: 'user',
   POSTGRES_PASSWORD: 'password',
@@ -83,7 +82,7 @@ export const getCurrentUserInfo = async (accessToken: string) => {
 
 export const isOrgsEnabled = async () => {
   const rs = await getSessionInfo();
-  return rs.configInfo.orgsConfiguration.enabled;
+  return rs.configInfo.orgsConfiguration.enabled && !rs.configInfo.orgsHidden;
 };
 
 export const isFreeTrialEnabled = async () => {
