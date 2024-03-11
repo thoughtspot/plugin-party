@@ -68,6 +68,8 @@ export const App = () => {
     localStorage.removeItem('isDocsPage');
     localStorage.removeItem('worksheetId');
     localStorage.removeItem('deploymentUrl');
+    localStorage.removeItem('vercelIntegrationCompleted');
+    localStorage.removeItem('currentOrgId');
   }
 
   // Logic of when user clicks on configure button after
