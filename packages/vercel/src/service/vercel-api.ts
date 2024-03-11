@@ -90,11 +90,6 @@ export const isFreeTrialEnabled = async () => {
   return rs.configInfo.freeTrialActivationEnabled;
 };
 
-export const isFreeTrialEnabled = async () => {
-  const rs = await getSessionInfo();
-  return rs.configInfo.freeTrialActivationEnabled;
-};
-
 const secuirtySettingsPromise = async (hostUrl, type, method, payload?) => {
   const isOrgsUiEnabled = await isOrgsEnabled();
   let viewMode = 'all';
