@@ -8,7 +8,7 @@ import { BannerType, ErrorBanner } from 'widgets/lib/error-banner';
 import {
   uploadMixpanelEvent,
   MIXPANEL_EVENT,
-} from '@thoughtspot/visual-embed-sdk/src/mixpanel-service';
+} from '@thoughtspot/visual-embed-sdk';
 import { TfiAngleRight, TfiAngleDown } from 'react-icons/tfi';
 import { CircularLoader } from 'widgets/lib/circular-loader';
 import { message } from 'antd';
@@ -97,7 +97,7 @@ export const SummaryPage = ({ hostUrl, deploymentUrl }) => {
   };
 
   const closeVercelModal = () => {
-    // uploadMixpanelEvent(MIXPANEL_EVENT.VERCEL_INTEGRATION_COMPLETED);
+    uploadMixpanelEvent(MIXPANEL_EVENT.VERCEL_INTEGRATION_COMPLETED);
     localStorage.setItem('vercelIntegrationCompleted', 'true');
     window.location.href =
       new URLSearchParams(window.location.search).get('next') || '';
