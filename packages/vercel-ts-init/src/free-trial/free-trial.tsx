@@ -20,7 +20,7 @@ export function FreeTrial({
   const [showLoginPage, setShowLoginPage] = useState(false);
 
   const onSignupButtonClick = () => {
-    window.open('https://www.thoughtspot.com/trial', '_blank');
+    window.open('https://www.thoughtspot.com/trial?tsiref=vercel', '_blank');
     setModalVisible(true);
   };
 
