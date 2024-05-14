@@ -147,6 +147,13 @@ const PrerenderedLiveboardShell = () => {
                 // when interaction is just below threshold and item before that is considered as lastVisible.
                 'max-width': '9.6857rem !important',
               },
+              '.authenticated-app-view-module__blink': {
+                // in React v2 shell, embed.container is wrapping test-container
+                // twice, so we need to set height to 100% for both containers
+                // will investigate that as well to see if we can avoid dual wrapping
+                width: '100%',
+                height: '100%',
+              },
             },
           },
         },
