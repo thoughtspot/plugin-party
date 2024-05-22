@@ -31,7 +31,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
     );
     res.setHeader('Content-Type', response.headers.get('content-type'));
     if (response?.status != 200) {
-      res.status(500).end();
+      res.status(response?.status).end();
     } else if (response.headers.get('content-type') === 'application/octet-stream'){
       readStreamResponse(response, res);
     } else {

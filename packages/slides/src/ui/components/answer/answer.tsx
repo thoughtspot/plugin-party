@@ -7,13 +7,18 @@ import { useLoader } from 'widgets/lib/loader';
 import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { useTranslations } from 'i18n';
 import { ErrorBanner } from 'widgets/lib/error-banner';
+import { SuccessBanner } from 'widgets/lib/success-banner';
 import styles from './answer.module.scss';
 import { getTSAnswerLink } from '../../utils';
 import { customCSSProperties } from './answer.util';
 
 export const Answer = () => {
   const [router] = useRouter();
-  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState({
+    visible: false,
+    message: '',
+  });
+  const [success, setSuccess] = useState(false);
   const { t } = useTranslations();
   const loader = useLoader();
   const answerId = router?.matches?.id;
@@ -29,23 +34,43 @@ export const Answer = () => {
     // @ts-ignore
     ref.current.on(Action.InsertInToSlide, (e) => {
       loader.show();
-      setShowError(false);
+      setErrorMessage({ ...errorMessage, visible: false });
+      setSuccess(false);
       run('addImage', link)
-        .then(() => {
+        .then((res) => {
           loader.hide();
+          if (res === 200) {
+            setSuccess(true);
+          } else if (res === 401) {
+            setErrorMessage({
+              message: t.SESSION_EXPIRED_MESSAGE,
+              visible: true,
+            });
+          } else {
+            setErrorMessage({
+              message: t.INSERT_FAILURE_MESSAGE,
+              visible: true,
+            });
+          }
         })
         .catch((error) => {
           loader.hide();
-          setShowError(true);
         });
     });
   }, [ref.current]);
   return (
     <Vertical className={styles.answerIframe}>
+      <SuccessBanner
+        successMessage={t.IMAGE_INSERT_SUCCESS_MESSAGE}
+        showBanner={success}
+        onCloseIconClick={() => setSuccess(false)}
+      />
       <ErrorBanner
-        errorMessage={t.INSERT_FAILURE_MESSAGE}
-        showBanner={showError}
-        onCloseIconClick={() => setShowError(false)}
+        errorMessage={errorMessage.message}
+        showBanner={errorMessage.visible}
+        onCloseIconClick={() =>
+          setErrorMessage({ ...errorMessage, visible: false })
+        }
       />
       <SearchEmbed
         ref={ref}

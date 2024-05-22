@@ -115,5 +115,9 @@
   "COPY_TEXT": "Copy and paste these values on next page to add environment variables in your trusted auth service -",
   "FULL_APP_LOADER": "Fetching existing data sources...",
   "SUMMARY_PAGE_AUTHENTICATION_TEXT": "Remember to secure the Trusted Authentication project listed above behind your app’s authentication.",
-  "VERCEL_DEMO_APP": "Explore your liveboard and Natural Language Search by deploying your new vercel app"
+  "VERCEL_DEMO_APP": "Explore your liveboard and Natural Language Search by deploying your new vercel app",
+  "INVALID_INSERT_FAILURE_MESSAGE": "Update failed for {NoOfFailedImages} visualization(s). Some of these objects may have been deleted.\n\n Please check the URLs attached to the images and make sure they point to valid",
+  "IMAGE_UPDATE_SUCCESS_MESSAGE": "{NoOfUpdatedImages} Visualization(s) Succesfully updated",
+  "IMAGE_INSERT_SUCCESS_MESSAGE": "Visualization Succesfully inserted",
+  "SESSION_EXPIRED_MESSAGE": "Your session has expired. Please reload the plugin to update or insert visualization(s)."
 }

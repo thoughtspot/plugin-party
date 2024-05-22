@@ -45,6 +45,7 @@ const mockAnswerImageRequests = (answerId, clusterUrl) => {
     url: 'https://plugin-party-slides.vercel.app/api/proxy',
     method: 'post',
     contentType: 'application/json',
+    muteHttpExceptions: true,
     payload: JSON.stringify({
       clusterUrl,
       endpoint: 'api/rest/2.0/report/answer',
@@ -64,6 +65,7 @@ const mockLiveboardImageRequests = (liveboardId, vizId, clusterUrl) => {
     url: 'https://plugin-party-slides.vercel.app/api/proxy',
     method: 'post',
     contentType: 'application/json',
+    muteHttpExceptions: true,
     payload: JSON.stringify({
       clusterUrl,
       endpoint: 'api/rest/2.0/report/liveboard',
