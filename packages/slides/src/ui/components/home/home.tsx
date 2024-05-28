@@ -7,6 +7,7 @@ import { Card } from 'widgets/lib/card';
 import { useShellContext } from 'gsuite-shell';
 import { getSessionInfo } from '@thoughtspot/visual-embed-sdk';
 import { ErrorBanner, BannerType } from 'widgets/lib/error-banner';
+import { SuccessBanner } from 'widgets/lib/success-banner';
 import { Routes } from '../../routes';
 import styles from './home.module.scss';
 import { getToken } from '../../services/api';
@@ -14,11 +15,15 @@ import { getToken } from '../../services/api';
 export const Home = () => {
   const loader = useLoader();
   const { run } = useShellContext();
-  const { t } = useTranslations();
+  const { t, pt } = useTranslations();
   const [errorMessage, setErrorMessage] = useState({
     visible: true,
     message: '',
     type: BannerType.CARD,
+  });
+  const [successMessage, setSuccessMessage] = useState({
+    visible: false,
+    message: '',
   });
   const [isPrivileged, setIsPrivileged] = useState(false);
 
@@ -69,20 +74,55 @@ export const Home = () => {
       message: '',
       type: BannerType.MESSAGE,
     });
+    setSuccessMessage({
+      visible: false,
+      message: '',
+    });
     loader.show();
     run(reloadFn)
-      .catch(() =>
-        setErrorMessage({
-          visible: true,
-          message: t.IMAGE_UPDATE_FAILURE_MESSAGE,
-          type: BannerType.MESSAGE,
-        })
-      )
+      .then((arg) => {
+        if (arg?.successImages?.length) {
+          const numberOfImagesUpdated = arg?.successImages?.length;
+          setSuccessMessage({
+            visible: true,
+            message: pt(t.IMAGE_UPDATE_SUCCESS_MESSAGE, {
+              NoOfUpdatedImages: numberOfImagesUpdated,
+            }),
+          });
+        }
+        if (arg?.errorImages?.length) {
+          const numberOfImagesFailed = arg?.errorImages?.length;
+          const errorCode = arg?.errorImages[0]?.errorCode;
+          const sessionInvalidMessage =
+            errorCode === 401
+              ? t.SESSION_EXPIRED_MESSAGE
+              : t.IMAGE_UPDATE_FAILURE_MESSAGE;
+          const errorMessageToDisplay =
+            errorCode === 400
+              ? pt(t.INVALID_INSERT_FAILURE_MESSAGE, {
+                  NoOfFailedImages: numberOfImagesFailed,
+                })
+              : sessionInvalidMessage;
+          setErrorMessage({
+            visible: true,
+            message: errorMessageToDisplay,
+            type: BannerType.MESSAGE,
+          });
+        }
+      })
       .finally(() => loader.hide());
   };
 
   return (
     <Vertical className={styles.home} spacing="c">
+      <SuccessBanner
+        successMessage={successMessage.message}
+        showCloseIcon
+        onCloseIconClick={() =>
+          setSuccessMessage({ ...successMessage, visible: false })
+        }
+        showBanner={successMessage.visible && !!successMessage.message}
+      />
       <ErrorBanner
         errorMessage={errorMessage.message}
         bannerType={errorMessage.type}

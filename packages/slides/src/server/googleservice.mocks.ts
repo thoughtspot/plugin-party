@@ -62,6 +62,9 @@ export function mockGoogleFetch() {
           getContent: () => {
             return req as any;
           },
+          getResponseCode: () => {
+            return 200;
+          },
         } as GoogleAppsScript.URL_Fetch.HTTPResponse;
       });
     },
