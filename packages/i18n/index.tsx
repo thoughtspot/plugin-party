@@ -10,10 +10,12 @@ const translationGetters = {
 
 interface Strings {
   t: Translations;
+  pt: (s: string, args?: object) => string;
 }
 
 const I18NContext = createContext<Strings>({
   t: enTranslations,
+  pt: (s) => s,
 });
 
 export const useTranslations = () => useContext(I18NContext);
@@ -33,8 +35,17 @@ export const I18N = ({ children }) => {
       });
     });
   }, [locale, translations]);
+
+  const parameterisedTransalte = (translation, args?: object) => {
+    Object.entries(args).forEach(([key, value]) => {
+      translation = translation.replace(`{${key}}`, value);
+    });
+    return translation;
+  };
   return (
-    <I18NContext.Provider value={{ t: translations }}>
+    <I18NContext.Provider
+      value={{ t: translations, pt: parameterisedTransalte }}
+    >
       {children}
     </I18NContext.Provider>
   );

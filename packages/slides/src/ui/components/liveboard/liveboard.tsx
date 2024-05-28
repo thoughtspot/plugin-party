@@ -11,6 +11,7 @@ import { useLoader } from 'widgets/lib/loader';
 import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { useTranslations } from 'i18n';
 import { ErrorBanner } from 'widgets/lib/error-banner';
+import { SuccessBanner } from 'widgets/lib/success-banner';
 import styles from './liveboard.module.scss';
 import { getOffset, getTSLBVizLink } from '../../utils';
 
@@ -23,7 +24,11 @@ export const Liveboard = () => {
   const liveboardId = router?.matches?.id;
   const loader = useLoader();
   const { run } = useShellContext();
-  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState({
+    visible: false,
+    message: '',
+  });
+  const [success, setSuccess] = useState(false);
   const ref = useRef<HTMLElement | null>(null);
   const {
     setIsVisible,
@@ -46,7 +51,7 @@ export const Liveboard = () => {
       top: offset.top,
       left: offset.left,
     });
-  }, [showError]);
+  }, [errorMessage.visible, success]);
 
   useEffect(() => {
     if (!ref.current) {
@@ -60,14 +65,27 @@ export const Liveboard = () => {
     const insertIntoSlide = (e) => {
       const link = getTSLBVizLink(e.data.pinboardId, e.data.vizId);
       loader.show();
-      setShowError(false);
+      setErrorMessage({ ...errorMessage, visible: false });
+      setSuccess(false);
       run('addImage', link)
-        .then(() => {
+        .then((res) => {
           loader.hide();
+          if (res === 200) {
+            setSuccess(true);
+          } else if (res === 401) {
+            setErrorMessage({
+              message: t.SESSION_EXPIRED_MESSAGE,
+              visible: true,
+            });
+          } else {
+            setErrorMessage({
+              message: t.INSERT_FAILURE_MESSAGE,
+              visible: true,
+            });
+          }
         })
         .catch((error) => {
           loader.hide();
-          setShowError(true);
         });
     };
     const lbEmbed = lbRef.current;
@@ -93,10 +111,17 @@ export const Liveboard = () => {
   }, []);
   return (
     <Vertical className={styles.liveboardContainer}>
+      <SuccessBanner
+        successMessage={t.IMAGE_INSERT_SUCCESS_MESSAGE}
+        showBanner={success}
+        onCloseIconClick={() => setSuccess(false)}
+      />
       <ErrorBanner
-        errorMessage={t.INSERT_FAILURE_MESSAGE}
-        showBanner={showError}
-        onCloseIconClick={() => setShowError(false)}
+        errorMessage={errorMessage.message}
+        showBanner={errorMessage.visible}
+        onCloseIconClick={() =>
+          setErrorMessage({ ...errorMessage, visible: false })
+        }
       />
       <div className={styles.liveboardContainer} ref={ref}></div>
     </Vertical>
