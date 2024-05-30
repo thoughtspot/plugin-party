@@ -78,6 +78,12 @@ function setToken(token, ttl) {
   userCache.put('ts-auth-token', token, ttl);
 }
 
+/**
+ * Retrieves the image request for a given answer ID.
+ *
+ * @param {string} answerId - The identifier of the answer.
+ * @returns {object} - The image request object.
+ */
 function getAnswerImageRequest(answerId) {
   const userCache = CacheService.getUserCache();
   const token = userCache.get('ts-auth-token');
@@ -91,6 +97,7 @@ function getAnswerImageRequest(answerId) {
     url,
     method: 'post',
     contentType: 'application/json',
+    muteHttpExceptions: true,
     payload: JSON.stringify({
       clusterUrl,
       endpoint: 'api/rest/2.0/report/answer',
@@ -100,6 +107,12 @@ function getAnswerImageRequest(answerId) {
   };
 }
 
+/**
+ * Retrieves the request object for generating a liveboard image.
+ * @param liveboardId - The identifier of the liveboard.
+ * @param vizId - The identifier of the visualization.
+ * @returns The request object.
+ */
 function getLiveboardImageRequest({ liveboardId, vizId }) {
   const userCache = CacheService.getUserCache();
   const token = userCache.get('ts-auth-token');
@@ -114,6 +127,7 @@ function getLiveboardImageRequest({ liveboardId, vizId }) {
     url,
     method: 'post',
     contentType: 'application/json',
+    muteHttpExceptions: true,
     payload: JSON.stringify({
       clusterUrl,
       endpoint: 'api/rest/2.0/report/liveboard',
@@ -146,6 +160,12 @@ function getImageMetadata(link) {
   };
 }
 
+/**
+ * Retrieves images from the given links.
+ *
+ * @param {string[]} links - An array of links to the images.
+ * @returns {Blob[]} An array of Blob objects representing the images.
+ */
 function getImagesRaw(links) {
   const metadatas = links.map(getImageMetadata);
   const fetchRequests = metadatas.map((metadata) => {
@@ -164,6 +184,10 @@ function getImagesRaw(links) {
   const responses = UrlFetchApp.fetchAll(fetchRequests);
 
   return responses.map((response) => {
+    console.log('Blob response', response.getResponseCode());
+    if (response.getResponseCode() !== 200) {
+      return { errorCode: response.getResponseCode() };
+    }
     const blob = Utilities.newBlob(response.getContent());
     return blob;
   });
@@ -205,21 +229,28 @@ function getImages(links, skipCache = true) {
     const ref = linkRef[1];
     if (typeof ref === 'number') {
       const blob = blobs[ref];
-      cache.putBlob(link, blob);
+      if (!skipCache) {
+        cache.putBlob(link, blob);
+      }
       return blob;
     }
     return ref;
   });
 }
 
+// Inserts an image from a given link, adn return the status code
 function addImage(link) {
   const currentPage = SlidesApp.getActivePresentation()
     .getSelection()
     .getCurrentPage();
   const slide = currentPage.asSlide();
   const blobs = getImages([link]);
+  if (blobs[0].errorCode) {
+    return blobs[0].errorCode;
+  }
   const img = slide.insertImage(blobs[0]);
   img.setLinkUrl(link);
+  return 200;
 }
 
 function preCacheImage(link) {
@@ -227,8 +258,14 @@ function preCacheImage(link) {
   return blobs[0];
 }
 
+/**
+ * Reloads images by replacing them with new blobs.
+ * @param {Image[]} images - An array of Image objects to reload.
+ * @returns {Object} - An object containing arrays of error images and success images.
+ */
 function reloadImages(images) {
-  const errorImageLinks = [];
+  const errorImages = [];
+  const successImages = [];
   const currentCluster = getClusterUrl().url;
   const tsImages = images.filter((image) => {
     if (image.getLink()) {
@@ -246,13 +283,20 @@ function reloadImages(images) {
     const blob = blobs.shift();
     try {
       image.replace(blob);
+      successImages.push(image.getLink().getUrl());
     } catch (e) {
-      errorImageLinks.push(image.getLink().getUrl());
+      errorImages.push({
+        link: image.getLink().getUrl(),
+        errorCode: blob?.errorCode,
+      });
     }
   });
-  return errorImageLinks;
+  return { errorImages, successImages };
 }
 
+/**
+ * Reloads the images in the current slide.
+ */
 function reloadImagesInCurrentSlide() {
   const currentPage = SlidesApp.getActivePresentation()
     .getSelection()
@@ -262,6 +306,11 @@ function reloadImagesInCurrentSlide() {
   return reloadImages(images);
 }
 
+/**
+ * Reloads the images in the presentation.
+ * Retrieves all slides in the active presentation, collects all images from each slide,
+ * and reloads the images.
+ */
 function reloadImagesInPresentation() {
   const slides = SlidesApp.getActivePresentation().getSlides();
   console.log(slides, slides.length, typeof slides);
