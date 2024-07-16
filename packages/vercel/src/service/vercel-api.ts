@@ -178,7 +178,7 @@ export const saveENV = async (hostUrl: string, vercelConfig: any) => {
   }
   const { accessToken, teamId, projectIds, tsHostURL } = vercelConfig;
   try {
-    const response = await fetch(
+    await fetch(
       `${hostUrl}/managementconsole/admin-api/tokenauth?view_mode=${viewMode}`,
       {
         headers: {
@@ -189,6 +189,19 @@ export const saveENV = async (hostUrl: string, vercelConfig: any) => {
         method: 'POST',
       }
     );
+
+    const response = await fetch(
+      `${hostUrl}/managementconsole/admin-api/tokenauth?view_mode=${viewMode}`,
+      {
+        headers: {
+          accept: 'application/json',
+          'content-Type': 'application/x-www-form-urlencoded',
+        },
+        credentials: 'include',
+        method: 'GET',
+      }
+    );
+
     if (response.ok) {
       const rs = await response.json();
       const secretKey = rs?.Data?.token;
