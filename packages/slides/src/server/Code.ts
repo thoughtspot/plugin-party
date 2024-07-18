@@ -88,7 +88,7 @@ function getAnswerImageRequest(answerId) {
   const userCache = CacheService.getUserCache();
   const token = userCache.get('ts-auth-token');
   const clusterUrl = getClusterUrl().url;
-  const url = 'https://plugin-party-slides.vercel.app/api/proxy';
+  const url = 'https://tsplugin-test-brv2socooq-uw.a.run.app/a';
   const answerReportPayload = {
     metadata_identifier: answerId,
     file_format: 'PNG',
@@ -122,7 +122,7 @@ function getLiveboardImageRequest({ liveboardId, vizId }) {
     visualization_identifiers: [vizId],
     file_format: 'PNG',
   };
-  const url = 'https://plugin-party-slides.vercel.app/api/proxy';
+  const url = 'https://tsplugin-test-brv2socooq-uw.a.run.app/a';
   return {
     url,
     method: 'post',
