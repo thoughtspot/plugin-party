@@ -42,7 +42,7 @@ const mockAnswerImageRequests = (answerId, clusterUrl) => {
     file_format: 'PNG',
   };
   return {
-    url: 'https://ts-plugin-66ewbkywoa-uw.a.run.app/api/proxy',
+    url: 'https://tsplugin-test-brv2socooq-uw.a.run.app/a',
     method: 'post',
     contentType: 'application/json',
     muteHttpExceptions: true,
@@ -62,7 +62,7 @@ const mockLiveboardImageRequests = (liveboardId, vizId, clusterUrl) => {
     file_format: 'PNG',
   };
   return {
-    url: 'https://ts-plugin-66ewbkywoa-uw.a.run.app/api/proxy',
+    url: 'https://tsplugin-test-brv2socooq-uw.a.run.app/a',
     method: 'post',
     contentType: 'application/json',
     muteHttpExceptions: true,
