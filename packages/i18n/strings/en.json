@@ -5,6 +5,7 @@
   "START_FREE_TRIAL": "Do not have a ThoughtSpot account? Start a <a href=\"https://www.thoughtspot.com/trial\" target=\"_blank\"> free trial </a>.",
   "THOUGHTSPOT_INSTANCE_DESCRIPTION": "Need help finding out your ThoughtSpot instance?<br><a href=\"https://developers.thoughtspot.com/docs/faqs#_about_thoughtspot_everywhere\" target=\"_blank\">Click here</a>",
   "SIGN_IN_SSO": "Sign in with SSO",
+  "SSO_NOT_ENABLED_ERROR": "SSO is not enabled in your cluster. Please enable it and try again.",
   "OR": "OR",
   "USERNAME": "Username",
   "PASSWORD": "Password",

@@ -50,12 +50,13 @@ export function TSInit({ children }) {
     const formattedUrl = new URL(`https://${url.replace('https://', '')}`);
     const host = formattedUrl.host;
     await getConfig(host)
-      .then(() => {
+      .then((res) => {
         run('setClusterUrl', host);
         setClusterUrl({
           url: host,
           isCandidate: false,
           isError: false,
+          isSamlEnabled: res?.samlEnabled || res?.oktaEnabled,
         });
       })
       .catch((err) => {
@@ -81,7 +82,11 @@ export function TSInit({ children }) {
   }
 
   return (
-    <TSAuthInit onBack={onShowSetUrl} clusterUrl={clusterUrl.url}>
+    <TSAuthInit
+      onBack={onShowSetUrl}
+      clusterUrl={clusterUrl.url}
+      isSamlEnabled={clusterUrl.isSamlEnabled}
+    >
       {children}
     </TSAuthInit>
   );
