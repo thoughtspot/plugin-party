@@ -39,6 +39,8 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
     worksheetId,
     setSecretKey,
     setHasAdminPrivilege,
+    isTrustedAuthEnabled,
+    setIsTrustedAuthEnabled,
   } = useAppContext();
   const [isLoading, setIsLoading] = useState(true);
   const localStorageWorksheet = localStorage.getItem('worksheetId');
@@ -116,6 +118,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
             userPrivilege.includes('ADMINISTRATION') ||
               userPrivilege.includes('CONTROL_TRUSTED_AUTH')
           );
+          setIsTrustedAuthEnabled(!!tsUserInfo.tokenAuthPerOrgEnabled)
           const res = await fetchSecretKey(TSClusterId);
           setSecretKey(res.Data.token);
           setIsLoading(false);
@@ -238,7 +241,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
           onClick={goToTrustedAuth}
           className={styles.button}
           text={t.NEXT_BUTTON}
-          isDisabled={!hasAdminPrivileges}
+          isDisabled={!hasAdminPrivileges || !isTrustedAuthEnabled}
         />
       </Horizontal>
     </Vertical>
