@@ -118,7 +118,6 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
             userPrivilege.includes('ADMINISTRATION') ||
               userPrivilege.includes('CONTROL_TRUSTED_AUTH')
           );
-          setIsTrustedAuthEnabled(!!tsUserInfo.tokenAuthPerOrgEnabled)
           const res = await fetchSecretKey(TSClusterId);
           setSecretKey(res.Data.token);
           setIsLoading(false);
@@ -242,7 +241,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
           className={styles.button}
           text={t.NEXT_BUTTON}
           isDisabled={!hasAdminPrivileges || !isTrustedAuthEnabled}
-          disabledReason='You do not have admin privileges or Trusted Auth is not enabled on your cluster'
+          disabledReason={t.NEXT_BUTTON_DISABLED_MESSAGE}
         />
       </Horizontal>
     </Vertical>
