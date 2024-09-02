@@ -36,7 +36,7 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
     setIsExistingDataSouce,
     setIsConnectionPostgres,
     setCurrentOrgId,
-    setIsTrustedAuthEnabled
+    setIsTrustedAuthEnabled,
   } = useAppContext();
   const [errorMessage, setErrorMessage] = useState({
     visible: false,
@@ -53,7 +53,7 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
       userPrivilege.includes('ADMINISTRATION') ||
         userPrivilege.includes('CONTROL_TRUSTED_AUTH')
     );
-    setIsTrustedAuthEnabled(!!tsUserInfo.tokenAuthPerOrgEnabled)
+    setIsTrustedAuthEnabled(!!tsUserInfo.tokenAuthPerOrgEnabled);
     if (
       !userPrivilege.includes('ADMINISTRATION') &&
       !userPrivilege.includes('DATAMANAGEMENT')

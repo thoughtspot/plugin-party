@@ -20,7 +20,7 @@ export const Button = ({
   onClick,
   id,
   isDisabled,
-  disabledReason
+  disabledReason,
 }: ButtonProps) => {
   const classnames = cx(
     className,
@@ -34,7 +34,7 @@ export const Button = ({
       className={classnames}
       onClick={onClick}
       disabled={isDisabled}
-      title={(isDisabled ? disabledReason : text) || ""}
+      title={(isDisabled ? disabledReason : text) || ''}
     >
       {text || children}
     </button>

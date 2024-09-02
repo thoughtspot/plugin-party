@@ -32,7 +32,7 @@ export enum AppConfigActions {
   IS_EXISTING_DATA_SOURCE,
   SECRET_KEY,
   CURRENT_ORG_ID,
-  IS_TRUSTED_AUTH_ENABLED
+  IS_TRUSTED_AUTH_ENABLED,
 }
 
 const defaultAppConfigValues = {
@@ -128,7 +128,7 @@ const reducer: any = (state, action) => {
     case AppConfigActions.IS_TRUSTED_AUTH_ENABLED:
       return {
         ...state,
-        isTrustedAuthEnabled: action.isTrustedAuthEnabled,
+        isTrustedAuthEnabled: action.trustedAuthEnabled,
       };
     default:
       return state;
@@ -156,7 +156,7 @@ export const AppContextProvider = ({ children }) => {
     isExistingDataSouce,
     secretKey,
     currentOrgId,
-    isTrustedAuthEnabled
+    isTrustedAuthEnabled,
   } = state;
   const setSelectedProject = (newSelectedProject: string) => {
     dispatch({ type: AppConfigActions.SELECTED_PROJECT, newSelectedProject });
@@ -250,10 +250,10 @@ export const AppContextProvider = ({ children }) => {
     });
   };
 
-  const setIsTrustedAuthEnabled = (isTrustedAuthEnabled: boolean) => {
+  const setIsTrustedAuthEnabled = (trustedAuthEnabled: boolean) => {
     dispatch({
       type: AppConfigActions.IS_TRUSTED_AUTH_ENABLED,
-      isTrustedAuthEnabled,
+      trustedAuthEnabled,
     });
   };
 
