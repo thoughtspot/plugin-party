@@ -40,7 +40,6 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
     setSecretKey,
     setHasAdminPrivilege,
     isTrustedAuthEnabled,
-    setIsTrustedAuthEnabled,
   } = useAppContext();
   const [isLoading, setIsLoading] = useState(true);
   const localStorageWorksheet = localStorage.getItem('worksheetId');
