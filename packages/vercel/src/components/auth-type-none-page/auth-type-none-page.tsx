@@ -242,6 +242,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
           className={styles.button}
           text={t.NEXT_BUTTON}
           isDisabled={!hasAdminPrivileges || !isTrustedAuthEnabled}
+          disabledReason='You do not have admin privileges or Trusted Auth is not enabled on your cluster'
         />
       </Horizontal>
     </Vertical>

@@ -19,6 +19,11 @@
   &:hover {
     background-color: $blue2;
   }
+
+  &:disabled {
+    background-color: $gray0;
+    color: $gray4;
+  }
 }
 
 .secondary-btn {
