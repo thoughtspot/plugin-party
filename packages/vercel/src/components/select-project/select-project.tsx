@@ -46,7 +46,10 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
 
   const hasNecessaryPrivilege = async () => {
     const tsUserInfo = await getUserName(tsHostURL);
-    const trustedAuthEnabled = await getIsTrustedAuthEnabled(tsHostURL);
+    const trustedAuthEnabled = await getIsTrustedAuthEnabled(
+      tsHostURL,
+      tsUserInfo
+    );
     const userPrivilege = tsUserInfo.privileges;
     setCurrentOrgId(tsUserInfo.currentOrgId);
     localStorage.setItem('currentOrgId', tsUserInfo.currentOrgId);
