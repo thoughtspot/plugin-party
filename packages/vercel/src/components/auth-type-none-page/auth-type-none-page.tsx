@@ -39,6 +39,7 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
     worksheetId,
     setSecretKey,
     setHasAdminPrivilege,
+    isTrustedAuthEnabled,
   } = useAppContext();
   const [isLoading, setIsLoading] = useState(true);
   const localStorageWorksheet = localStorage.getItem('worksheetId');
@@ -238,7 +239,8 @@ export const DocsPage = ({ hostUrl, vercelToken }) => {
           onClick={goToTrustedAuth}
           className={styles.button}
           text={t.NEXT_BUTTON}
-          isDisabled={!hasAdminPrivileges}
+          isDisabled={!hasAdminPrivileges || !isTrustedAuthEnabled}
+          disabledReason={t.NEXT_BUTTON_DISABLED_MESSAGE}
         />
       </Horizontal>
     </Vertical>
