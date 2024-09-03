@@ -1,5 +1,33 @@
 import { getDomains } from './vercel-api';
 
+export const getTseLicenseInfo = async (hostUrl: string) => {
+  const apiEndpoint = 'callosum/v1/tsinternal/v1/license/tse/license';
+  const apiUrl = `${hostUrl}/${apiEndpoint}`;
+
+  const response = await fetch(apiUrl, {
+    headers: {
+      Accept: 'application/json',
+    },
+    credentials: 'include',
+    method: 'GET',
+  });
+
+  const data = await response.json();
+  return data;
+};
+
+export const getIsTrustedAuthEnabled = async (hostUrl: string): Promise<boolean> => {
+  
+  const tseLicense = await getTseLicenseInfo(hostUrl);
+
+  const tseLicenseLock =
+  !tseLicense?.licenseEnforcementDisabled &&
+  !tseLicense?.licenseEnabled &&
+  (!tseLicense?.freeTrialEnabled || tseLicense?.daysLeft <= 0);
+  
+  return !!tseLicenseLock;
+}
+
 export const createConnection = async (
   hostUrl: string,
   connectionConfig?: any

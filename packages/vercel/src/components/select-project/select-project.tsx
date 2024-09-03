@@ -11,7 +11,7 @@ import { getConnectionParams, vercelPromise } from '../../service/vercel-api';
 import styles from './select-project.module.scss';
 import { useAppContext } from '../../app.context';
 import { Routes } from '../connection/connection-utils';
-import { getUserName } from '../../service/ts-api';
+import { getIsTrustedAuthEnabled, getUserName } from '../../service/ts-api';
 import { formatClusterUrl } from '../full-app/full-app.utils';
 
 interface Project {
@@ -46,6 +46,7 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
 
   const hasNecessaryPrivilege = async () => {
     const tsUserInfo = await getUserName(tsHostURL);
+    const trustedAuthEnabled = await getIsTrustedAuthEnabled(tsHostURL);
     const userPrivilege = tsUserInfo.privileges;
     setCurrentOrgId(tsUserInfo.currentOrgId);
     localStorage.setItem('currentOrgId', tsUserInfo.currentOrgId);
@@ -53,7 +54,7 @@ export const SelectProject = ({ vercelAccessToken, hostUrl }) => {
       userPrivilege.includes('ADMINISTRATION') ||
         userPrivilege.includes('CONTROL_TRUSTED_AUTH')
     );
-    setIsTrustedAuthEnabled(!!tsUserInfo.tokenAuthPerOrgEnabled);
+    setIsTrustedAuthEnabled(!!trustedAuthEnabled);
     if (
       !userPrivilege.includes('ADMINISTRATION') &&
       !userPrivilege.includes('DATAMANAGEMENT')
