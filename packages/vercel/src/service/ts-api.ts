@@ -17,16 +17,26 @@ export const getTseLicenseInfo = async (hostUrl: string) => {
 };
 
 export const getIsTrustedAuthEnabled = async (
-  hostUrl: string
+  hostUrl: string,
+  sessionInfo: any
 ): Promise<boolean> => {
   const tseLicense = await getTseLicenseInfo(hostUrl);
 
-  const tseLicenseLock =
-    !tseLicense?.licenseEnforcementDisabled &&
-    !tseLicense?.licenseEnabled &&
-    (!tseLicense?.freeTrialEnabled || tseLicense?.daysLeft <= 0);
+  const tseEnabled =
+    tseLicense?.licenseEnforcementDisabled ||
+    tseLicense?.licenseEnabled ||
+    (tseLicense?.freeTrialEnabled && tseLicense?.daysLeft > 0);
 
-  return !!tseLicenseLock;
+  const isEnabledForOrgs = sessionInfo?.configInfo?.orgsConfiguration?.enabled
+    ? sessionInfo?.tokenAuthPerOrgEnabled
+    : true;
+
+  const isTrustedAuthEnabled =
+    tseEnabled &&
+    sessionInfo?.userProperties?.subscriptionType !== 'DEVELOPER_EDITION' &&
+    isEnabledForOrgs;
+
+  return isTrustedAuthEnabled;
 };
 
 export const createConnection = async (
