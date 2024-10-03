@@ -35,4 +35,8 @@ export const customCSSProperties = {
   '.ag-header': {
     'pointer-events': 'none !important',
   },
+  '.embed-module__tsEmbedContainer': {
+    width: '100%',
+    height: '100%',
+  },
 };
