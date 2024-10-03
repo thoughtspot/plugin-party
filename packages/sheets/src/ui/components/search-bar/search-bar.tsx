@@ -52,6 +52,9 @@ export const TSSearchBar = () => {
           '.modal-module__footer': {
             'padding-left': '0px !important',
           },
+          '[data-testid="modal-container"]': {
+            zoom: '0.6',
+          },
         },
       },
     },

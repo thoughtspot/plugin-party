@@ -19,6 +19,8 @@ export interface CardProps {
   isFirstButtonHidden?: boolean;
   isSecondButtonHidden?: boolean;
   className?: string;
+  titleClassName?: string;
+  subtitleClassName?: string;
   children?: any;
 }
 export const Card: React.FC<CardProps> = ({
@@ -36,6 +38,8 @@ export const Card: React.FC<CardProps> = ({
   isFirstButtonHidden = false,
   isSecondButtonHidden = false,
   className,
+  titleClassName,
+  subtitleClassName,
   children,
 }) => {
   return (
@@ -45,13 +49,16 @@ export const Card: React.FC<CardProps> = ({
     >
       <Horizontal spacing="e">
         <Vertical>
-          <div className={styles.title} data-testid={`card-title-testid${id}`}>
+          <div
+            className={cx(styles.title, titleClassName)}
+            data-testid={`card-title-testid${id}`}
+          >
             {title}
           </div>
 
           {subTitle !== '' && (
             <p
-              className={styles.subtitle}
+              className={cx(subtitleClassName, styles.subtitle)}
               dangerouslySetInnerHTML={{ __html: subTitle }}
             ></p>
           )}

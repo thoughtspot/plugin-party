@@ -1,0 +1,34 @@
+@import 'widgets/lib/common.scss';
+
+.container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.item-title {
+  @include rd-font--bold;
+  padding: $spacing--b;
+  border-bottom: 1px solid $gray6;
+  font-size: $spacing--f;
+}
+
+.description {
+  padding: $spacing--b;
+  line-height: 24px;
+}
+
+.box {
+  margin-top: $spacing--i;
+  height: 72%;
+  box-sizing: border-box;
+}
+
+.checkbox {
+  display: flex;
+  margin-top: $spacing--e;
+}
+
+.buttonContainer {
+  margin-top: $spacing--e;
+}

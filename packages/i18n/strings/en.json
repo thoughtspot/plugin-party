@@ -1,8 +1,11 @@
 {
   "THOUGHTSPOT_INSTANCE": "ThoughtSpot instance",
+  "THOUGHTSPOT_INSTANCE_MSG": "Enter the URL of your ThoughtSpot instance.<br>ex: https://team2.thoughtspot.cloud",
   "CONTINUE": "Continue",
   "START_FREE_TRIAL": "Do not have a ThoughtSpot account? Start a <a href=\"https://www.thoughtspot.com/trial\" target=\"_blank\"> free trial </a>.",
+  "THOUGHTSPOT_INSTANCE_DESCRIPTION": "Need help finding out your ThoughtSpot instance?<br><a href=\"https://developers.thoughtspot.com/docs/faqs#_about_thoughtspot_everywhere\" target=\"_blank\">Click here</a>",
   "SIGN_IN_SSO": "Sign in with SSO",
+  "SSO_NOT_ENABLED_ERROR": "SSO is not enabled in your cluster. Please enable it and try again.",
   "OR": "OR",
   "USERNAME": "Username",
   "PASSWORD": "Password",
@@ -34,10 +37,10 @@
   "YOURS": "Yours",
   "ANSWERS": "Answers",
   "LIVEBOARDS": "Liveboards",
-  "INSERT_FAILURE_MESSAGE":"Insert failed, please try again.\n\n If issue persists please contact ThoughtSpot support",
-  "IMAGE_UPDATE_FAILURE_MESSAGE":"Update failed, please try again.\n\n If issue persists please contact ThoughtSpot support",
+  "INSERT_FAILURE_MESSAGE": "Insert failed, please try again.\n\n If issue persists please contact ThoughtSpot support",
+  "IMAGE_UPDATE_FAILURE_MESSAGE": "Update failed, please try again.\n\n If issue persists please contact ThoughtSpot support",
   "BROSWER_NOT_SUPPORTED": "Browser not supported",
-  "BROSER_RECCOMENDATION":"This plugin is only supported on Google Chrome.",
+  "BROSER_RECCOMENDATION": "This plugin is only supported on Google Chrome.",
   "TOKEN_FETCH_FAILED": "Failed to fetch token!\n\nPlease relaunch the extension to retry.",
   "PRIVILEGE_REQUIRED": "You need the privilege `Can download Data` to access this extension. Please contact your administrator",
   "INVALID_INSTANCE_ERROR": "Please input valid ThoughtSpot Instance",
@@ -56,7 +59,7 @@
   "TEST_EMBED_DESCRIPTION": "The code below will embed natural language search, using your ThoughtSpot cluster and the data source created previously in your application.<br>Additionally, You can embed other ThoughtSpot components as well such as Liveboards and Answers with our SDK. Find out more <a href='https://developers.thoughtspot.com/docs/embed-liveboard' target='_blank'>here</a>.<br> Note that this embed will not have user authentication set up.",
   "NEXT_BUTTON": "Next",
   "EXIT_SETUP": "Exit Setup",
-  "CODE_SAMPLE_DESCRIPTION": "Finish deploying ThoughtSpot into your application by setting up authentication for your end users. The next step use the Trusted Authentication method.<br> ThoughtSpot supports several authentication options such as SAML, Open ID, and passthrough authentication to match your deployment preferences.<br> Learn more about support authentication options <a href='https://developers.thoughtspot.com/docs/embed-auth' target='_blank' rel='noopener noreferrer'>here</a>.",
+  "CODE_SAMPLE_DESCRIPTION": "Finish deploying ThoughtSpot into your application by setting up authentication for your end users. The next step uses the Trusted Authentication method, available to TSE Pro and Enterprise customers (more details on <a href='https://www.thoughtspot.com/pricing' target='_blank' rel='noopener noreferrer'>ThoughtSpot Editions here</a>).ThoughtSpot also supports other authentication options such as passthrough authentication to match your deployment preferences. Learn more about support authentication options <a href='https://developers.thoughtspot.com/docs/embed-auth' target='_blank' rel='noopener noreferrer'>here</a>.",
   "OPEN_SANDBOX": "Try in Stackblitz",
   "COPY_CODE": "Copy Code",
   "TRUSTED_AUTH_HEADING": "Embed ThoughtSpot in your application",
@@ -117,5 +120,6 @@
   "INVALID_INSERT_FAILURE_MESSAGE": "Update failed for {NoOfFailedImages} visualization(s). Some of these objects may have been deleted.\n\n Please check the URLs attached to the images and make sure they point to valid",
   "IMAGE_UPDATE_SUCCESS_MESSAGE": "{NoOfUpdatedImages} Visualization(s) Succesfully updated",
   "IMAGE_INSERT_SUCCESS_MESSAGE": "Visualization Succesfully inserted",
-  "SESSION_EXPIRED_MESSAGE": "Your session has expired. Please reload the plugin to update or insert visualization(s)."
+  "SESSION_EXPIRED_MESSAGE": "Your session has expired. Please reload the plugin to update or insert visualization(s).",
+  "NEXT_BUTTON_DISABLED_MESSAGE" : "Trusted Auth is not enabled on your cluster or You do not have admin privileges."
 }

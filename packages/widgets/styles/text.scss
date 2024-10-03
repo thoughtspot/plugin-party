@@ -73,3 +73,8 @@ $rd-font--family-mono: bb-roller-regular, courrier, sans-serif;
   font-weight: 400;
   text-transform: uppercase;
 }
+
+@mixin rd-font--bold {
+  font-weight: 700;
+  font-variant-ligatures: none;
+}

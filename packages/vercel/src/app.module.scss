@@ -1,0 +1,14 @@
+@import 'widgets/lib/common.scss';
+
+.stepper {
+    justify-content: space-between;
+    min-width: 195px !important;
+    height: 100%;
+}
+
+.docsContainer {
+    overflow: auto;
+    height: 100%;
+    justify-content: space-between;
+    padding: $spacing--e;
+}

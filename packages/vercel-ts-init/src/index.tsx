@@ -1,39 +1,47 @@
-import { Card } from 'widgets/lib/card';
 import { useTranslations } from 'i18n';
 import { ClusterUrl } from 'ts-init/src/cluster-url/cluster-url';
 import { TSAuthInit } from 'ts-init/src/ts-auth-init/ts-auth-init';
-
-const isNotChrome = () => {
-  const userAgent = window.navigator.userAgent.toLowerCase();
-  return !userAgent.includes('chrome') && !userAgent.includes('crios');
-};
+import { getConfig } from './services/config';
+import { FreeTrial } from './free-trial/free-trial';
 
 export function VercelTSInit({ children, setClusterUrl, clusterUrl }) {
   const { t } = useTranslations();
-  if (isNotChrome()) {
-    return (
-      <Card
-        id={0}
-        title={t.BROSWER_NOT_SUPPORTED}
-        subTitle={t.BROSER_RECCOMENDATION}
-      />
-    );
-  }
   const onShowSetUrl = () => {
     setClusterUrl({
       ...clusterUrl,
       isCandidate: true,
     });
   };
-  const onSetUrl = (url: string) => {
-    setClusterUrl({
-      url,
-      isCandidate: false,
-    });
+
+  const onSetUrl = async (url: string) => {
+    const formattedUrl = new URL(`https://${url.replace('https://', '')}`);
+    const host = formattedUrl.host;
+    await getConfig(host)
+      .then(() => {
+        setClusterUrl({
+          url: host,
+          isCandidate: false,
+          isError: false,
+        });
+      })
+      .catch((err) => {
+        setClusterUrl({
+          url,
+          isCandidate: true,
+          isError: true,
+        });
+      });
   };
 
   if (clusterUrl.isCandidate)
-    return <ClusterUrl candidateUrl={clusterUrl.url} onSetUrl={onSetUrl} />;
+    return (
+      <FreeTrial
+        candidateUrl={clusterUrl.url}
+        onSetUrl={onSetUrl}
+        isUrlValid={!clusterUrl.isError}
+        suggestedUrl={clusterUrl.suggestedUrl}
+      />
+    );
 
   return (
     <TSAuthInit onBack={onShowSetUrl} clusterUrl={clusterUrl.url}>

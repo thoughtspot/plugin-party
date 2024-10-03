@@ -6,7 +6,13 @@ import { useTranslations } from 'i18n';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import './login.scss';
 
-export const Login = ({ onBack, onSSO, onCredSubmit, isCredFailed }) => {
+export const Login = ({
+  onBack,
+  onSSO,
+  onCredSubmit,
+  isCredFailed,
+  isSamlEnabled,
+}) => {
   const { t } = useTranslations();
   const userRef = useRef<HTMLInputElement>(null);
   const passRef = useRef<HTMLInputElement>(null);
@@ -21,6 +27,7 @@ export const Login = ({ onBack, onSSO, onCredSubmit, isCredFailed }) => {
   });
   const [showCredError, setShowCredError] = useState(isCredFailed);
   useEffect(() => setShowCredError(isCredFailed), [isCredFailed]);
+  const [showSamlError, setShowSamlError] = useState(isSamlEnabled);
   return (
     <Vertical spacing="f" hAlignContent="center">
       <img
@@ -31,7 +38,11 @@ export const Login = ({ onBack, onSSO, onCredSubmit, isCredFailed }) => {
       ></img>
       <Horizontal spacing="c">
         <Button type="SECONDARY" onClick={onBack} text="←"></Button>
-        <Button type="PRIMARY" onClick={onSSO} text={t.SIGN_IN_SSO}></Button>
+        <Button
+          type="PRIMARY"
+          onClick={isSamlEnabled ? onSSO : () => setShowSamlError(true)}
+          text={t.SIGN_IN_SSO}
+        ></Button>
       </Horizontal>
       <div className="auth-separator">- {t.OR} -</div>
       <Vertical spacing="c">
@@ -54,6 +65,11 @@ export const Login = ({ onBack, onSSO, onCredSubmit, isCredFailed }) => {
         {showCredError && (
           <Typography variant="h6" color={Colors.failure}>
             {t.INCORRECT_PASSWORD}
+          </Typography>
+        )}
+        {showSamlError && (
+          <Typography variant="h6" color={Colors.failure}>
+            {t.SSO_NOT_ENABLED_ERROR}
           </Typography>
         )}
         <Button

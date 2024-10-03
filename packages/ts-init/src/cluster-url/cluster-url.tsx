@@ -6,7 +6,13 @@ import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { useTranslations } from 'i18n';
 import './cluster-url.scss';
 
-export function ClusterUrl({ onSetUrl, candidateUrl, isUrlValid = true }) {
+export function ClusterUrl({
+  onSetUrl,
+  candidateUrl,
+  suggestedUrl = '',
+  isUrlValid = true,
+  isVercelEnabled = false,
+}) {
   const { t } = useTranslations();
   const inpRef = useRef<HTMLInputElement>(null);
   return (
@@ -19,10 +25,21 @@ export function ClusterUrl({ onSetUrl, candidateUrl, isUrlValid = true }) {
       ></img>
       <Vertical className="set-url-container" spacing="c" hAlignContent="start">
         <div>{t.THOUGHTSPOT_INSTANCE}</div>
+        {isVercelEnabled ? (
+          <div
+            className="ts-instance-msg"
+            dangerouslySetInnerHTML={{
+              __html: t.THOUGHTSPOT_INSTANCE_MSG,
+            }}
+          ></div>
+        ) : (
+          <></>
+        )}
         <Input
           initialValue={candidateUrl}
           ref={inpRef}
           className="ts-cluster-url"
+          placeholder={suggestedUrl}
         />
         {!isUrlValid && (
           <Typography
@@ -38,10 +55,19 @@ export function ClusterUrl({ onSetUrl, candidateUrl, isUrlValid = true }) {
           onClick={() => onSetUrl(inpRef.current.value)}
           text={t.CONTINUE}
         ></Button>
-        <div
-          className="free-trial-msg"
-          dangerouslySetInnerHTML={{ __html: t.START_FREE_TRIAL }}
-        ></div>
+        {!isVercelEnabled ? (
+          <div
+            className="free-trial-msg"
+            dangerouslySetInnerHTML={{ __html: t.START_FREE_TRIAL }}
+          ></div>
+        ) : (
+          <div
+            className="description"
+            dangerouslySetInnerHTML={{
+              __html: t.THOUGHTSPOT_INSTANCE_DESCRIPTION,
+            }}
+          ></div>
+        )}
       </Vertical>
     </Vertical>
   );

@@ -1,0 +1,98 @@
+@import '../common.scss';
+
+.name {
+  align-items: center;
+  margin-top: $spacing--b;
+  justify-content: space-between !important;
+}
+
+.row {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.evenRow {
+    background-color: $white;
+}
+  
+.oddRow {
+    background-color: $gray0;
+}
+
+.itemWrapper {
+  border-bottom: 1px solid $gray1;
+  width: 100%;
+  height: 85px;
+  text-align: left;
+}
+.item-title {
+  min-width: 84px !important;
+  font-weight: 700;
+}
+.item {
+  padding-bottom: $spacing--b;
+  padding-top: $spacing--b;
+}
+.listItemDetails {
+  width: 100%;
+}
+
+.renderItemContainer {
+  height: 85px;
+  padding: 0 $spacing--d;
+  cursor: pointer;
+}
+
+.emptyData {
+  padding: $spacing--d;
+  > svg {
+    height: 100px !important;
+    width: 100px !important;
+  }
+  .emptyDataText {
+    margin: 0 30px;
+  }
+}
+
+.radio {
+    margin: 0;
+}
+
+.iconTextWrapper {
+  min-width: 20% !important;
+}
+
+.listContent {
+  overflow: auto;
+}
+
+.listContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.loader {
+  width: 100%;
+  height: 100%;
+  align-content: space-around;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.refetchLoader {
+  width: 100%;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.textIcon {
+  align-items: center;
+  min-width: 20% !important;
+}
+
+.heading {
+  color: #777E8B;
+  font-weight: 700;
+}

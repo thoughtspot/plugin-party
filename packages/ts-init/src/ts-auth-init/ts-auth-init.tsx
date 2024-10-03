@@ -30,6 +30,7 @@ const initTSBasic = (url: string, username: string, password: string) => {
 interface TSAuthInitProps {
   clusterUrl: string;
   onBack: () => void;
+  isSamlEnabled?: boolean;
 }
 
 enum AuthState {
@@ -43,6 +44,7 @@ export const TSAuthInit: FunctionComponent<TSAuthInitProps> = ({
   clusterUrl,
   children,
   onBack,
+  isSamlEnabled,
 }) => {
   const [authState, setAuthState] = useState(AuthState.UNDEFINED);
   const [authEE, setAuthEE] = useState<any>();
@@ -89,6 +91,7 @@ export const TSAuthInit: FunctionComponent<TSAuthInitProps> = ({
       onSSO={onTriggerSSO}
       onCredSubmit={onCredSubmit}
       isCredFailed={authState === AuthState.FAILED}
+      isSamlEnabled={isSamlEnabled}
     />
   );
 };
