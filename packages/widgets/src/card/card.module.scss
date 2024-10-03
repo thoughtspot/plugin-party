@@ -10,17 +10,25 @@
   cursor: pointer;
 }
 
+.cardContainer {
+  padding-bottom: $spacing--f;
+  width: 100%;
+}
+
 .actionItems {
-  margin-top: $spacing--d;
-  margin-bottom: $spacing--d;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.radioActionItems {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  gap: 29px;
+  padding-bottom: $spacing--f;
 }
 
 .selected {
   border: 1px solid rd-color('blue', '60');
-}
-
-.cardSectionWrapper {
-  padding: $spacing--c;
 }
 
 .bodyWidthAdjust {
@@ -28,12 +36,34 @@
 }
 
 .title {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: bold;
-  color: $gray4-5;
 }
 
 .subtitle {
-  font-size: 13px;
+  font-size: 14px;
+  line-height: 20px;
+  margin-top: $spacing--d;
+  margin-bottom: $spacing--c;
+}
+
+.button {
+  width: 100%;
+}
+
+.radioWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.radioButton {
+  width: 16px;
+  height: 16px;
+  margin-right: $spacing--c;
+}
+
+.radioLabel {
+  font-size: 14px;
   line-height: 20px;
 }
+

@@ -313,13 +313,40 @@ function reloadImagesInCurrentSlide() {
  */
 function reloadImagesInPresentation() {
   const slides = SlidesApp.getActivePresentation().getSlides();
-  console.log(slides, slides.length, typeof slides);
+  console.log('aditya test 1', slides, slides.length, typeof slides);
   const slideImages = slides.reduce((imgs, slide) => {
     const images = slide.getImages();
     return imgs.concat(images);
   }, []);
   return reloadImages(slideImages);
 }
+
+function deleteExistingTriggers(fnName: string) {
+  const allTriggers = ScriptApp.getProjectTriggers();
+  allTriggers.forEach((trigger) => {
+    if (trigger.getHandlerFunction() === fnName) {
+      ScriptApp.deleteTrigger(trigger);
+    }
+  });
+}
+
+function scheduleReloadImageInPresentation(minutes = 1) {
+  deleteExistingTriggers('reloadImagesInPresentation');
+  ScriptApp.newTrigger('reloadImagesInPresentation')
+    .timeBased()
+    .after(minutes * 60 * 1000) // Trigger after a certain number of milliseconds
+    .create();
+}
+
+function scheduleReloadImageInCurrentSlide(minutes = 1) {
+  deleteExistingTriggers('reloadImagesInCurrentSlide');
+  deleteExistingTriggers('reloadImagesInPresentation');
+  ScriptApp.newTrigger('reloadImagesInCurrentSlide')
+    .timeBased()
+    .everyMinutes(minutes)
+    .create();
+}
+
 if (module?.exports) {
   module.exports.resetTSInstance = resetTSInstance;
   module.exports.getCandidateClusterUrl = getCandidateClusterUrl;

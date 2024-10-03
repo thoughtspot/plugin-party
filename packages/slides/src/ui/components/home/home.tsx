@@ -113,6 +113,25 @@ export const Home = () => {
       .finally(() => loader.hide());
   };
 
+  const onScheduleReloadImages = (scheduleReloadFn: string) => {
+    loader.show();
+    setErrorMessage({
+      visible: false,
+      message: '',
+      type: BannerType.MESSAGE,
+    });
+    run(scheduleReloadFn)
+      .catch((err) => {
+        console.log('err', err);
+        return setErrorMessage({
+          visible: true,
+          message: t.IMAGE_UPDATE_FAILURE_MESSAGE,
+          type: BannerType.MESSAGE,
+        });
+      })
+      .finally(() => loader.hide());
+  };
+
   return (
     <Vertical className={styles.home} spacing="c">
       <SuccessBanner
@@ -153,12 +172,27 @@ export const Home = () => {
             firstButton={t.UPDATE_ALL_VIZ}
             firstButtonType="SECONDARY"
             onFirstButtonClick={() =>
-              onReloadImages('reloadImagesInPresentation')
+              onReloadImages('scheduleReloadImageInPresentation')
             }
             secondButton={t.UPDATE_VIZ_IN_SLIDE}
             secondButtonType={'SECONDARY'}
             onSecondButtonClick={() =>
-              onReloadImages('reloadImagesInCurrentSlide')
+              onScheduleReloadImages('scheduleReloadImageInCurrentSlide')
+            }
+          />
+          <Card
+            id={2}
+            title={t.UPDATE_SCHEDULE}
+            subTitle={t.UPDATE_SCHEDULE_DESCRIPTION}
+            firstButton={t.UPDATE_ALL_VIZ}
+            firstButtonType="SECONDARY"
+            onFirstButtonClick={() =>
+              onScheduleReloadImages('scheduleReloadImageInPresentation')
+            }
+            secondButton={t.UPDATE_VIZ_IN_SLIDE}
+            secondButtonType={'SECONDARY'}
+            onSecondButtonClick={() =>
+              onScheduleReloadImages('scheduleReloadImageInCurrentSlide')
             }
           />
         </>
