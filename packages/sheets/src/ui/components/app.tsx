@@ -9,6 +9,7 @@ import React from 'preact';
 import { TSSearchBar } from './search-bar/search-bar';
 import { Routes } from '../routes';
 import { Home } from './home/home';
+import { Header } from './header/header';
 
 const history: any = createMemoryHistory();
 export function App() {
@@ -16,6 +17,7 @@ export function App() {
     <I18N>
       <ShellContext.Provider value={defaultShellContextOptions}>
         <TSInit>
+          <Header history={history}></Header>
           <Analytics />
           <Router history={history}>
             <Home path={Routes.HOME} />

@@ -30,8 +30,20 @@ export const Home = () => {
   const handleSelectionChange = (value: string) => {
     setSelectedRefresh(value);
   };
-  const handleRefreshData = () => {
-    run('refreshData');
+  const handleRefreshData = async () => {
+    try {
+      loader.show();
+
+      if (selectedRefresh === t.REFRESH_ALL_SHEETS) {
+        await run('refreshAllSheets');
+      } else {
+        await run('refreshData');
+      }
+    } catch (error) {
+      console.error('Error during refresh:', error);
+    } finally {
+      loader.hide();
+    }
   };
 
   return (

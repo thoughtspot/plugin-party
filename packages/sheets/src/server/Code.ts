@@ -1,3 +1,5 @@
+/* eslint-disable guard-for-in */
+/* eslint-disable no-restricted-syntax */
 /**
  * @OnlyCurrentDoc
  */
@@ -75,12 +77,13 @@ function setToken(token, ttl) {
 
 function setQuery(
   query,
-  startCell,
+  cell,
   sheetName,
   dataSource,
   ifColumnIsDate,
   previousDataCellRange
 ) {
+  const startCell = cell.getA1Notation();
   const userProps = PropertiesService.getDocumentProperties();
   // to fetch sheetName SpreadsheetApp.getActiveSheet().getName();
   userProps.setProperty(`tsquery-${sheetName}-${startCell}`, query);
@@ -127,8 +130,11 @@ function isCellSame(cell1, cell2) {
 }
 
 function clearPrevious(cell, sheet) {
-  const cache = CacheService.getDocumentCache();
-  let previousDataCellRange: any = cache.get('previousDataCellRange');
+  const cache = PropertiesService.getDocumentProperties();
+  const cellNotation = cell.getA1Notation();
+  let previousDataCellRange: any = cache.getProperty(
+    `previousDataCellRange-${sheet.getName()}-${cellNotation}`
+  );
   if (previousDataCellRange) {
     previousDataCellRange = JSON.parse(previousDataCellRange);
   }
@@ -241,34 +247,50 @@ function updateData(query, source, ifColumnIsDate) {
   );
 }
 
-function updateDataa(header, data) {
-  const sheet = SpreadsheetApp.getActiveSheet();
-  // var sheet = ss.getSheets()[0]; // sheets are counted starting from 0
-  const cell = sheet.getActiveCell();
-  console.log(cell.getColumn());
-  Logger.log(
-    `${cell.getColumn()}`,
-    `${cell.getRow()}`,
-    `${data.length + 1}`,
-    `${header.length}`
-  );
+function refreshCurrentSheet(
+  query,
+  source,
+  ifColumnIsDate,
+  cellNotation,
+  sheet
+) {
+  const sheetName = sheet.getName();
+  const cell = sheet.getRange(cellNotation);
   clearPrevious(cell, sheet);
+
+  const { colNames, rows } = getQueryResult(query, source);
+  const formattedRows = rows.map((row) => {
+    const modifiedData = row.map((value, index) => {
+      if (ifColumnIsDate[index]) {
+        return formatDate(colNames[index], value);
+      }
+      if (value?.v) {
+        return value.v?.s;
+      }
+      return value;
+    });
+    return modifiedData;
+  });
+
   const range = sheet.getRange(
     cell.getRow(),
     cell.getColumn(),
-    data.length + 1,
-    header.length
+    formattedRows.length + 1,
+    colNames.length
   );
-  const values = [header];
-  Array.prototype.push.apply(values, data);
+
+  const values = [colNames];
+  Array.prototype.push.apply(values, formattedRows);
   range.setValues(values);
-  var headerRow = sheet.getRange(
+
+  const headerRow = sheet.getRange(
     cell.getRow(),
     cell.getColumn(),
     1,
-    header.length
+    colNames.length
   );
   headerRow.setFontWeight('bold');
+
   const previousDataCellRange = {
     cell: { column: cell.getColumn(), row: cell.getRow() },
     range: {
@@ -278,20 +300,81 @@ function updateDataa(header, data) {
       width: range.getWidth(),
     },
   };
-  const cache = CacheService.getDocumentCache();
-  cache.put('previousDataCellRange', JSON.stringify(previousDataCellRange));
+
+  setQuery(
+    query,
+    cell,
+    sheetName,
+    source,
+    ifColumnIsDate,
+    previousDataCellRange
+  );
 }
 
-// refresh current sheet
+function refreshAllSheets() {
+  const userProps = PropertiesService.getDocumentProperties().getProperties();
+  const allSheets = SpreadsheetApp.getActiveSpreadsheet().getSheets();
+
+  allSheets.forEach((sheet) => {
+    const sheetName = sheet.getName();
+
+    const filteredProps = {};
+    for (const key in userProps) {
+      if (key.indexOf(sheetName) !== -1) {
+        filteredProps[key] = userProps[key];
+      }
+    }
+
+    const cells = {};
+    for (const key in filteredProps) {
+      const parts = key.split(`${sheetName}-`);
+      if (parts[1]) {
+        cells[parts[1]] = true;
+      }
+    }
+
+    for (const cellNotation in cells) {
+      const tsQueryKey = `tsquery-${sheetName}-${cellNotation}`;
+      const dataSourceKey = `datasource-${sheetName}-${cellNotation}`;
+      const ifColumnIsDateKey = `ifColumnIsDate-${sheetName}-${cellNotation}`;
+
+      const query = filteredProps[tsQueryKey];
+      const source = filteredProps[dataSourceKey];
+      const ifColumnIsDate = JSON.parse(filteredProps[ifColumnIsDateKey]);
+      refreshCurrentSheet(query, source, ifColumnIsDate, cellNotation, sheet);
+    }
+  });
+}
+
 function refreshData() {
   const userProps = PropertiesService.getDocumentProperties().getProperties();
   const sheetName = SpreadsheetApp.getActiveSheet().getName();
+  const sheet = SpreadsheetApp.getActiveSheet();
+
   const filteredProps = {};
-  // eslint-disable-next-line no-restricted-syntax
+
   for (const key in userProps) {
-    if (key.includes(sheetName)) {
+    if (key.indexOf(sheetName) !== -1) {
       filteredProps[key] = userProps[key];
     }
   }
-  console.log('ssese', userProps);
+
+  const cells = {};
+  for (const key in filteredProps) {
+    const parts = key.split(`${sheetName}-`);
+    if (parts[1]) {
+      cells[parts[1]] = true;
+    }
+  }
+
+  for (const cellNotation in cells) {
+    const tsQueryKey = `tsquery-${sheetName}-${cellNotation}`;
+    const dataSourceKey = `datasource-${sheetName}-${cellNotation}`;
+    const ifColumnIsDateKey = `ifColumnIsDate-${sheetName}-${cellNotation}`;
+
+    const query = filteredProps[tsQueryKey];
+    const source = filteredProps[dataSourceKey];
+    const ifColumnIsDate = JSON.parse(filteredProps[ifColumnIsDateKey]);
+    refreshCurrentSheet(query, source, ifColumnIsDate, cellNotation, sheet);
+  }
 }
