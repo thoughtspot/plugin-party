@@ -172,27 +172,12 @@ export const Home = () => {
             firstButton={t.UPDATE_ALL_VIZ}
             firstButtonType="SECONDARY"
             onFirstButtonClick={() =>
-              onReloadImages('scheduleReloadImageInPresentation')
+              onReloadImages('reloadImagesInPresentation')
             }
             secondButton={t.UPDATE_VIZ_IN_SLIDE}
             secondButtonType={'SECONDARY'}
             onSecondButtonClick={() =>
-              onScheduleReloadImages('scheduleReloadImageInCurrentSlide')
-            }
-          />
-          <Card
-            id={2}
-            title={t.UPDATE_SCHEDULE}
-            subTitle={t.UPDATE_SCHEDULE_DESCRIPTION}
-            firstButton={t.UPDATE_ALL_VIZ}
-            firstButtonType="SECONDARY"
-            onFirstButtonClick={() =>
-              onScheduleReloadImages('scheduleReloadImageInPresentation')
-            }
-            secondButton={t.UPDATE_VIZ_IN_SLIDE}
-            secondButtonType={'SECONDARY'}
-            onSecondButtonClick={() =>
-              onScheduleReloadImages('scheduleReloadImageInCurrentSlide')
+              onReloadImages('reloadImagesInCurrentSlide')
             }
           />
         </>

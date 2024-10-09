@@ -313,7 +313,7 @@ function reloadImagesInCurrentSlide() {
  */
 function reloadImagesInPresentation() {
   const slides = SlidesApp.getActivePresentation().getSlides();
-  console.log('aditya test 1', slides, slides.length, typeof slides);
+  console.log(slides, slides.length, typeof slides);
   const slideImages = slides.reduce((imgs, slide) => {
     const images = slide.getImages();
     return imgs.concat(images);
