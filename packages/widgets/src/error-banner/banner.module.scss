@@ -1,8 +1,25 @@
+@import 'widgets/lib/common.scss';
+
 .errorBanner {
-    justify-content: space-between;
-    padding: 10px;
+    justify-content: center;
+    background-color: #FFEBEC;
+    height: 52px;
+    padding: 16px;
+    width: calc(100% + 32px);
+    margin-right: calc(-1 * $spacing--d);
+    margin-left: calc(-1 * $spacing--d);
+    margin-top: calc(-1 * $spacing--f);
 }
 
 .errorButton {
     background: transparent;
+    padding: 6px;
+    height: 32px;
+    width: 32px;
+}
+
+.iconTextWrapper {
+    display: flex;
+    align-items: center;
+    gap: $spacing--c;
 }

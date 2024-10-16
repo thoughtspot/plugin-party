@@ -1,5 +1,7 @@
+@import 'widgets/lib/common.scss';
+
 .home {
   height: 100%;
   width: 100%;
-  padding: 10px;
+  padding: $spacing--f $spacing--d;
 }

@@ -29,6 +29,7 @@ export interface CardProps {
   secondRadioButtonText?: string;
   defaultRadioSelected?: string;
   onRadioSelectionChange?: (value: string) => void;
+  isBottomBorderHidden?: boolean;
 }
 export const Card: React.FC<CardProps> = ({
   id,
@@ -54,6 +55,7 @@ export const Card: React.FC<CardProps> = ({
   secondRadioButtonText = '',
   defaultRadioSelected = '',
   onRadioSelectionChange,
+  isBottomBorderHidden = false,
 }) => {
   const [selectedValue, setSelectedValue] = useState(defaultRadioSelected);
 
@@ -65,7 +67,9 @@ export const Card: React.FC<CardProps> = ({
   return (
     <div
       data-testid={`card-testid${id}`}
-      className={cx(styles.cardWrapper, className)}
+      className={cx(styles.cardWrapper, className, {
+        [styles.bottomBorder]: !isBottomBorderHidden,
+      })}
     >
       <Horizontal spacing="e">
         <Vertical className={styles.cardContainer}>

@@ -5,9 +5,12 @@
   flex-direction: column;
 
   position: relative;
-  border-bottom: 1px solid $gray2;
   outline: none;
   cursor: pointer;
+}
+
+.bottomBorder {
+  border-bottom: 1px solid $gray2;
 }
 
 .cardContainer {
@@ -22,7 +25,7 @@
 }
 
 .radioActionItems {
-  margin-top: 0px;
+  margin-top: 4px;
   margin-bottom: 0px;
   gap: 29px;
   padding-bottom: $spacing--f;
@@ -38,13 +41,14 @@
 
 .title {
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 600;
+  line-height: 20px;
 }
 
 .subtitle {
   font-size: 14px;
   line-height: 20px;
-  margin-top: $spacing--d;
+  margin-top: $spacing--c;
   margin-bottom: $spacing--c;
 }
 
@@ -61,6 +65,7 @@
   width: 16px;
   height: 16px;
   margin-right: $spacing--c;
+  margin-left: 0px;
 }
 
 .radioLabel {

@@ -1,5 +1,3 @@
-/* eslint-disable guard-for-in */
-/* eslint-disable no-restricted-syntax */
 /**
  * @OnlyCurrentDoc
  */
@@ -41,7 +39,7 @@ function getCandidateClusterUrl() {
   console.log('Hu1', email);
   let environment = 'thoughtspot';
   if (clusterName === 'thoughtspot') {
-    clusterName = 'embed-1-do-not-delete';
+    clusterName = 'champagne';
     environment = 'thoughtspotstaging';
   }
   if (clusterName === 'gmail') {
@@ -75,6 +73,7 @@ function setToken(token, ttl) {
   userCache.put('ts-auth-token', token, ttl);
 }
 
+// storing the query in document properties for refresh
 function setQuery(
   query,
   cell,
@@ -85,9 +84,10 @@ function setQuery(
 ) {
   const startCell = cell.getA1Notation();
   const userProps = PropertiesService.getDocumentProperties();
-  // to fetch sheetName SpreadsheetApp.getActiveSheet().getName();
-  userProps.setProperty(`tsquery-${sheetName}-${startCell}`, query);
-  userProps.setProperty(`datasource-${sheetName}-${startCell}`, dataSource);
+
+  if (query) userProps.setProperty(`tsquery-${sheetName}-${startCell}`, query);
+  if (dataSource)
+    userProps.setProperty(`datasource-${sheetName}-${startCell}`, dataSource);
   userProps.setProperty(
     `ifColumnIsDate-${sheetName}-${startCell}`,
     JSON.stringify(ifColumnIsDate)
@@ -162,19 +162,20 @@ function formatDate(column, dateVal) {
 }
 
 function getQueryResult(query, sourceName) {
-  var userCache = CacheService.getUserCache();
-  var token = userCache.get('ts-auth-token');
-  var clusterUrl = getClusterUrl().url;
-  var url = 'https://plugin-party-sheets-staging.vercel.app/api/proxy';
+  const userCache = CacheService.getUserCache();
+  const token = userCache.get('ts-auth-token');
+  const clusterUrl = getClusterUrl().url;
+  // need to change it to gcp hosted proxy once the changes are merged
+  const url = 'https://plugin-party-sheets-staging.vercel.app/api/proxy';
 
-  var queryResultPayload = {
+  const queryResultPayload = {
     query_string: query,
     logical_table_identifier: sourceName,
     data_format: 'COMPACT',
     record_size: 1000000,
   };
 
-  var response = UrlFetchApp.fetch(url, {
+  const response = UrlFetchApp.fetch(url, {
     method: 'post',
     contentType: 'application/json',
     payload: JSON.stringify({
@@ -185,7 +186,7 @@ function getQueryResult(query, sourceName) {
     }),
   });
 
-  var jsonResponse = JSON.parse(response.getContentText());
+  const jsonResponse = JSON.parse(response.getContentText());
 
   return {
     colNames: jsonResponse.contents[0].column_names,
@@ -193,25 +194,19 @@ function getQueryResult(query, sourceName) {
   };
 }
 
-function updateData(query, source, ifColumnIsDate) {
+function updateData(query, source, ifColumnIsDate, formattedRows, colNames) {
   const sheet = SpreadsheetApp.getActiveSheet();
   const sheetName = sheet.getName();
   const cell = sheet.getActiveCell();
+  console.log(cell.getColumn());
+  Logger.log(
+    `${cell.getColumn()}`,
+    `${cell.getRow()}`,
+    `${formattedRows.length + 1}`,
+    `${colNames.length}`
+  );
   clearPrevious(cell, sheet);
   // setting properties needed for refresh
-  const { colNames, rows } = getQueryResult(query, source);
-  const formattedRows = rows.map((row) => {
-    const modifiedData = row.map((value, index) => {
-      if (ifColumnIsDate[index]) {
-        return formatDate(colNames[index], value);
-      }
-      if (value?.v) {
-        return value.v?.s;
-      }
-      return value;
-    });
-    return modifiedData;
-  });
   const range = sheet.getRange(
     cell.getRow(),
     cell.getColumn(),
@@ -221,68 +216,6 @@ function updateData(query, source, ifColumnIsDate) {
   const values = [colNames];
   Array.prototype.push.apply(values, formattedRows);
   range.setValues(values);
-  var headerRow = sheet.getRange(
-    cell.getRow(),
-    cell.getColumn(),
-    1,
-    colNames.length
-  );
-  headerRow.setFontWeight('bold');
-  const previousDataCellRange = {
-    cell: { column: cell.getColumn(), row: cell.getRow() },
-    range: {
-      column: range.getColumn(),
-      row: range.getRow(),
-      height: range.getHeight(),
-      width: range.getWidth(),
-    },
-  };
-  setQuery(
-    query,
-    cell,
-    sheetName,
-    source,
-    ifColumnIsDate,
-    previousDataCellRange
-  );
-}
-
-function refreshCurrentSheet(
-  query,
-  source,
-  ifColumnIsDate,
-  cellNotation,
-  sheet
-) {
-  const sheetName = sheet.getName();
-  const cell = sheet.getRange(cellNotation);
-  clearPrevious(cell, sheet);
-
-  const { colNames, rows } = getQueryResult(query, source);
-  const formattedRows = rows.map((row) => {
-    const modifiedData = row.map((value, index) => {
-      if (ifColumnIsDate[index]) {
-        return formatDate(colNames[index], value);
-      }
-      if (value?.v) {
-        return value.v?.s;
-      }
-      return value;
-    });
-    return modifiedData;
-  });
-
-  const range = sheet.getRange(
-    cell.getRow(),
-    cell.getColumn(),
-    formattedRows.length + 1,
-    colNames.length
-  );
-
-  const values = [colNames];
-  Array.prototype.push.apply(values, formattedRows);
-  range.setValues(values);
-
   const headerRow = sheet.getRange(
     cell.getRow(),
     cell.getColumn(),
@@ -290,7 +223,6 @@ function refreshCurrentSheet(
     colNames.length
   );
   headerRow.setFontWeight('bold');
-
   const previousDataCellRange = {
     cell: { column: cell.getColumn(), row: cell.getRow() },
     range: {
@@ -300,7 +232,6 @@ function refreshCurrentSheet(
       width: range.getWidth(),
     },
   };
-
   setQuery(
     query,
     cell,
@@ -311,70 +242,149 @@ function refreshCurrentSheet(
   );
 }
 
-function refreshAllSheets() {
+function getSheetProperties(sheets) {
   const userProps = PropertiesService.getDocumentProperties().getProperties();
-  const allSheets = SpreadsheetApp.getActiveSpreadsheet().getSheets();
-
-  allSheets.forEach((sheet) => {
+  const sheetProps = {};
+  sheets.forEach((sheet) => {
     const sheetName = sheet.getName();
-
-    const filteredProps = {};
-    for (const key in userProps) {
-      if (key.indexOf(sheetName) !== -1) {
-        filteredProps[key] = userProps[key];
+    sheetProps[sheetName] = {};
+    Object.keys(userProps).forEach((key) => {
+      if (key.indexOf(`${sheetName}-`) !== -1) {
+        const cellNotation = key.split(`${sheetName}-`)[1];
+        if (!sheetProps[sheetName][cellNotation]) {
+          sheetProps[sheetName][cellNotation] = {};
+        }
+        if (key.indexOf('tsquery-') !== -1) {
+          sheetProps[sheetName][cellNotation].query = userProps[key];
+        } else if (key.indexOf('datasource-') !== -1) {
+          sheetProps[sheetName][cellNotation].source = userProps[key];
+        } else if (key.indexOf('ifColumnIsDate-') !== -1) {
+          sheetProps[sheetName][cellNotation].ifColumnIsDate = JSON.parse(
+            userProps[key]
+          );
+        }
       }
-    }
+    });
+  });
+  return sheetProps;
+}
 
-    const cells = {};
-    for (const key in filteredProps) {
-      const parts = key.split(`${sheetName}-`);
-      if (parts[1]) {
-        cells[parts[1]] = true;
+function fetchAllQueryResults(queriesPayload) {
+  // need to change the URL to gcp hosted proxy once the changes are pushed
+  const url = 'https://plugin-party-sheets-staging.vercel.app/api/proxy';
+  const userCache = CacheService.getUserCache();
+  const token = userCache.get('ts-auth-token');
+  const clusterUrl = getClusterUrl().url;
+
+  const requests = queriesPayload.map((payload) => ({
+    url,
+    method: 'post',
+    contentType: 'application/json',
+    payload: JSON.stringify({
+      clusterUrl,
+      endpoint: 'api/rest/2.0/searchdata',
+      token,
+      payload,
+    }),
+  }));
+
+  const responses = UrlFetchApp.fetchAll(requests);
+  return responses.map((response) => JSON.parse(response.getContentText()));
+}
+
+function refreshSheets(sheets) {
+  const sheetProps = getSheetProperties(sheets);
+  const queriesPayload = [];
+  const sheetCellMap = {};
+
+  sheets.forEach((sheet) => {
+    const sheetName = sheet.getName();
+    const cells = sheetProps[sheetName];
+
+    Object.keys(cells).forEach((cellNotation) => {
+      const { query, source, ifColumnIsDate } = cells[cellNotation];
+      if (query && source) {
+        queriesPayload.push({
+          query_string: query,
+          logical_table_identifier: source,
+          data_format: 'COMPACT',
+          record_size: 1000000,
+        });
+
+        sheetCellMap[queriesPayload.length - 1] = {
+          sheet,
+          cellNotation,
+          ifColumnIsDate,
+        };
       }
-    }
+    });
+  });
 
-    for (const cellNotation in cells) {
-      const tsQueryKey = `tsquery-${sheetName}-${cellNotation}`;
-      const dataSourceKey = `datasource-${sheetName}-${cellNotation}`;
-      const ifColumnIsDateKey = `ifColumnIsDate-${sheetName}-${cellNotation}`;
+  const responses = fetchAllQueryResults(queriesPayload);
 
-      const query = filteredProps[tsQueryKey];
-      const source = filteredProps[dataSourceKey];
-      const ifColumnIsDate = JSON.parse(filteredProps[ifColumnIsDateKey]);
-      refreshCurrentSheet(query, source, ifColumnIsDate, cellNotation, sheet);
-    }
+  responses.forEach((jsonResponse, index) => {
+    const { sheet, cellNotation, ifColumnIsDate } = sheetCellMap[index];
+    const sheetName = sheet.getName();
+    const cell = sheet.getRange(cellNotation);
+    clearPrevious(cell, sheet);
+
+    const colNames = jsonResponse.contents[0].column_names;
+    const rows = jsonResponse.contents[0].data_rows;
+
+    const formattedRows = rows.map((row) => {
+      return row.map((value, idx) => {
+        if (ifColumnIsDate[idx]) {
+          return formatDate(colNames[idx], value);
+        }
+        return value?.v?.s || value;
+      });
+    });
+
+    const range = sheet.getRange(
+      cell.getRow(),
+      cell.getColumn(),
+      formattedRows.length + 1,
+      colNames.length
+    );
+
+    const values = [colNames, ...formattedRows];
+    range.setValues(values);
+
+    const headerRow = sheet.getRange(
+      cell.getRow(),
+      cell.getColumn(),
+      1,
+      colNames.length
+    );
+    headerRow.setFontWeight('bold');
+
+    const previousDataCellRange = {
+      cell: { column: cell.getColumn(), row: cell.getRow() },
+      range: {
+        column: range.getColumn(),
+        row: range.getRow(),
+        height: range.getHeight(),
+        width: range.getWidth(),
+      },
+    };
+
+    setQuery(
+      undefined,
+      cell,
+      sheetName,
+      undefined,
+      ifColumnIsDate,
+      previousDataCellRange
+    );
   });
 }
 
-function refreshData() {
-  const userProps = PropertiesService.getDocumentProperties().getProperties();
-  const sheetName = SpreadsheetApp.getActiveSheet().getName();
-  const sheet = SpreadsheetApp.getActiveSheet();
+function refreshAllSheets() {
+  const allSheets = SpreadsheetApp.getActiveSpreadsheet().getSheets();
+  refreshSheets(allSheets);
+}
 
-  const filteredProps = {};
-
-  for (const key in userProps) {
-    if (key.indexOf(sheetName) !== -1) {
-      filteredProps[key] = userProps[key];
-    }
-  }
-
-  const cells = {};
-  for (const key in filteredProps) {
-    const parts = key.split(`${sheetName}-`);
-    if (parts[1]) {
-      cells[parts[1]] = true;
-    }
-  }
-
-  for (const cellNotation in cells) {
-    const tsQueryKey = `tsquery-${sheetName}-${cellNotation}`;
-    const dataSourceKey = `datasource-${sheetName}-${cellNotation}`;
-    const ifColumnIsDateKey = `ifColumnIsDate-${sheetName}-${cellNotation}`;
-
-    const query = filteredProps[tsQueryKey];
-    const source = filteredProps[dataSourceKey];
-    const ifColumnIsDate = JSON.parse(filteredProps[ifColumnIsDateKey]);
-    refreshCurrentSheet(query, source, ifColumnIsDate, cellNotation, sheet);
-  }
+function refreshCurrentSheet() {
+  const activeSheet = SpreadsheetApp.getActiveSheet();
+  refreshSheets([activeSheet]);
 }

@@ -81,6 +81,7 @@ export const Home = () => {
     loader.show();
     run(reloadFn)
       .then((arg) => {
+        console.log('arg', arg);
         if (arg?.successImages?.length) {
           const numberOfImagesUpdated = arg?.successImages?.length;
           setSuccessMessage({
@@ -113,27 +114,8 @@ export const Home = () => {
       .finally(() => loader.hide());
   };
 
-  const onScheduleReloadImages = (scheduleReloadFn: string) => {
-    loader.show();
-    setErrorMessage({
-      visible: false,
-      message: '',
-      type: BannerType.MESSAGE,
-    });
-    run(scheduleReloadFn)
-      .catch((err) => {
-        console.log('err', err);
-        return setErrorMessage({
-          visible: true,
-          message: t.IMAGE_UPDATE_FAILURE_MESSAGE,
-          type: BannerType.MESSAGE,
-        });
-      })
-      .finally(() => loader.hide());
-  };
-
   return (
-    <Vertical className={styles.home} spacing="c">
+    <Vertical className={styles.home} spacing="f">
       <SuccessBanner
         successMessage={successMessage.message}
         showCloseIcon
