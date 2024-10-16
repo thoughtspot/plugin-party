@@ -22,14 +22,33 @@ export const TSSearchBar = () => {
         return;
       }
       const source = data.answer.tables[0].id;
+      const { colNames, rows } = await getQueryResult(query, source);
       const ifColumnIsDate = fetchedData.columns.map(
         (col) =>
           col.column.dataType === 'DATE' || col.column.dataType === 'DATE_TIME'
       );
-      console.log('query', query, source, ifColumnIsDate);
+      const formattedRows = rows.map((row) => {
+        const modifiedData = row.map((value, index) => {
+          if (ifColumnIsDate[index]) {
+            return formatDate(colNames[index], value);
+          }
+          if (value?.v) {
+            return value.v?.s;
+          }
+          return value;
+        });
+        return modifiedData;
+      });
 
       loader.show();
-      await run('updateData', query, source, ifColumnIsDate);
+      await run(
+        'updateData',
+        query,
+        source,
+        ifColumnIsDate,
+        formattedRows,
+        colNames
+      );
       loader.hide();
     });
   }, 0);

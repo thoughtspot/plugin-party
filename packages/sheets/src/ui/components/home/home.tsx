@@ -37,7 +37,7 @@ export const Home = () => {
       if (selectedRefresh === t.REFRESH_ALL_SHEETS) {
         await run('refreshAllSheets');
       } else {
-        await run('refreshData');
+        await run('refreshCurrentSheet');
       }
     } catch (error) {
       console.error('Error during refresh:', error);
