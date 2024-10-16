@@ -113,6 +113,25 @@ export const Home = () => {
       .finally(() => loader.hide());
   };
 
+  const onScheduleReloadImages = (scheduleReloadFn: string) => {
+    loader.show();
+    setErrorMessage({
+      visible: false,
+      message: '',
+      type: BannerType.MESSAGE,
+    });
+    run(scheduleReloadFn)
+      .catch((err) => {
+        console.log('err', err);
+        return setErrorMessage({
+          visible: true,
+          message: t.IMAGE_UPDATE_FAILURE_MESSAGE,
+          type: BannerType.MESSAGE,
+        });
+      })
+      .finally(() => loader.hide());
+  };
+
   return (
     <Vertical className={styles.home} spacing="c">
       <SuccessBanner
