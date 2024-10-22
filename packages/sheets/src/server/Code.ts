@@ -165,8 +165,7 @@ function getQueryResult(query, sourceName) {
   const userCache = CacheService.getUserCache();
   const token = userCache.get('ts-auth-token');
   const clusterUrl = getClusterUrl().url;
-  // need to change it to gcp hosted proxy once the changes are merged
-  const url = 'https://plugin-party-sheets-staging.vercel.app/api/proxy';
+  const url = 'https://ts-plugin-66ewbkywoa-uw.a.run.app/api/proxy';
 
   const queryResultPayload = {
     query_string: query,
