@@ -41,7 +41,6 @@ export const Home = () => {
       } else {
         await run('refreshCurrentSheet');
       }
-      throw new Error('errror');
       setSuccess(true);
     } catch (error) {
       setErrorMessage({
