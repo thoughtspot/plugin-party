@@ -161,38 +161,6 @@ function formatDate(column, dateVal) {
   return '';
 }
 
-function getQueryResult(query, sourceName) {
-  const userCache = CacheService.getUserCache();
-  const token = userCache.get('ts-auth-token');
-  const clusterUrl = getClusterUrl().url;
-  const url = 'https://ts-plugin-66ewbkywoa-uw.a.run.app/api/proxy';
-
-  const queryResultPayload = {
-    query_string: query,
-    logical_table_identifier: sourceName,
-    data_format: 'COMPACT',
-    record_size: 1000000,
-  };
-
-  const response = UrlFetchApp.fetch(url, {
-    method: 'post',
-    contentType: 'application/json',
-    payload: JSON.stringify({
-      clusterUrl,
-      endpoint: 'api/rest/2.0/searchdata',
-      token,
-      payload: queryResultPayload,
-    }),
-  });
-
-  const jsonResponse = JSON.parse(response.getContentText());
-
-  return {
-    colNames: jsonResponse.contents[0].column_names,
-    rows: jsonResponse.contents[0].data_rows,
-  };
-}
-
 function updateData(query, source, ifColumnIsDate, formattedRows, colNames) {
   const sheet = SpreadsheetApp.getActiveSheet();
   const sheetName = sheet.getName();
