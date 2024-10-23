@@ -3,8 +3,9 @@
 .successBanner {
     justify-content: center;
     background-color: #E0F8EF;
-    height: 52px;
-    padding: 16px;
+    min-height: 52px;
+    padding-left: $spacing--d;
+    padding-right: $spacing--d;
     width: calc(100% + 32px);
     margin-right: calc(-1 * $spacing--d);
     margin-left: calc(-1 * $spacing--d);

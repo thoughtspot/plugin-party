@@ -34,6 +34,6 @@ export const getToken = async () => {
   const data = await res.json();
   return {
     token: data.token,
-    ttl: (data.tokenExpiryDuration - data.tokenCreatedTime) / 1000,
+    timeToLive: (data.tokenExpiryDuration - data.tokenCreatedTime) / 1000,
   };
 };

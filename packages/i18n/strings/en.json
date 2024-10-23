@@ -131,5 +131,6 @@
   "REFRESH_CURRENT_SHEET": "Current sheet",
   "REFRESH_DATA": "Refresh data",
   "DATA_UPDATE_SUCCESS_MESSAGE": "Data is succesfully updated",
-  "DATA_UPDATE_FAILURE_MESSAGE": "Data update failed. Please try again or contact ThoughtSpot support if the issue persists."
+  "DATA_UPDATE_FAILURE_MESSAGE": "Data update failed. Please try again or contact ThoughtSpot support if the issue persists.",
+  "BACK_BUTTON": "Back"
 }

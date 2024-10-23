@@ -4,6 +4,7 @@ import { Button } from '../button/index';
 import { Horizontal, Vertical } from '../layout/flex-layout';
 import { Typography } from '../typography/typography';
 import styles from './card.module.scss';
+import { Radio } from '../radio/index';
 
 export interface CardProps {
   id: number;
@@ -90,34 +91,20 @@ export const Card: React.FC<CardProps> = ({
           {(firstRadioButtonText || secondRadioButtonText) && (
             <Horizontal className={styles.radioActionItems}>
               {!isFirstRadioBoxHidden && firstRadioButtonText && (
-                <label className={styles.radioWrapper}>
-                  <input
-                    type="radio"
-                    name="radio"
-                    value={firstRadioButtonText}
-                    checked={selectedValue === firstRadioButtonText}
-                    onChange={handleChange}
-                    className={styles.radioButton}
-                  />
-                  <span className={styles.radioLabel}>
-                    {firstRadioButtonText}
-                  </span>
-                </label>
+                <Radio
+                  value={firstRadioButtonText}
+                  checked={selectedValue === firstRadioButtonText}
+                  label={firstRadioButtonText}
+                  onChange={handleChange}
+                />
               )}
               {!isSecondRadioBoxHidden && secondRadioButtonText && (
-                <label className={styles.radioWrapper}>
-                  <input
-                    type="radio"
-                    name="radio"
-                    value={secondRadioButtonText}
-                    checked={selectedValue === secondRadioButtonText}
-                    onChange={handleChange}
-                    className={styles.radioButton}
-                  />
-                  <span className={styles.radioLabel}>
-                    {secondRadioButtonText}
-                  </span>
-                </label>
+                <Radio
+                  value={secondRadioButtonText}
+                  checked={selectedValue === secondRadioButtonText}
+                  label={secondRadioButtonText}
+                  onChange={handleChange}
+                />
               )}
             </Horizontal>
           )}

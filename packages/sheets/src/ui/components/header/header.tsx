@@ -1,9 +1,12 @@
 import { Icon } from 'widgets/lib/icon';
 import { useRouter, route } from 'preact-router';
+import { Button } from 'widgets/lib/button';
+import { useTranslations } from 'i18n';
 import styles from './header.module.scss';
 import { Routes } from '../../routes';
 
 export const Header = ({ history }) => {
+  const { t } = useTranslations();
   const [router] = useRouter();
   const onBack = () => {
     history.back();
@@ -17,9 +20,12 @@ export const Header = ({ history }) => {
     <div className={styles.header}>
       <Icon name="TS-logo-black-no-bg" size="s" onClick={onTSLogoClick}></Icon>
       {router.url !== Routes.HOME && (
-        <div className={styles.back} onClick={onBack}>
-          Back
-        </div>
+        <Button
+          className={styles.back}
+          type="ICON"
+          text={t.BACK_BUTTON}
+          onClick={onBack}
+        ></Button>
       )}
     </div>
   );

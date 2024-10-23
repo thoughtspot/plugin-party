@@ -237,8 +237,7 @@ function getSheetProperties(sheets) {
 }
 
 function fetchAllQueryResults(queriesPayload) {
-  // need to change the URL to gcp hosted proxy once the changes are pushed
-  const url = 'https://plugin-party-sheets-staging.vercel.app/api/proxy';
+  const url = 'https://ts-plugin-66ewbkywoa-uw.a.run.app/api/proxy';
   const userCache = CacheService.getUserCache();
   const token = userCache.get('ts-auth-token');
   const clusterUrl = getClusterUrl().url;

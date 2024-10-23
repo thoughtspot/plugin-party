@@ -81,7 +81,6 @@ export const Home = () => {
     loader.show();
     run(reloadFn)
       .then((arg) => {
-        console.log('arg', arg);
         if (arg?.successImages?.length) {
           const numberOfImagesUpdated = arg?.successImages?.length;
           setSuccessMessage({

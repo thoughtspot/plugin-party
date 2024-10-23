@@ -1,7 +1,7 @@
 import React from 'preact';
 import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { ErrorBanner } from 'widgets/lib/error-banner';
-import { useEffect, useState } from 'preact/hooks';
+import { useCallback, useEffect, useState } from 'preact/hooks';
 import { Card } from 'widgets/lib/card';
 import { route } from 'preact-router';
 import { useTranslations } from 'i18n';
@@ -17,11 +17,18 @@ export const Home = () => {
   const loader = useLoader();
   const { run } = useShellContext();
   useEffect(() => {
-    getToken().then((token) => {
-      run('setToken', token.token, token.ttl);
-    });
-    loader.hide();
+    const fetchToken = async () => {
+      try {
+        const token = await getToken();
+        run('setToken', token.token, token.timeToLive);
+      } finally {
+        loader.hide();
+      }
+    };
+
+    fetchToken();
   }, []);
+
   const [errorMessage, setErrorMessage] = useState({
     visible: false,
     message: '',
@@ -29,9 +36,12 @@ export const Home = () => {
   const [selectedRefresh, setSelectedRefresh] = useState(t.REFRESH_ALL_SHEETS);
   const [success, setSuccess] = useState(false);
 
-  const handleSelectionChange = (value: string) => {
-    setSelectedRefresh(value);
-  };
+  const handleSelectionChange = useCallback(
+    (value: string) => {
+      setSelectedRefresh(value);
+    },
+    [setSelectedRefresh]
+  );
 
   const handleRefreshData = async () => {
     try {

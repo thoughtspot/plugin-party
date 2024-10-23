@@ -3,9 +3,10 @@
 .errorBanner {
     justify-content: center;
     background-color: #FFEBEC;
-    height: 52px;
-    padding: 16px;
+    min-height: 52px;
     width: calc(100% + 32px);
+    padding-left: $spacing--d;
+    padding-right: $spacing--d;
     margin-right: calc(-1 * $spacing--d);
     margin-left: calc(-1 * $spacing--d);
     margin-top: calc(-1 * $spacing--f);
