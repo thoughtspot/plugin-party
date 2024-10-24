@@ -320,6 +320,7 @@ function reloadImagesInPresentation() {
   }, []);
   return reloadImages(slideImages);
 }
+
 if (module?.exports) {
   module.exports.resetTSInstance = resetTSInstance;
   module.exports.getCandidateClusterUrl = getCandidateClusterUrl;

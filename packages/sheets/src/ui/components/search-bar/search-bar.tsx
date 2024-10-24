@@ -27,7 +27,6 @@ export const TSSearchBar = () => {
         (col) =>
           col.column.dataType === 'DATE' || col.column.dataType === 'DATE_TIME'
       );
-
       const formattedRows = rows.map((row) => {
         const modifiedData = row.map((value, index) => {
           if (ifColumnIsDate[index]) {
@@ -40,8 +39,16 @@ export const TSSearchBar = () => {
         });
         return modifiedData;
       });
+
       loader.show();
-      await run('updateData', colNames, formattedRows);
+      await run(
+        'updateData',
+        query,
+        source,
+        ifColumnIsDate,
+        formattedRows,
+        colNames
+      );
       loader.hide();
     });
   }, 0);

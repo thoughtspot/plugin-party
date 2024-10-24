@@ -6,6 +6,7 @@ interface IconProps {
   size?: 'xs' | 's' | 'm' | 'l' | 'xl';
   subscript?: string;
   onClick?: () => void;
+  iconClassName?: string;
 }
 /**
  * Sample Usage:
@@ -14,7 +15,7 @@ interface IconProps {
  * @returns
  */
 export const Icon = (props: IconProps) => {
-  const classes = cx(styles.icon, styles[props.size]);
+  const classes = cx(styles.icon, styles[props.size], props.iconClassName);
   return (
     <div className={styles.wrapper} onClick={props.onClick}>
       <svg className={classes}>
