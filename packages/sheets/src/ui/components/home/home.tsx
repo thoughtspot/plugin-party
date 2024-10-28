@@ -81,10 +81,20 @@ export const Home = () => {
       }
       setSuccess(true);
     } catch (error) {
-      setErrorMessage({
-        visible: true,
-        message: t.DATA_UPDATE_FAILURE_MESSAGE,
-      });
+      if (error.message.includes('401')) {
+        setSuccess(false);
+        setErrorMessage({
+          visible: true,
+          message: t.SHEET_SESSION_EXPIRED_MESSAGE,
+        });
+        setSuccess(false);
+      } else {
+        setSuccess(false);
+        setErrorMessage({
+          visible: true,
+          message: t.DATA_UPDATE_FAILURE_MESSAGE,
+        });
+      }
     } finally {
       loader.hide();
     }

@@ -132,5 +132,8 @@
   "REFRESH_DATA": "Refresh data",
   "DATA_UPDATE_SUCCESS_MESSAGE": "Data is succesfully updated",
   "DATA_UPDATE_FAILURE_MESSAGE": "Data update failed. Please try again or contact ThoughtSpot support if the issue persists.",
-  "BACK_BUTTON": "Back"
+  "BACK_BUTTON": "Back",
+  "SHEET_SESSION_EXPIRED_MESSAGE": "Your session has expired. Please reload the plugin to update or insert data.",
+  "DATA_INSERT_SUCCESS_MESSAGE": "Data is succesfully inserted",
+  "DATA_INSERT_FAILURE_MESSAGE": "Data insert failed. Please try again or contact ThoughtSpot support if the issue persists."
 }
