@@ -181,7 +181,7 @@ function updateData(query, source, ifColumnIsDate, formattedRows, colNames) {
     colNames.length
   );
   const values = [colNames];
-  Array.prototype.push.apply(values, formattedRows);
+  Array.prototype.push.apply(values, formattedRows || []);
   range.setValues(values);
   const headerRow = sheet.getRange(
     cell.getRow(),
