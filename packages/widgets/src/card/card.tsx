@@ -1,10 +1,8 @@
 import cx from 'classnames';
-import { useState } from 'preact/compat';
 import { Button } from '../button/index';
 import { Horizontal, Vertical } from '../layout/flex-layout';
 import { Typography } from '../typography/typography';
 import styles from './card.module.scss';
-import { Radio } from '../radio/index';
 
 export interface CardProps {
   id: number;
@@ -24,13 +22,6 @@ export interface CardProps {
   titleClassName?: string;
   subtitleClassName?: string;
   children?: any;
-  isFirstRadioBoxHidden?: boolean;
-  isSecondRadioBoxHidden?: boolean;
-  firstRadioButtonText?: string;
-  secondRadioButtonText?: string;
-  defaultRadioSelected?: string;
-  onRadioSelectionChange?: (value: string) => void;
-  isBottomBorderHidden?: boolean;
 }
 export const Card: React.FC<CardProps> = ({
   id,
@@ -50,30 +41,14 @@ export const Card: React.FC<CardProps> = ({
   titleClassName,
   subtitleClassName,
   children,
-  isFirstRadioBoxHidden = false,
-  isSecondRadioBoxHidden = false,
-  firstRadioButtonText = '',
-  secondRadioButtonText = '',
-  defaultRadioSelected = '',
-  onRadioSelectionChange,
-  isBottomBorderHidden = false,
 }) => {
-  const [selectedValue, setSelectedValue] = useState(defaultRadioSelected);
-
-  const handleChange = (event) => {
-    const value = event.target.value;
-    setSelectedValue(value);
-    onRadioSelectionChange(value);
-  };
   return (
     <div
       data-testid={`card-testid${id}`}
-      className={cx(styles.cardWrapper, className, {
-        [styles.bottomBorder]: !isBottomBorderHidden,
-      })}
+      className={cx(styles.cardWrapper, styles.cardSectionWrapper, className)}
     >
       <Horizontal spacing="e">
-        <Vertical className={styles.cardContainer}>
+        <Vertical>
           <div
             className={cx(styles.title, titleClassName)}
             data-testid={`card-title-testid${id}`}
@@ -88,28 +63,7 @@ export const Card: React.FC<CardProps> = ({
             ></p>
           )}
 
-          {(firstRadioButtonText || secondRadioButtonText) && (
-            <Horizontal className={styles.radioActionItems}>
-              {!isFirstRadioBoxHidden && firstRadioButtonText && (
-                <Radio
-                  value={firstRadioButtonText}
-                  checked={selectedValue === firstRadioButtonText}
-                  label={firstRadioButtonText}
-                  onChange={handleChange}
-                />
-              )}
-              {!isSecondRadioBoxHidden && secondRadioButtonText && (
-                <Radio
-                  value={secondRadioButtonText}
-                  checked={selectedValue === secondRadioButtonText}
-                  label={secondRadioButtonText}
-                  onChange={handleChange}
-                />
-              )}
-            </Horizontal>
-          )}
-
-          <Horizontal className={styles.actionItems}>
+          <Horizontal spacing="d" className={styles.actionItems}>
             {!isFirstButtonHidden && firstButton !== '' && (
               <Button
                 onClick={onFirstButtonClick}
@@ -117,9 +71,6 @@ export const Card: React.FC<CardProps> = ({
                 type={firstButtonType}
                 data-testid={`card-firstbutton-testid${id}`}
                 isDisabled={isFirstButtonDisabled}
-                className={cx({
-                  [styles.button]: firstButton !== '' && secondButton === '',
-                })}
               />
             )}
 

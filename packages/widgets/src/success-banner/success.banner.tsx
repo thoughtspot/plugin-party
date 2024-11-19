@@ -17,7 +17,7 @@ export const SuccessBanner: React.FC<SuccessBannerProps> = ({
   successMessage,
   showBanner = true,
   className,
-  messageSize = 'p',
+  messageSize = 'h6',
   showCloseIcon = true,
   onCloseIconClick,
 }) => {
@@ -29,8 +29,7 @@ export const SuccessBanner: React.FC<SuccessBannerProps> = ({
           spacing="e"
           className={cx(styles.successBanner, className)}
         >
-          <Typography variant={messageSize} className={styles.iconTextWrapper}>
-            <Icon name="rd-icon-correct" size="s"></Icon>
+          <Typography variant={messageSize} noMargin color={Colors.success}>
             {successMessage}
           </Typography>
           {showCloseIcon && (
@@ -39,7 +38,7 @@ export const SuccessBanner: React.FC<SuccessBannerProps> = ({
               className={styles.successButton}
               onClick={onCloseIconClick}
             >
-              <Icon name="rd-icon-cross" size="s"></Icon>
+              <Icon name="rd-icon-cross" size="xs"></Icon>
             </Button>
           )}
         </Horizontal>

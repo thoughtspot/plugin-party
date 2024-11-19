@@ -68,50 +68,6 @@ function setClusterUrl(url) {
   userProps.setProperty('ts-cluster-url', url);
 }
 
-function setToken(token, ttl) {
-  const userCache = CacheService.getUserCache();
-  userCache.put('ts-auth-token', token, ttl);
-}
-
-// storing the query in document properties for refresh
-function setQuery(
-  query,
-  cell,
-  sheetName,
-  dataSource,
-  ifColumnIsDate,
-  previousDataCellRange
-) {
-  const startCell = cell.getA1Notation();
-  const userProps = PropertiesService.getDocumentProperties();
-
-  if (query) userProps.setProperty(`tsquery-${sheetName}-${startCell}`, query);
-  if (dataSource)
-    userProps.setProperty(`datasource-${sheetName}-${startCell}`, dataSource);
-  userProps.setProperty(
-    `ifColumnIsDate-${sheetName}-${startCell}`,
-    JSON.stringify(ifColumnIsDate)
-  );
-  userProps.setProperty(
-    `previousDataCellRange-${sheetName}-${startCell}`,
-    JSON.stringify(previousDataCellRange)
-  );
-}
-
-function getQuery(startCell, sheetName) {
-  const userProps = PropertiesService.getDocumentProperties();
-  return {
-    query: userProps.getProperty(`tsquery-${sheetName}-${startCell}`),
-    dataSource: userProps.getProperty(`datasource-${sheetName}-${startCell}`),
-    ifColumnIsDate: JSON.parse(
-      userProps.getProperty(`ifColumnIsDate-${sheetName}-${startCell}`)
-    ),
-    previousDataCellRange: JSON.parse(
-      userProps.getProperty(`previousDataCellRange-${sheetName}-${startCell}`)
-    ),
-  };
-}
-
 function displayToast(name) {
   SpreadsheetApp.getActive().toast(`Hi there!${name}`);
 }
@@ -130,11 +86,8 @@ function isCellSame(cell1, cell2) {
 }
 
 function clearPrevious(cell, sheet) {
-  const cache = PropertiesService.getDocumentProperties();
-  const cellNotation = cell.getA1Notation();
-  let previousDataCellRange: any = cache.getProperty(
-    `previousDataCellRange-${sheet.getName()}-${cellNotation}`
-  );
+  const cache = CacheService.getDocumentCache();
+  let previousDataCellRange: any = cache.get('previousDataCellRange');
   if (previousDataCellRange) {
     previousDataCellRange = JSON.parse(previousDataCellRange);
   }
@@ -151,43 +104,32 @@ function clearPrevious(cell, sheet) {
   }
 }
 
-function formatDate(column, dateVal) {
-  if (dateVal) {
-    const value = dateVal.v ? dateVal.v.s : dateVal;
-    const date = new Date(value * 1000);
-    const timeZone = Session.getScriptTimeZone();
-    return Utilities.formatDate(date, timeZone, 'MM/dd/yy, h:mm a');
-  }
-  return '';
-}
-
-function updateData(query, source, ifColumnIsDate, formattedRows, colNames) {
+function updateData(header, data) {
   const sheet = SpreadsheetApp.getActiveSheet();
-  const sheetName = sheet.getName();
+  // var sheet = ss.getSheets()[0]; // sheets are counted starting from 0
   const cell = sheet.getActiveCell();
   console.log(cell.getColumn());
   Logger.log(
     `${cell.getColumn()}`,
     `${cell.getRow()}`,
-    `${formattedRows.length + 1}`,
-    `${colNames.length}`
+    `${data.length + 1}`,
+    `${header.length}`
   );
   clearPrevious(cell, sheet);
-  // setting properties needed for refresh
   const range = sheet.getRange(
     cell.getRow(),
     cell.getColumn(),
-    formattedRows.length + 1,
-    colNames.length
+    data.length + 1,
+    header.length
   );
-  const values = [colNames];
-  Array.prototype.push.apply(values, formattedRows || []);
+  const values = [header];
+  Array.prototype.push.apply(values, data);
   range.setValues(values);
-  const headerRow = sheet.getRange(
+  var headerRow = sheet.getRange(
     cell.getRow(),
     cell.getColumn(),
     1,
-    colNames.length
+    header.length
   );
   headerRow.setFontWeight('bold');
   const previousDataCellRange = {
@@ -199,158 +141,6 @@ function updateData(query, source, ifColumnIsDate, formattedRows, colNames) {
       width: range.getWidth(),
     },
   };
-  setQuery(
-    query,
-    cell,
-    sheetName,
-    source,
-    ifColumnIsDate,
-    previousDataCellRange
-  );
-}
-
-function getSheetProperties(sheets) {
-  const userProps = PropertiesService.getDocumentProperties().getProperties();
-  const sheetProps = {};
-  sheets.forEach((sheet) => {
-    const sheetName = sheet.getName();
-    sheetProps[sheetName] = {};
-    Object.keys(userProps).forEach((key) => {
-      if (key.indexOf(`${sheetName}-`) !== -1) {
-        const cellNotation = key.split(`${sheetName}-`)[1];
-        if (!sheetProps[sheetName][cellNotation]) {
-          sheetProps[sheetName][cellNotation] = {};
-        }
-        if (key.indexOf('tsquery-') !== -1) {
-          sheetProps[sheetName][cellNotation].query = userProps[key];
-        } else if (key.indexOf('datasource-') !== -1) {
-          sheetProps[sheetName][cellNotation].source = userProps[key];
-        } else if (key.indexOf('ifColumnIsDate-') !== -1) {
-          sheetProps[sheetName][cellNotation].ifColumnIsDate = JSON.parse(
-            userProps[key]
-          );
-        }
-      }
-    });
-  });
-  return sheetProps;
-}
-
-function fetchAllQueryResults(queriesPayload) {
-  const url = 'https://ts-plugin-66ewbkywoa-uw.a.run.app/api/proxy';
-  const userCache = CacheService.getUserCache();
-  const token = userCache.get('ts-auth-token');
-  const clusterUrl = getClusterUrl().url;
-
-  const requests = queriesPayload.map((payload) => ({
-    url,
-    method: 'post',
-    contentType: 'application/json',
-    payload: JSON.stringify({
-      clusterUrl,
-      endpoint: 'api/rest/2.0/searchdata',
-      token,
-      payload,
-    }),
-  }));
-
-  const responses = UrlFetchApp.fetchAll(requests);
-  return responses.map((response) => JSON.parse(response.getContentText()));
-}
-
-function refreshSheets(sheets) {
-  const sheetProps = getSheetProperties(sheets);
-  const queriesPayload = [];
-  const sheetCellMap = {};
-
-  sheets.forEach((sheet) => {
-    const sheetName = sheet.getName();
-    const cells = sheetProps[sheetName];
-
-    Object.keys(cells).forEach((cellNotation) => {
-      const { query, source, ifColumnIsDate } = cells[cellNotation];
-      if (query && source) {
-        queriesPayload.push({
-          query_string: query,
-          logical_table_identifier: source,
-          data_format: 'COMPACT',
-          record_size: 1000000,
-        });
-
-        sheetCellMap[queriesPayload.length - 1] = {
-          sheet,
-          cellNotation,
-          ifColumnIsDate,
-        };
-      }
-    });
-  });
-
-  const responses = fetchAllQueryResults(queriesPayload);
-
-  responses.forEach((jsonResponse, index) => {
-    const { sheet, cellNotation, ifColumnIsDate } = sheetCellMap[index];
-    const sheetName = sheet.getName();
-    const cell = sheet.getRange(cellNotation);
-    clearPrevious(cell, sheet);
-
-    const colNames = jsonResponse.contents[0].column_names;
-    const rows = jsonResponse.contents[0].data_rows;
-
-    const formattedRows = rows.map((row) => {
-      return row.map((value, idx) => {
-        if (ifColumnIsDate[idx]) {
-          return formatDate(colNames[idx], value);
-        }
-        return value?.v?.s || value;
-      });
-    });
-
-    const range = sheet.getRange(
-      cell.getRow(),
-      cell.getColumn(),
-      formattedRows.length + 1,
-      colNames.length
-    );
-
-    const values = [colNames, ...formattedRows];
-    range.setValues(values);
-
-    const headerRow = sheet.getRange(
-      cell.getRow(),
-      cell.getColumn(),
-      1,
-      colNames.length
-    );
-    headerRow.setFontWeight('bold');
-
-    const previousDataCellRange = {
-      cell: { column: cell.getColumn(), row: cell.getRow() },
-      range: {
-        column: range.getColumn(),
-        row: range.getRow(),
-        height: range.getHeight(),
-        width: range.getWidth(),
-      },
-    };
-
-    setQuery(
-      undefined,
-      cell,
-      sheetName,
-      undefined,
-      ifColumnIsDate,
-      previousDataCellRange
-    );
-  });
-}
-
-function refreshAllSheets() {
-  const allSheets = SpreadsheetApp.getActiveSpreadsheet().getSheets();
-  refreshSheets(allSheets);
-}
-
-function refreshCurrentSheet() {
-  const activeSheet = SpreadsheetApp.getActiveSheet();
-  refreshSheets([activeSheet]);
+  const cache = CacheService.getDocumentCache();
+  cache.put('previousDataCellRange', JSON.stringify(previousDataCellRange));
 }

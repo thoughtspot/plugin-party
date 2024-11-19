@@ -22,7 +22,7 @@
     "dist": "npm-run-all -s tsc copy-index",
     "deploy": "HOST=$SLIDES_HOST npm-run-all -p build dist",
     "lint": "eslint src/**",
-    "start": "HOST=https://localhost:5173/ npm-run-all -p dist:dev vite",
+    "start": "HOST=https://127.0.0.1:5173/ npm-run-all -p dist:dev vite",
     "vite": "vite",
     "copy-index": "gsuite-shell",
     "test": "vitest run"
