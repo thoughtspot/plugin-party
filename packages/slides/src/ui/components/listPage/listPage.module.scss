@@ -9,7 +9,7 @@
 }
 .tabIcon{
     filter: grayscale(1);
-    color: $gray4;
+    color: #1d232f;
     &:hover{
         filter: grayscale(0);
         color: $blue1;
@@ -18,6 +18,7 @@
 
 .segment {
     background-color: $gray0;
-    padding: 16px;
+    padding: $spacing--d;
+    padding-top: $spacing--c;
     padding-bottom: 0px;
   }

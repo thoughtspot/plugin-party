@@ -23,6 +23,11 @@ export const listType = {
   ANSWER: 'ANSWER',
 };
 
+export const updateVizType = {
+  MANUAL: 'MANUAL',
+  SCHEDULE: 'SCHEDULE',
+};
+
 export const getIconType = (data) => {
   const metadataType = data?.metadata_type;
   let resolvedObject;

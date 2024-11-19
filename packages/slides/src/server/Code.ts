@@ -193,6 +193,88 @@ function getImagesRaw(links) {
   });
 }
 
+const mapToWeekDayEnum = (day) => {
+  switch (day.toUpperCase()) {
+    case '0':
+      return ScriptApp.WeekDay.SUNDAY;
+    case '1':
+      return ScriptApp.WeekDay.MONDAY;
+    case '2':
+      return ScriptApp.WeekDay.TUESDAY;
+    case '3':
+      return ScriptApp.WeekDay.WEDNESDAY;
+    case '4':
+      return ScriptApp.WeekDay.THURSDAY;
+    case '5':
+      return ScriptApp.WeekDay.FRIDAY;
+    case '6':
+      return ScriptApp.WeekDay.SATURDAY;
+    default:
+      throw new Error(`Invalid day provided: ${day}`);
+  }
+};
+
+/**
+ * Helper function to determine if a given date is the nth occurrence of a weekday in its month.
+ * @param {Date} date
+ * @param {string} frequency - e.g., 'FIRST', 'SECOND', 'THIRD', 'FOURTH', 'LAST'
+ * @param {string} weekday - e.g., 'MONDAY'
+ * @returns {boolean}
+ */
+function isNthWeekdayOfMonth(date, frequency, weekday) {
+  const weekdays = {
+    SUNDAY: 0,
+    MONDAY: 1,
+    TUESDAY: 2,
+    WEDNESDAY: 3,
+    THURSDAY: 4,
+    FRIDAY: 5,
+    SATURDAY: 6,
+  };
+
+  const desiredWeekday = weekdays[weekday.toUpperCase()];
+  if (date.getDay() !== desiredWeekday) return false;
+
+  const day = date.getDate();
+  const occurrence = Math.floor((day - 1) / 7) + 1;
+  const lastDay = new Date(
+    date.getFullYear(),
+    date.getMonth() + 1,
+    0
+  ).getDate();
+
+  if (frequency.toUpperCase() === 'LAST') {
+    return day + 7 > lastDay;
+  }
+  const freqMap = {
+    FIRST: 1,
+    SECOND: 2,
+    THIRD: 3,
+    FOURTH: 4,
+  };
+  return occurrence === freqMap[frequency.toUpperCase()];
+}
+
+/**
+ * Retrieve schedule data from PropertiesService.
+ * @returns {Object} scheduleData
+ */
+function getScheduleData() {
+  const scheduleDataJSON =
+    PropertiesService.getScriptProperties().getProperty('scheduleData');
+  return JSON.parse(scheduleDataJSON);
+}
+
+function deleteExistingTriggers(fnNames) {
+  const allTriggers = ScriptApp.getProjectTriggers();
+  allTriggers.forEach((trigger) => {
+    const handlerFunction = trigger.getHandlerFunction();
+    if (fnNames.indexOf(handlerFunction) !== -1) {
+      ScriptApp.deleteTrigger(trigger);
+    }
+  });
+}
+
 function deserializeToBlob(serialized) {
   const bytes = Utilities.base64Decode(serialized);
   return Utilities.newBlob(bytes, 'image/png', 'image.png');
@@ -319,6 +401,94 @@ function reloadImagesInPresentation() {
     return imgs.concat(images);
   }, []);
   return reloadImages(slideImages);
+}
+
+/**
+ * Function to check if today is the desired nth weekday and reload images.
+ */
+function checkAndReloadImages() {
+  const scheduleData = getScheduleData();
+  const { monthlyFrequency, dayOfWeek, timezone } = scheduleData;
+
+  const today = new Date();
+  const userTime = Utilities.formatDate(today, timezone, 'yyyy-MM-dd');
+  const date = new Date(userTime);
+
+  if (isNthWeekdayOfMonth(date, monthlyFrequency, dayOfWeek)) {
+    reloadImagesInPresentation();
+  }
+}
+
+function scheduleReloadImages(scheduleData) {
+  PropertiesService.getScriptProperties().setProperty(
+    'scheduleData',
+    JSON.stringify(scheduleData)
+  );
+
+  deleteExistingTriggers([
+    'reloadImagesInPresentation',
+    'checkAndReloadImages',
+  ]);
+
+  const {
+    frequency,
+    time,
+    timezone,
+    daysOfWeek,
+    monthlyOption,
+    monthlyFrequency,
+    dayOfWeek,
+    specificDate,
+  } = scheduleData;
+
+  const [hour, minute] = time.split(':').map(Number);
+
+  switch (frequency) {
+    case 'Day':
+      ScriptApp.newTrigger('reloadImagesInPresentation')
+        .timeBased()
+        .everyDays(1)
+        .atHour(hour)
+        .inTimezone(timezone)
+        .create();
+      break;
+
+    case 'Week':
+      daysOfWeek.forEach((day) => {
+        ScriptApp.newTrigger('reloadImagesInPresentation')
+          .timeBased()
+          .everyWeeks(1)
+          .onWeekDay(mapToWeekDayEnum(day))
+          .atHour(hour)
+          .inTimezone(timezone)
+          .create();
+      });
+      break;
+
+    case 'Month':
+      if (monthlyOption === 'By date') {
+        const dates = specificDate.split(',').map(Number);
+        dates.forEach((date) => {
+          ScriptApp.newTrigger('reloadImagesInPresentation')
+            .timeBased()
+            .onMonthDay(Number(date))
+            .atHour(hour)
+            .inTimezone(timezone)
+            .create();
+        });
+      } else if (monthlyOption === 'On the') {
+        ScriptApp.newTrigger('checkAndReloadImages')
+          .timeBased()
+          .everyDays(1)
+          .atHour(hour)
+          .inTimezone(timezone)
+          .create();
+      }
+      break;
+
+    default:
+      console.error('Unexpected frequency value');
+  }
 }
 
 if (module?.exports) {

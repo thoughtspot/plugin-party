@@ -12,14 +12,14 @@
     justify-content: center;
     align-items: center;
 
-    border-radius: $spacing--a;
+    border-radius: 14px;
     background-color: $gray1;
 
     .segmentedItem {
         position: relative;
         text-decoration: none;
         color: $gray6;
-        border-radius: $spacing--a;
+        border-radius: 14px;
         z-index: 1;
         width: inherit;
         height: inherit;
@@ -90,7 +90,7 @@
     top: $spacing--a / 2;
     bottom: $spacing--a / 2;
     background-color: $white;
-    border-radius: $spacing--a;
+    border-radius: 14px;
     z-index: 0;
     transition:
         transform 0.25s ease,

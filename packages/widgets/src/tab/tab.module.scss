@@ -8,7 +8,6 @@
   flex-basis: auto;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 10px;
 
   min-height: 0;
   border-top: 1px solid $gray2;
@@ -75,10 +74,12 @@
 
     cursor: pointer;
     position: relative;
+    border-bottom: 2px solid $gray1;
 
     width: 100%;
 
     &.headerItemSelected {
+      border-bottom: 2px solid $blue1;
       .headerText {
         color: $blue1;
       }

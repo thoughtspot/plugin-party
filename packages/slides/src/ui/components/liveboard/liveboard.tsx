@@ -8,6 +8,7 @@ import { createContext } from 'preact';
 import { useRouter } from 'preact-router';
 import { useEffect, useContext, useRef, useState } from 'preact/hooks';
 import { useLoader } from 'widgets/lib/loader';
+import { Dropdown } from 'widgets/lib/dropdown';
 import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { useTranslations } from 'i18n';
 import { ErrorBanner } from 'widgets/lib/error-banner';
@@ -182,6 +183,9 @@ const PrerenderedLiveboardShell = () => {
               '.embed-module__tsEmbedContainer': {
                 width: '100%',
                 height: '100%',
+              },
+              '.pinboard-header-module__tabAndFilterWrapperEmbed': {
+                display: 'none !important',
               },
             },
           },
