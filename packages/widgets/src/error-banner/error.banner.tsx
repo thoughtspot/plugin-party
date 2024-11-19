@@ -30,7 +30,7 @@ export const ErrorBanner: React.FC<ErrorBannerProps> = ({
   errorCardButton,
   showBanner = true,
   className,
-  messageSize = 'p',
+  messageSize = 'h6',
   showCloseIcon = true,
   onCloseIconClick,
 }) => {
@@ -42,8 +42,7 @@ export const ErrorBanner: React.FC<ErrorBannerProps> = ({
           spacing="e"
           className={cx(styles.errorBanner, className)}
         >
-          <Typography variant={messageSize} className={styles.iconTextWrapper}>
-            <Icon name="rd-icon-failure" size="s"></Icon>
+          <Typography variant={messageSize} noMargin color={Colors.failure}>
             {errorMessage}
           </Typography>
           {showCloseIcon && (
@@ -52,7 +51,7 @@ export const ErrorBanner: React.FC<ErrorBannerProps> = ({
               className={styles.errorButton}
               onClick={onCloseIconClick}
             >
-              <Icon name="rd-icon-cross" size="s"></Icon>
+              <Icon name="rd-icon-cross" size="xs"></Icon>
             </Button>
           )}
         </Horizontal>

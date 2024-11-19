@@ -3,7 +3,6 @@ import {
   AuthType,
   AuthStatus,
   AuthEvent,
-  LogLevel,
 } from '@thoughtspot/visual-embed-sdk';
 import { FunctionComponent } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
@@ -15,7 +14,6 @@ const initTSSAML = (url: string) => {
     thoughtSpotHost: url,
     authType: AuthType.SAMLRedirect,
     inPopup: true,
-    logLevel: LogLevel.DEBUG,
   });
 };
 
@@ -26,7 +24,6 @@ const initTSBasic = (url: string, username: string, password: string) => {
     username,
     password,
     detectCookieAccessSlow: true,
-    logLevel: LogLevel.DEBUG,
   });
 };
 
