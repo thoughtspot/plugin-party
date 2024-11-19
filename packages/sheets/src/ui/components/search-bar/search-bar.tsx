@@ -54,7 +54,6 @@ export const TSSearchBar = () => {
             return value;
           });
         });
-        setSuccess(true);
         await run(
           'updateData',
           query,
@@ -63,6 +62,7 @@ export const TSSearchBar = () => {
           formattedRows,
           colNames
         );
+        setSuccess(true);
         loader.hide();
       })
       .catch((error) => {
