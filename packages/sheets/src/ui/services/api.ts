@@ -21,3 +21,19 @@ export const getQueryResult = async (query: string, sourceName: string) => {
     rows: data.contents[0].data_rows,
   };
 };
+
+export const getToken = async () => {
+  const baseUrl = getInitConfig().thoughtSpotHost;
+  const res = await fetch(`${baseUrl}/callosum/v1/session/v2/gettoken`, {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+    },
+    credentials: 'include',
+  });
+  const data = await res.json();
+  return {
+    token: data.token,
+    timeToLive: (data.tokenExpiryDuration - data.tokenCreatedTime) / 1000,
+  };
+};

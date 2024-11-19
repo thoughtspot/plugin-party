@@ -5,22 +5,34 @@
   flex-direction: column;
 
   position: relative;
-  border-bottom: 1px solid $gray2;
   outline: none;
   cursor: pointer;
 }
 
+.bottomBorder {
+  border-bottom: 1px solid $gray2;
+}
+
+.cardContainer {
+  padding-bottom: $spacing--f;
+  width: 100%;
+}
+
 .actionItems {
-  margin-top: $spacing--d;
-  margin-bottom: $spacing--d;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  gap: $spacing--d;
+}
+
+.radioActionItems {
+  margin-top: 4px;
+  margin-bottom: 0px;
+  gap: 29px;
+  padding-bottom: $spacing--f;
 }
 
 .selected {
   border: 1px solid rd-color('blue', '60');
-}
-
-.cardSectionWrapper {
-  padding: $spacing--c;
 }
 
 .bodyWidthAdjust {
@@ -28,12 +40,36 @@
 }
 
 .title {
-  font-size: 13px;
-  font-weight: bold;
-  color: $gray4-5;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
 }
 
 .subtitle {
-  font-size: 13px;
+  font-size: 14px;
+  line-height: 20px;
+  margin-top: $spacing--c;
+  margin-bottom: $spacing--c;
+}
+
+.button {
+  width: 100%;
+}
+
+.radioWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.radioButton {
+  width: 16px;
+  height: 16px;
+  margin-right: $spacing--c;
+  margin-left: 0px;
+}
+
+.radioLabel {
+  font-size: 14px;
   line-height: 20px;
 }
+

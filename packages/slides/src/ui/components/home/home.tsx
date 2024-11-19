@@ -114,7 +114,7 @@ export const Home = () => {
   };
 
   return (
-    <Vertical className={styles.home} spacing="c">
+    <Vertical className={styles.home} spacing="f">
       <SuccessBanner
         successMessage={successMessage.message}
         showCloseIcon
