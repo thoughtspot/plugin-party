@@ -64,6 +64,7 @@ export const Answer = () => {
         successMessage={t.IMAGE_INSERT_SUCCESS_MESSAGE}
         showBanner={success}
         onCloseIconClick={() => setSuccess(false)}
+        className={styles.succesBanner}
       />
       <ErrorBanner
         errorMessage={errorMessage.message}
@@ -71,6 +72,7 @@ export const Answer = () => {
         onCloseIconClick={() =>
           setErrorMessage({ ...errorMessage, visible: false })
         }
+        className={styles.errorBanner}
       />
       <SearchEmbed
         ref={ref}
