@@ -27,7 +27,7 @@ export const Login = ({
   });
   const [showCredError, setShowCredError] = useState(isCredFailed);
   useEffect(() => setShowCredError(isCredFailed), [isCredFailed]);
-  const [showSamlError, setShowSamlError] = useState(isSamlEnabled);
+  const [showSamlError, setShowSamlError] = useState(false);
   return (
     <Vertical spacing="f" hAlignContent="center">
       <img
