@@ -115,6 +115,7 @@ export const Liveboard = () => {
         successMessage={t.IMAGE_INSERT_SUCCESS_MESSAGE}
         showBanner={success}
         onCloseIconClick={() => setSuccess(false)}
+        className={styles.succesBanner}
       />
       <ErrorBanner
         errorMessage={errorMessage.message}
@@ -122,6 +123,7 @@ export const Liveboard = () => {
         onCloseIconClick={() =>
           setErrorMessage({ ...errorMessage, visible: false })
         }
+        className={styles.errorBanner}
       />
       <div className={styles.liveboardContainer} ref={ref}></div>
     </Vertical>
