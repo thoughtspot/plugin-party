@@ -1,0 +1,29 @@
+@import '../common.scss';
+
+.dayIsSelected {
+    background-color: rgba(#71A1F4, .12);
+    width: $spacing--h + $spacing--a;
+    max-height: $spacing--h;
+
+    border-radius: 6px;
+    height: $spacing--c * 3;
+    user-select: none;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.dayIsNotSelected {
+    background-color: #EAEDF2;
+    width: $spacing--h + $spacing--a;
+    max-height: $spacing--h;
+
+    border-radius: 6px;
+    height: $spacing--c * 3;
+    user-select: none;
+
+    &:hover {
+        cursor: pointer;
+    }
+}

@@ -45,7 +45,6 @@ export const ListPage = () => {
           [styles.tabIcon]: selectedTabId !== tabId,
         })}
       >
-        <Icon name={icon} size="m"></Icon>
         <Typography variant="p" noMargin color="">
           {type}
         </Typography>
@@ -97,14 +96,6 @@ export const ListPage = () => {
 
   return (
     <Vertical className={styles.listPage}>
-      <Vertical className={styles.segment}>
-        <SegmentControl onSelect={onSelect} selectedIndex={segmentIndex}>
-          <SegmentedControlItem title={t.FAVORITES}></SegmentedControlItem>
-          <SegmentedControlItem title={t.ALL}></SegmentedControlItem>
-          <SegmentedControlItem title={t.YOURS}></SegmentedControlItem>
-        </SegmentControl>
-      </Vertical>
-      {renderList(selectedTabId)}
       <Tab selectedTabId={selectedTabId} className={styles.tabHeader}>
         <TabItem
           id={listType.LIVEBOARD}
@@ -125,6 +116,14 @@ export const ListPage = () => {
           )}
         ></TabItem>
       </Tab>
+      <Vertical className={styles.segment}>
+        <SegmentControl onSelect={onSelect} selectedIndex={segmentIndex}>
+          <SegmentedControlItem title={t.FAVORITES}></SegmentedControlItem>
+          <SegmentedControlItem title={t.ALL}></SegmentedControlItem>
+          <SegmentedControlItem title={t.YOURS}></SegmentedControlItem>
+        </SegmentControl>
+      </Vertical>
+      {renderList(selectedTabId)}
     </Vertical>
   );
 };
