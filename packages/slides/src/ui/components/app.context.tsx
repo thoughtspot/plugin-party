@@ -5,18 +5,21 @@ export interface AppConfigInterface {
   searchPattern?: string;
   segmentIndex?: any;
   userID?: string;
+  isPersonalisedViewSupported?: boolean;
 }
 
 export enum AppConfigActions {
   SEARCH_PATTERN,
   SEGMENT_INDEX,
   USER_ID,
+  IS_PERSONALISED_VIEW_SUPPORTED,
 }
 
 const defaultAppConfigValues = {
   searchPattern: '',
   segmentIndex: listCategory.ALL,
   userID: '',
+  isPersonalisedViewSupported: false,
 };
 
 const reducer: any = (state, action) => {
@@ -36,6 +39,11 @@ const reducer: any = (state, action) => {
         ...state,
         userID: action.newUserID,
       };
+    case AppConfigActions.IS_PERSONALISED_VIEW_SUPPORTED:
+      return {
+        ...state,
+        isPersonalisedViewSupported: action.newIsPersonalisedViewSupported,
+      };
     default:
       return state;
   }
@@ -47,7 +55,8 @@ export const AppContextProvider = ({ children }) => {
   const [state, dispatch] = React.useReducer(reducer, {
     ...defaultAppConfigValues,
   });
-  const { searchPattern, segmentIndex, userID } = state;
+  const { searchPattern, segmentIndex, userID, isPersonalisedViewSupported } =
+    state;
   const setSearchPattern = (newSearchPattern: string) => {
     dispatch({ type: AppConfigActions.SEARCH_PATTERN, newSearchPattern });
   };
@@ -59,6 +68,15 @@ export const AppContextProvider = ({ children }) => {
   const setUserID = (newUserID: string) => {
     dispatch({ type: AppConfigActions.USER_ID, newUserID });
   };
+
+  const setIsPersonalisedViewSupported = (
+    newIsPersonalisedViewSupported: boolean
+  ) => {
+    dispatch({
+      type: AppConfigActions.IS_PERSONALISED_VIEW_SUPPORTED,
+      newIsPersonalisedViewSupported,
+    });
+  };
   return (
     <AppContext.Provider
       value={{
@@ -68,6 +86,8 @@ export const AppContextProvider = ({ children }) => {
         setSearchPattern,
         userID,
         setUserID,
+        isPersonalisedViewSupported,
+        setIsPersonalisedViewSupported,
       }}
     >
       {children}

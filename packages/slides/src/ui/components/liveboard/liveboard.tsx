@@ -23,6 +23,7 @@ import { SuccessBanner } from 'widgets/lib/success-banner';
 import styles from './liveboard.module.scss';
 import { getOffset, getTSLBVizLink } from '../../utils';
 import { getLBTabs, getPersonalisedViews } from '../../services/api';
+import { useAppContext } from '../app.context';
 
 const prerenderdLiveboardContext = createContext<any>({});
 
@@ -30,6 +31,7 @@ export const Liveboard = () => {
   const [router] = useRouter();
   const { show: showLoader, hide: hideLoader } = useLoader();
   const { t } = useTranslations();
+  const { isPersonalisedViewSupported } = useAppContext();
   const liveboardId = router?.matches?.id;
   const loader = useLoader();
   const { run } = useShellContext();
@@ -130,7 +132,6 @@ export const Liveboard = () => {
         console.error('Error fetching views and tabs:', err);
       }
     };
-
     fetchData();
   }, [liveboardId]);
 
@@ -227,7 +228,7 @@ export const Liveboard = () => {
         className={styles.errorBanner}
       />
       <Vertical className={styles.dropdownContainer}>
-        {personalisedViews.length > 1 && (
+        {personalisedViews.length > 1 && isPersonalisedViewSupported && (
           <Dropdown
             options={personalisedViews}
             placeholder={selectedPersonalisedView?.title}
