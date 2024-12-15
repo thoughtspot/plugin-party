@@ -117,13 +117,15 @@ function getLiveboardImageRequest({ liveboardId, vizId, personalisedViewId }) {
   const userCache = CacheService.getUserCache();
   const token = userCache.get('ts-auth-token');
   const clusterUrl = getClusterUrl().url;
-  const liveboardReportPayload = {
+  const liveboardReportPayload: {
+    metadata_identifier: string;
+    visualization_identifiers: string[];
+    file_format: string;
+    png_options?: { personalised_view_id: string };
+  } = {
     metadata_identifier: liveboardId,
     visualization_identifiers: [vizId],
     file_format: 'PNG',
-    png_options: {
-      personalised_view_id: personalisedViewId,
-    },
   };
   if (personalisedViewId) {
     liveboardReportPayload.png_options = {
