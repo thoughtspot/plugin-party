@@ -113,7 +113,7 @@ function getAnswerImageRequest(answerId) {
  * @param vizId - The identifier of the visualization.
  * @returns The request object.
  */
-function getLiveboardImageRequest({ liveboardId, vizId }) {
+function getLiveboardImageRequest({ liveboardId, vizId, personalisedViewId }) {
   const userCache = CacheService.getUserCache();
   const token = userCache.get('ts-auth-token');
   const clusterUrl = getClusterUrl().url;
@@ -121,7 +121,15 @@ function getLiveboardImageRequest({ liveboardId, vizId }) {
     metadata_identifier: liveboardId,
     visualization_identifiers: [vizId],
     file_format: 'PNG',
+    png_options: {
+      personalised_view_id: personalisedViewId,
+    },
   };
+  if (personalisedViewId) {
+    liveboardReportPayload.png_options = {
+      personalised_view_id: personalisedViewId,
+    };
+  }
   const url = 'https://ts-plugin-66ewbkywoa-uw.a.run.app/api/proxy';
   return {
     url,
@@ -147,13 +155,34 @@ function getImageMetadata(link) {
   }
   if (link.indexOf('pinboard') > -1) {
     const linkParts = link.split('/');
-    const vizId = linkParts.pop();
+    const vizId = linkParts.pop().split('?')[0];
     const liveboardId = linkParts.pop();
-    return {
+
+    // Check for personalised view in the query parameters
+    let personalisedViewId;
+
+    // Check if the URL contains a query string
+    if (link.indexOf('?') > -1) {
+      const queryString = link.split('?')[1];
+      if (queryString.indexOf('=') > -1) {
+        personalisedViewId = queryString.split('=')[1];
+      }
+    }
+
+    const imageMetadata: {
+      type: string;
+      id: any;
+      vizId: any;
+      personalisedViewId?: string;
+    } = {
       type: 'LIVEBOARD',
       id: liveboardId,
       vizId,
     };
+    if (personalisedViewId) {
+      imageMetadata.personalisedViewId = personalisedViewId;
+    }
+    return imageMetadata;
   }
   return {
     type: 'UNKNOWN',
@@ -176,6 +205,7 @@ function getImagesRaw(links) {
       return getLiveboardImageRequest({
         liveboardId: metadata.id,
         vizId: metadata.vizId,
+        personalisedViewId: metadata.personalisedViewId,
       });
     }
     return null;
@@ -384,6 +414,17 @@ function reloadImagesInCurrentSlide() {
     .getSelection()
     .getCurrentPage();
   const slide = currentPage.asSlide();
+
+  const shapes = slide.getShapes();
+  shapes.forEach((shape) => {
+    if (shape.getText()) {
+      shape.remove();
+    }
+  });
+
+  const timestamp = new Date().toLocaleString();
+  slide.insertTextBox(`Last updated: ${timestamp}`, 250, 400, 2000, 10);
+
   const images = slide.getImages();
   return reloadImages(images);
 }
@@ -395,6 +436,18 @@ function reloadImagesInCurrentSlide() {
  */
 function reloadImagesInPresentation() {
   const slides = SlidesApp.getActivePresentation().getSlides();
+
+  slides.forEach((slide) => {
+    var shapes = slide.getShapes();
+    shapes.forEach((shape) => {
+      if (shape.getText()) {
+        shape.remove();
+      }
+    });
+    const timestamp = new Date().toLocaleString();
+    slide.insertTextBox(`Last updated: ${timestamp}`, 250, 400, 2000, 10);
+  });
+
   console.log(slides, slides.length, typeof slides);
   const slideImages = slides.reduce((imgs, slide) => {
     const images = slide.getImages();
@@ -440,15 +493,15 @@ function scheduleReloadImages(scheduleData) {
     dayOfWeek,
     specificDate,
   } = scheduleData;
-
   const [hour, minute] = time.split(':').map(Number);
 
   switch (frequency) {
     case 'Day':
       ScriptApp.newTrigger('reloadImagesInPresentation')
         .timeBased()
-        .everyDays(1)
         .atHour(hour)
+        .everyDays(1)
+        .nearMinute(1)
         .inTimezone(timezone)
         .create();
       break;
@@ -460,6 +513,7 @@ function scheduleReloadImages(scheduleData) {
           .everyWeeks(1)
           .onWeekDay(mapToWeekDayEnum(day))
           .atHour(hour)
+          .nearMinute(1)
           .inTimezone(timezone)
           .create();
       });
@@ -473,6 +527,7 @@ function scheduleReloadImages(scheduleData) {
             .timeBased()
             .onMonthDay(Number(date))
             .atHour(hour)
+            .nearMinute(1)
             .inTimezone(timezone)
             .create();
         });
@@ -481,6 +536,7 @@ function scheduleReloadImages(scheduleData) {
           .timeBased()
           .everyDays(1)
           .atHour(hour)
+          .nearMinute(1)
           .inTimezone(timezone)
           .create();
       }

@@ -83,7 +83,6 @@ export const FrequencyPicker = ({
       specificDate,
     };
     onScheduleSubmit(scheduleData);
-    setIsScheduleSet(true);
   };
 
   const handleScheduleDelete = () => {

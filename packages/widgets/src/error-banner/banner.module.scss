@@ -1,7 +1,7 @@
 @import 'widgets/lib/common.scss';
 
 .errorBanner {
-    justify-content: center;
+    justify-content: space-between;
     background-color: #FFEBEC;
     min-height: 52px;
     width: calc(100% + 32px);

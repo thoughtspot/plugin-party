@@ -168,5 +168,11 @@
   "SCHEDULE_SET_AT": "at",
   "SCHEDULE_SET_MONTHLY_ON": "Monthly on",
   "SCHEDULE_SET_MONTHLY_ON_THE": "Monthly on the",
-  "SCHEDULE_SET_AND": "and"
+  "SCHEDULE_SET_AND": "and",
+  "SCHEDULE_SUCCESSFUL_MSG": "Update scheduled",
+  "SCHEDULE_FAILURE_MSG": "Error updating schedule",
+  "VIEWS": "Views",
+  "TABS": "Tabs",
+  "SCHEDULE_DELETE_SUCCESSFUL_MSG":"Schedule succesfully deleted",
+  "SCHEDULE_DELETE_FAILURE_MSG":"Error deleting schedule. Please try again or contact ThoughtSpot support if the issue persists."
 }

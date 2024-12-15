@@ -95,9 +95,10 @@ export const Home = () => {
   }, [isPrivileged]);
 
   const onReloadImages = () => {
-    const reloadFn = t.SLIDES_MANUAL_UPDATE_ALL
-      ? 'reloadImagesInPresentation'
-      : 'reloadImagesInCurrentSlide';
+    const reloadFn =
+      selectedManualUpdate === t.SLIDES_MANUAL_UPDATE_ALL
+        ? 'reloadImagesInPresentation'
+        : 'reloadImagesInCurrentSlide';
     setErrorMessage({
       visible: false,
       message: '',
@@ -154,20 +155,49 @@ export const Home = () => {
     loader.show();
     try {
       await run('scheduleReloadImages', scheduleData);
+      setIsScheduleSet(true);
+      setSuccessMessage({ visible: true, message: t.SCHEDULE_SUCCESSFUL_MSG });
     } catch (error) {
       console.log('error', error);
+      setErrorMessage({
+        visible: true,
+        message: t.SCHEDULE_FAILURE_MSG,
+        type: BannerType.MESSAGE,
+      });
     } finally {
       loader.hide();
     }
   };
 
   const onScheduleDelete = async () => {
+    setErrorMessage({
+      visible: false,
+      message: '',
+      type: BannerType.MESSAGE,
+    });
+    setSuccessMessage({
+      visible: false,
+      message: '',
+    });
     loader.show();
     try {
-      await run('deleteExistingTriggers');
+      await run('deleteExistingTriggers', [
+        'reloadImagesInPresentation',
+        'checkAndReloadImages',
+      ]);
       loader.hide();
+      setSuccessMessage({
+        visible: true,
+        message: t.SCHEDULE_DELETE_SUCCESSFUL_MSG,
+      });
     } catch (error) {
-      console.log('error', error);
+      console.error('error', error);
+      setErrorMessage({
+        visible: true,
+        message: t.SCHEDULE_DELETE_FAILURE_MSG,
+        type: BannerType.MESSAGE,
+      });
+      loader.hide();
     }
   };
 
