@@ -5,9 +5,13 @@ export function getTSAnswerLink(answerId) {
   return `${baseUrl}/#/saved-answer/${answerId}`;
 }
 
-export function getTSLBVizLink(liveboardId, vizId) {
+export function getTSLBVizLink(liveboardId, vizId, personalisedViewsId) {
   const baseUrl = getInitConfig().thoughtSpotHost;
-  return `${baseUrl}/#/pinboard/${liveboardId}/${vizId}`;
+  let lBVizLink = `${baseUrl}/#/pinboard/${liveboardId}/${vizId}`;
+  if (personalisedViewsId?.id && personalisedViewsId?.id !== '') {
+    lBVizLink = `${lBVizLink}?view=${personalisedViewsId.id}`;
+  }
+  return lBVizLink;
 }
 
 export function getOffset(el) {

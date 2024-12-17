@@ -3,6 +3,7 @@
 .dropdownContainer {
     position: relative;
     width: 100%;
+    gap: $spacing--a;
 }
 
 .dropdownContainer.expanded .dropdownInput {

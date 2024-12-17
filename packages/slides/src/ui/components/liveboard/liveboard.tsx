@@ -2,11 +2,18 @@ import {
   LiveboardEmbed,
   Action,
   EmbedEvent,
+  HostEvent,
 } from '@thoughtspot/visual-embed-sdk';
 import { useShellContext } from 'gsuite-shell';
 import { createContext } from 'preact';
 import { useRouter } from 'preact-router';
-import { useEffect, useContext, useRef, useState } from 'preact/hooks';
+import {
+  useEffect,
+  useContext,
+  useRef,
+  useState,
+  useCallback,
+} from 'preact/hooks';
 import { useLoader } from 'widgets/lib/loader';
 import { Dropdown } from 'widgets/lib/dropdown';
 import { Vertical } from 'widgets/lib/layout/flex-layout';
@@ -15,6 +22,8 @@ import { ErrorBanner } from 'widgets/lib/error-banner';
 import { SuccessBanner } from 'widgets/lib/success-banner';
 import styles from './liveboard.module.scss';
 import { getOffset, getTSLBVizLink } from '../../utils';
+import { getLBTabs, getPersonalisedViews } from '../../services/api';
+import { useAppContext } from '../app.context';
 
 const prerenderdLiveboardContext = createContext<any>({});
 
@@ -22,6 +31,7 @@ export const Liveboard = () => {
   const [router] = useRouter();
   const { show: showLoader, hide: hideLoader } = useLoader();
   const { t } = useTranslations();
+  const { isPersonalisedViewSupported } = useAppContext();
   const liveboardId = router?.matches?.id;
   const loader = useLoader();
   const { run } = useShellContext();
@@ -30,6 +40,19 @@ export const Liveboard = () => {
     message: '',
   });
   const [success, setSuccess] = useState(false);
+
+  const [personalisedViews, setPersonalisedViews] = useState([
+    { title: 'Default View', id: '' },
+  ]);
+  const [selectedPersonalisedView, setSelectedPersonalisedView] = useState<{
+    title: string;
+    id: string;
+  }>({ title: 'Default View', id: '' });
+  const [tabs, setTabs] = useState([]);
+  const [selectedTabs, setSelectedTabs] = useState<{
+    title: string;
+    id: string;
+  }>();
   const ref = useRef<HTMLElement | null>(null);
   const {
     setIsVisible,
@@ -52,19 +75,73 @@ export const Liveboard = () => {
       top: offset.top,
       left: offset.left,
     });
-  }, [errorMessage.visible, success]);
+  }, [errorMessage.visible, success, personalisedViews, tabs]);
+
+  const onPersonalisedViewChange = (selectedView) => {
+    setSelectedPersonalisedView(selectedView);
+    if (lbRef.current) {
+      if (selectedView.id === '') {
+        lbRef.current.trigger(HostEvent.ResetLiveboardPersonalisedView);
+        return;
+      }
+      lbRef.current.trigger(HostEvent.UpdatePersonalisedView, {
+        viewId: selectedView.id,
+      });
+    }
+  };
+
+  const onTabsChange = (selectedTab) => {
+    setSelectedTabs(selectedTab);
+    if (lbRef.current) {
+      let path = `embed/viz/${liveboardId}/tab/${selectedTab.id}`;
+      if (selectedPersonalisedView?.id) {
+        path += `?view=${selectedPersonalisedView.id}`;
+      }
+      lbRef.current?.trigger(HostEvent.Navigate, {
+        path,
+      });
+    }
+  };
 
   useEffect(() => {
-    if (!ref.current) {
-      return;
-    }
-    showLoader();
-    const makeLiveboardVisible = () => {
-      setIsVisible(true);
-      hideLoader();
+    if (!liveboardId) return;
+
+    const fetchData = async () => {
+      try {
+        const [views, tabsData] = await Promise.all([
+          getPersonalisedViews(liveboardId),
+          getLBTabs(liveboardId),
+        ]);
+        const viewsData = views.map((view) => ({
+          title: view.name,
+          id: view.id,
+        }));
+        const tabData = tabsData.map((tab) => {
+          return {
+            title: tab.header.display_name,
+            id: tab.header.guid,
+          };
+        });
+        setPersonalisedViews((prevData) => [...prevData, ...viewsData]);
+        setTabs(tabData);
+        if (tabData.length > 0) {
+          setSelectedTabs(tabData[0]);
+          onTabsChange(tabData[0]);
+        }
+      } catch (err) {
+        console.error('Error fetching views and tabs:', err);
+      }
     };
-    const insertIntoSlide = (e) => {
-      const link = getTSLBVizLink(e.data.pinboardId, e.data.vizId);
+    fetchData();
+  }, [liveboardId]);
+
+  const insertIntoSlide = useCallback(
+    (e) => {
+      const link = getTSLBVizLink(
+        e.data.pinboardId,
+        e.data.vizId,
+        selectedPersonalisedView
+      );
       loader.show();
       setErrorMessage({ ...errorMessage, visible: false });
       setSuccess(false);
@@ -88,10 +165,34 @@ export const Liveboard = () => {
         .catch((error) => {
           loader.hide();
         });
+    },
+    [selectedPersonalisedView]
+  );
+
+  useEffect(() => {
+    if (!lbRef.current) {
+      return;
+    }
+    lbRef.current.on(Action.InsertInToSlide, insertIntoSlide);
+    // eslint-disable-next-line consistent-return
+    return () => {
+      if (lbRef.current) {
+        lbRef.current.off(Action.InsertInToSlide, insertIntoSlide);
+      }
+    };
+  }, [selectedPersonalisedView]);
+
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+    showLoader();
+    const makeLiveboardVisible = () => {
+      setIsVisible(true);
+      hideLoader();
     };
     const lbEmbed = lbRef.current;
     // We will subscribe to Insert into slide embed event
-    lbEmbed.on(Action.InsertInToSlide, insertIntoSlide);
     // If we are going to a different liveboard,
     // we need to wait for the new liveboard to render
     if (liveboardId !== prevLiveboardId) {
@@ -126,6 +227,24 @@ export const Liveboard = () => {
         }
         className={styles.errorBanner}
       />
+      <Vertical className={styles.dropdownContainer}>
+        {personalisedViews.length > 1 && isPersonalisedViewSupported && (
+          <Dropdown
+            options={personalisedViews}
+            placeholder={selectedPersonalisedView?.title}
+            onChange={onPersonalisedViewChange}
+            title={t.VIEWS}
+          />
+        )}
+        {tabs.length > 0 && (
+          <Dropdown
+            options={tabs}
+            placeholder={selectedTabs?.title}
+            onChange={onTabsChange}
+            title={t.TABS}
+          />
+        )}
+      </Vertical>
       <div className={styles.liveboardContainer} ref={ref}></div>
     </Vertical>
   );
@@ -189,6 +308,9 @@ const PrerenderedLiveboardShell = () => {
               '.pinboard-header-module__tabAndFilterWrapperEmbed': {
                 display: 'none !important',
               },
+              '.pinboard-header-module__embedPinboardHeader': {
+                display: 'none !important',
+              },
             },
           },
         },
@@ -201,7 +323,9 @@ const PrerenderedLiveboardShell = () => {
     if (!liveboardId) {
       return;
     }
-    lbRef.current?.navigateToLiveboard(liveboardId);
+    lbRef.current?.trigger(HostEvent.Navigate, {
+      path: `embed/viz/${liveboardId}?view=xyz`,
+    });
   }, [liveboardId]);
   return (
     <div

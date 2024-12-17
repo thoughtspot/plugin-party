@@ -18,6 +18,10 @@ export interface DropdownProps {
    * List of options to be displayed in the dropdown
    */
   options: Options[];
+  /**
+   * Title of the dropdown
+   */
+  title?: string;
   /** Initial place holder text
    * @default ''
    */
@@ -40,6 +44,7 @@ export interface DropdownProps {
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
+  title,
   options = [],
   placeholder = '',
   className = '',
@@ -83,6 +88,11 @@ export const Dropdown: React.FC<DropdownProps> = ({
         className
       )}
     >
+      {title && (
+        <Typography variant="p" noMargin className={styles.dropdownTitle}>
+          {title}
+        </Typography>
+      )}
       <Horizontal className={styles.dropdownInput} onClick={toggleDropdown}>
         <Typography variant="p" noMargin className={styles.dropdownText}>
           {selectedOption ? selectedOption.title : placeholder}

@@ -1,7 +1,7 @@
 @import 'widgets/lib/common.scss';
 
 .successBanner {
-    justify-content: center;
+    justify-content: space-between;
     background-color: #E0F8EF;
     min-height: 52px;
     padding-left: $spacing--d;
