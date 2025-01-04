@@ -417,18 +417,21 @@ function reloadImagesInCurrentSlide() {
     .getCurrentPage();
   const slide = currentPage.asSlide();
 
-  const shapes = slide.getShapes();
-  shapes.forEach((shape) => {
-    if (shape.getText()) {
-      shape.remove();
-    }
-  });
-
-  const timestamp = new Date().toLocaleString();
-  slide.insertTextBox(`Last updated: ${timestamp}`, 250, 400, 2000, 10);
-
   const images = slide.getImages();
-  return reloadImages(images);
+  const { errorImages, successImages } = reloadImages(images);
+  if (errorImages.length === 0) {
+    const shapes = slide.getShapes();
+    shapes.forEach((shape) => {
+      if (shape.getText()) {
+        shape.remove();
+      }
+    });
+
+    const timestamp = new Date().toLocaleString();
+    slide.insertTextBox(`Last updated: ${timestamp}`, 250, 400, 2000, 10);
+  }
+
+  return { errorImages, successImages };
 }
 
 /**
@@ -439,23 +442,26 @@ function reloadImagesInCurrentSlide() {
 function reloadImagesInPresentation() {
   const slides = SlidesApp.getActivePresentation().getSlides();
 
-  slides.forEach((slide) => {
-    var shapes = slide.getShapes();
-    shapes.forEach((shape) => {
-      if (shape.getText()) {
-        shape.remove();
-      }
-    });
-    const timestamp = new Date().toLocaleString();
-    slide.insertTextBox(`Last updated: ${timestamp}`, 250, 400, 2000, 10);
-  });
-
   console.log(slides, slides.length, typeof slides);
   const slideImages = slides.reduce((imgs, slide) => {
     const images = slide.getImages();
     return imgs.concat(images);
   }, []);
-  return reloadImages(slideImages);
+  const { errorImages, successImages } = reloadImages(slideImages);
+  if (errorImages.length === 0) {
+    slides.forEach((slide) => {
+      var shapes = slide.getShapes();
+      shapes.forEach((shape) => {
+        if (shape.getText()) {
+          shape.remove();
+        }
+      });
+      const timestamp = new Date().toLocaleString();
+      slide.insertTextBox(`Last updated: ${timestamp}`, 250, 400, 2000, 10);
+    });
+  }
+
+  return { errorImages, successImages };
 }
 
 /**
