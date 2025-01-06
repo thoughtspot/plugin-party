@@ -130,6 +130,11 @@ export const Liveboard = () => {
         }
       } catch (err) {
         console.error('Error fetching views and tabs:', err);
+      } finally {
+        if (liveboardId === prevLiveboardId) {
+          setIsVisible(true);
+          hideLoader();
+        }
       }
     };
     fetchData();
@@ -183,6 +188,12 @@ export const Liveboard = () => {
   }, [selectedPersonalisedView]);
 
   useEffect(() => {
+    if (lbRef.current && isPersonalisedViewSupported) {
+      lbRef.current.trigger(HostEvent.ResetLiveboardPersonalisedView);
+    }
+  }, [lbRef.current]);
+
+  useEffect(() => {
     if (!ref.current) {
       return;
     }
@@ -197,8 +208,6 @@ export const Liveboard = () => {
     // we need to wait for the new liveboard to render
     if (liveboardId !== prevLiveboardId) {
       lbEmbed.on(EmbedEvent.LiveboardRendered, makeLiveboardVisible);
-    } else {
-      makeLiveboardVisible();
     }
     // eslint-disable-next-line consistent-return
     return () => {
