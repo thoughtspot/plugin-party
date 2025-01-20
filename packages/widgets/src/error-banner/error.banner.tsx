@@ -52,7 +52,11 @@ export const ErrorBanner: React.FC<ErrorBannerProps> = ({
               className={styles.errorButton}
               onClick={onCloseIconClick}
             >
-              <Icon name="rd-icon-cross" size="s"></Icon>
+              <Icon
+                name="rd-icon-cross"
+                size="s"
+                iconClassName={styles.icon}
+              ></Icon>
             </Button>
           )}
         </Horizontal>

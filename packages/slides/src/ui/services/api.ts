@@ -111,3 +111,35 @@ export const useGetUserInfo = () => {
   }, []);
   return { data, error, loading };
 };
+
+export const getPersonalisedViews = async (liveboardId: string) => {
+  const baseUrl = getInitConfig().thoughtSpotHost;
+  const res = await fetch(
+    `${baseUrl}/callosum/v1/metadata/pinboard/${liveboardId}/views`,
+    {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+      },
+      credentials: 'include',
+    }
+  );
+  const data = await res.json();
+  return data;
+};
+
+export const getLBTabs = async (liveboardId: string) => {
+  const baseUrl = getInitConfig().thoughtSpotHost;
+  const res = await fetch(
+    `${baseUrl}/callosum/v1/metadata/pinboard/${liveboardId}?inboundrequesttype=10000`,
+    {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+      },
+      credentials: 'include',
+    }
+  );
+  const data = await res.json();
+  return data?.tabs?.tab || [];
+};
