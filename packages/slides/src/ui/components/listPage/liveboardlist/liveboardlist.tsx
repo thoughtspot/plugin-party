@@ -4,13 +4,32 @@ import { List } from 'widgets/lib/list/list';
 import { useTranslations } from 'i18n';
 import { route } from 'preact-router';
 import _ from 'lodash';
+import { getSessionInfo } from '@thoughtspot/visual-embed-sdk';
 import { useGetEmptyLBListMessageMap } from './liveboardlist.util';
 import { getPath, Routes } from '../../../routes';
 import { useAppContext } from '../../app.context';
 
 export const LiveboardList = (props: any) => {
   const { t } = useTranslations();
-  const { segmentIndex, searchPattern, setSearchPattern } = useAppContext();
+  const {
+    segmentIndex,
+    searchPattern,
+    setSearchPattern,
+    setIsPersonalisedViewSupported,
+  } = useAppContext();
+
+  const isPersonalisedViewValid = async () => {
+    const res = await getSessionInfo();
+    const TSReleaseVersion = res.releaseVersion.split('.');
+    const majorVersion = parseInt(TSReleaseVersion[0], 10);
+    const minorVersion = parseInt(TSReleaseVersion[1], 10) || 0;
+    if (majorVersion > 10 || (majorVersion === 10 && minorVersion >= 6))
+      setIsPersonalisedViewSupported(true);
+  };
+
+  useEffect(() => {
+    isPersonalisedViewValid();
+  }, []);
 
   const emptyLBListMessageMap = useGetEmptyLBListMessageMap();
 

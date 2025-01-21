@@ -31,6 +31,10 @@ export interface TabProps {
   tabPanelClassName?: string;
 
   hideTabHeader?: boolean;
+  /**
+   * Any additional classnames for tabHorizontal
+   */
+  tabHorizontalClassName?: string;
 }
 
 export const Tab: React.FC<TabProps> = ({
@@ -38,6 +42,7 @@ export const Tab: React.FC<TabProps> = ({
   selectedTabId = '',
   className = '',
   tabPanelClassName = '',
+  tabHorizontalClassName = '',
   ...restProps
 }: TabProps) => {
   const tabHeaderClass = cx(
@@ -47,7 +52,10 @@ export const Tab: React.FC<TabProps> = ({
     styles.center
   );
   return (
-    <div className={cx(styles.tabHorizontal)} {...restProps}>
+    <div
+      className={cx(styles.tabHorizontal, tabHorizontalClassName)}
+      {...restProps}
+    >
       {BaseTab(
         children,
         selectedTabId,

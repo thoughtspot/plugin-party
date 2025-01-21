@@ -1,7 +1,7 @@
 @import 'widgets/lib/common.scss';
 
 .errorBanner {
-    justify-content: center;
+    justify-content: space-between;
     background-color: #FFEBEC;
     min-height: 52px;
     width: calc(100% + 32px);
@@ -23,4 +23,11 @@
     display: flex;
     align-items: center;
     gap: $spacing--c;
+}
+
+.icon {
+    min-width: 18px;
+    min-height: 18px;
+    height: 18px;
+    width: 18px;
 }

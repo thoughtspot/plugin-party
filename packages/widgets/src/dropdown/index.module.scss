@@ -1,0 +1,88 @@
+@import '../common.scss';
+
+.dropdownContainer {
+    position: relative;
+    width: 100%;
+    gap: $spacing--a;
+}
+
+.dropdownContainer.expanded .dropdownInput {
+    border: 1px solid #2770EF;
+}
+  
+.dropdownInput {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #C0C6CF;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #fff;
+    height: 32px;
+    box-sizing: border-box;
+    padding-left: $spacing--d;
+    width: 100%;
+}
+  
+.dropdownMenu {
+    padding-top: $spacing--b;
+    padding-bottom: $spacing--b;
+}
+
+.dropdownText {
+    line-height: 20px;
+}
+
+.icon {
+    min-width: $spacing--d;
+    width: $spacing--d;
+    min-height: $spacing--d;
+    height: $spacing--d;
+}
+
+.iconWrapper {
+    margin-top: $spacing--a;
+    padding-left: $spacing--b;
+    padding-right: $spacing--c;
+    fill: #777e8b;
+}
+
+.textWrapper {
+   padding: 6px 16px;
+   transition: background-color 0.2s;
+
+   &:hover {
+      background-color: #f7f8f9;
+   }
+}
+
+.listSearchBarWrapper {
+    padding: 10px 16px;
+    border-bottom: 1px solid $gray1;
+}
+
+.menuContainer {
+    z-index: 1;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    width: 100%;
+    max-height: 240px;
+    overflow-y: auto;
+    border: 1px solid #C0C6CF;
+    border-radius: 6px;
+    background-color: #fff;
+}
+
+.searchBar {
+    height: 20px;
+}
+
+.input {
+    border: none;
+    background-color: #fff;
+    &:focus-visible {
+        outline: none;
+        border-bottom: none;
+      }
+}

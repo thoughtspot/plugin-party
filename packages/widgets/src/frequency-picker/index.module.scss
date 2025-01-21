@@ -1,0 +1,101 @@
+@import '../common.scss';
+
+.frequencyPickerContainer {
+    width: 100%;
+}
+
+.dropdown {
+    flex-grow: 1;
+}
+
+.dateInput {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #C0C6CF;
+    border-radius: 6px;
+    background-color: $white;
+    height: 32px;
+    box-sizing: border-box;
+    padding-left: $spacing--d;
+    width: 100%;
+    cursor: pointer;
+
+    &:focus {
+        border: 1px solid #2770EF;
+    }
+}
+
+.textButton {
+    background-color: transparent;
+    color: $blue1;
+    padding: 0px;
+  
+    &:hover {
+      background-color: transparent !important;
+    }
+}
+
+.timeZoneWrapper {
+    margin-bottom: 0px !important;
+    padding: 0px !important;
+    position: relative;
+}
+
+.input {
+    border: 1px solid $gray3;
+    border-radius: 6px;
+    background-color: $white;
+
+    &:focus-visible {
+        outline: none;
+        border: 1px solid $blue1;
+      }
+}
+
+.subtitle {
+    margin-top: $spacing--b;
+    margin-bottom: 0px;
+}
+
+.editScheduleContainer {
+    border-radius: 6px;
+}
+
+.editScheduleWrapper {
+    background-color: rgba(113, 161, 244, 0.12);
+    padding: $spacing--c;
+}
+
+.icon {
+    min-height: $spacing--d !important;
+    height: $spacing--d !important;
+    min-width: $spacing--d !important;
+    width: $spacing--d !important;
+}
+
+.editSchedule {
+    gap: $spacing--b;
+}
+
+.iconWrapper {
+    position: relative;
+    top: 1px;
+}
+
+.scheduleSetTitle {
+    font-weight: 600;
+    margin: 0px;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.scheduleSetText {
+    margin: 0px;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.messageWrapper {
+    gap: 2px;
+}

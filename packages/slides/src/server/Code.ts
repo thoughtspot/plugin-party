@@ -113,15 +113,25 @@ function getAnswerImageRequest(answerId) {
  * @param vizId - The identifier of the visualization.
  * @returns The request object.
  */
-function getLiveboardImageRequest({ liveboardId, vizId }) {
+function getLiveboardImageRequest({ liveboardId, vizId, personalisedViewId }) {
   const userCache = CacheService.getUserCache();
   const token = userCache.get('ts-auth-token');
   const clusterUrl = getClusterUrl().url;
-  const liveboardReportPayload = {
+  const liveboardReportPayload: {
+    metadata_identifier: string;
+    visualization_identifiers: string[];
+    file_format: string;
+    png_options?: { personalised_view_id: string };
+  } = {
     metadata_identifier: liveboardId,
     visualization_identifiers: [vizId],
     file_format: 'PNG',
   };
+  if (personalisedViewId) {
+    liveboardReportPayload.png_options = {
+      personalised_view_id: personalisedViewId,
+    };
+  }
   const url = 'https://ts-plugin-66ewbkywoa-uw.a.run.app/api/proxy';
   return {
     url,
@@ -147,13 +157,34 @@ function getImageMetadata(link) {
   }
   if (link.indexOf('pinboard') > -1) {
     const linkParts = link.split('/');
-    const vizId = linkParts.pop();
+    const vizId = linkParts.pop().split('?')[0];
     const liveboardId = linkParts.pop();
-    return {
+
+    // Check for personalised view in the query parameters
+    let personalisedViewId;
+
+    // Check if the URL contains a query string
+    if (link.indexOf('?') > -1) {
+      const queryString = link.split('?')[1];
+      if (queryString.indexOf('=') > -1) {
+        personalisedViewId = queryString.split('=')[1];
+      }
+    }
+
+    const imageMetadata: {
+      type: string;
+      id: any;
+      vizId: any;
+      personalisedViewId?: string;
+    } = {
       type: 'LIVEBOARD',
       id: liveboardId,
       vizId,
     };
+    if (personalisedViewId) {
+      imageMetadata.personalisedViewId = personalisedViewId;
+    }
+    return imageMetadata;
   }
   return {
     type: 'UNKNOWN',
@@ -176,6 +207,7 @@ function getImagesRaw(links) {
       return getLiveboardImageRequest({
         liveboardId: metadata.id,
         vizId: metadata.vizId,
+        personalisedViewId: metadata.personalisedViewId,
       });
     }
     return null;
@@ -190,6 +222,88 @@ function getImagesRaw(links) {
     }
     const blob = Utilities.newBlob(response.getContent());
     return blob;
+  });
+}
+
+const mapToWeekDayEnum = (day) => {
+  switch (day.toUpperCase()) {
+    case '0':
+      return ScriptApp.WeekDay.SUNDAY;
+    case '1':
+      return ScriptApp.WeekDay.MONDAY;
+    case '2':
+      return ScriptApp.WeekDay.TUESDAY;
+    case '3':
+      return ScriptApp.WeekDay.WEDNESDAY;
+    case '4':
+      return ScriptApp.WeekDay.THURSDAY;
+    case '5':
+      return ScriptApp.WeekDay.FRIDAY;
+    case '6':
+      return ScriptApp.WeekDay.SATURDAY;
+    default:
+      throw new Error(`Invalid day provided: ${day}`);
+  }
+};
+
+/**
+ * Helper function to determine if a given date is the nth occurrence of a weekday in its month.
+ * @param {Date} date
+ * @param {string} frequency - e.g., 'FIRST', 'SECOND', 'THIRD', 'FOURTH', 'LAST'
+ * @param {string} weekday - e.g., 'MONDAY'
+ * @returns {boolean}
+ */
+function isNthWeekdayOfMonth(date, frequency, weekday) {
+  const weekdays = {
+    SUNDAY: 0,
+    MONDAY: 1,
+    TUESDAY: 2,
+    WEDNESDAY: 3,
+    THURSDAY: 4,
+    FRIDAY: 5,
+    SATURDAY: 6,
+  };
+
+  const desiredWeekday = weekdays[weekday.toUpperCase()];
+  if (date.getDay() !== desiredWeekday) return false;
+
+  const day = date.getDate();
+  const occurrence = Math.floor((day - 1) / 7) + 1;
+  const lastDay = new Date(
+    date.getFullYear(),
+    date.getMonth() + 1,
+    0
+  ).getDate();
+
+  if (frequency.toUpperCase() === 'LAST') {
+    return day + 7 > lastDay;
+  }
+  const freqMap = {
+    FIRST: 1,
+    SECOND: 2,
+    THIRD: 3,
+    FOURTH: 4,
+  };
+  return occurrence === freqMap[frequency.toUpperCase()];
+}
+
+/**
+ * Retrieve schedule data from PropertiesService.
+ * @returns {Object} scheduleData
+ */
+function getScheduleData() {
+  const scheduleDataJSON =
+    PropertiesService.getScriptProperties().getProperty('scheduleData');
+  return JSON.parse(scheduleDataJSON);
+}
+
+function deleteExistingTriggers(fnNames) {
+  const allTriggers = ScriptApp.getProjectTriggers();
+  allTriggers.forEach((trigger) => {
+    const handlerFunction = trigger.getHandlerFunction();
+    if (fnNames.indexOf(handlerFunction) !== -1) {
+      ScriptApp.deleteTrigger(trigger);
+    }
   });
 }
 
@@ -302,8 +416,22 @@ function reloadImagesInCurrentSlide() {
     .getSelection()
     .getCurrentPage();
   const slide = currentPage.asSlide();
+
   const images = slide.getImages();
-  return reloadImages(images);
+  const { errorImages, successImages } = reloadImages(images);
+  if (errorImages.length === 0) {
+    const shapes = slide.getShapes();
+    shapes.forEach((shape) => {
+      if (shape.getText()) {
+        shape.remove();
+      }
+    });
+
+    const timestamp = new Date().toLocaleString();
+    slide.insertTextBox(`Last updated: ${timestamp}`, 250, 400, 2000, 10);
+  }
+
+  return { errorImages, successImages };
 }
 
 /**
@@ -313,12 +441,118 @@ function reloadImagesInCurrentSlide() {
  */
 function reloadImagesInPresentation() {
   const slides = SlidesApp.getActivePresentation().getSlides();
+
   console.log(slides, slides.length, typeof slides);
   const slideImages = slides.reduce((imgs, slide) => {
     const images = slide.getImages();
     return imgs.concat(images);
   }, []);
-  return reloadImages(slideImages);
+  const { errorImages, successImages } = reloadImages(slideImages);
+  if (errorImages.length === 0) {
+    slides.forEach((slide) => {
+      var shapes = slide.getShapes();
+      shapes.forEach((shape) => {
+        if (shape.getText()) {
+          shape.remove();
+        }
+      });
+      const timestamp = new Date().toLocaleString();
+      slide.insertTextBox(`Last updated: ${timestamp}`, 250, 400, 2000, 10);
+    });
+  }
+
+  return { errorImages, successImages };
+}
+
+/**
+ * Function to check if today is the desired nth weekday and reload images.
+ */
+function checkAndReloadImages() {
+  const scheduleData = getScheduleData();
+  const { monthlyFrequency, dayOfWeek, timezone } = scheduleData;
+
+  const today = new Date();
+  const userTime = Utilities.formatDate(today, timezone, 'yyyy-MM-dd');
+  const date = new Date(userTime);
+
+  if (isNthWeekdayOfMonth(date, monthlyFrequency, dayOfWeek)) {
+    reloadImagesInPresentation();
+  }
+}
+
+function scheduleReloadImages(scheduleData) {
+  PropertiesService.getScriptProperties().setProperty(
+    'scheduleData',
+    JSON.stringify(scheduleData)
+  );
+
+  deleteExistingTriggers([
+    'reloadImagesInPresentation',
+    'checkAndReloadImages',
+  ]);
+
+  const {
+    frequency,
+    time,
+    timezone,
+    daysOfWeek,
+    monthlyOption,
+    monthlyFrequency,
+    dayOfWeek,
+    specificDate,
+  } = scheduleData;
+  const [hour, minute] = time.split(':').map(Number);
+
+  switch (frequency) {
+    case 'Day':
+      ScriptApp.newTrigger('reloadImagesInPresentation')
+        .timeBased()
+        .atHour(hour)
+        .everyDays(1)
+        .nearMinute(1)
+        .inTimezone(timezone)
+        .create();
+      break;
+
+    case 'Week':
+      daysOfWeek.forEach((day) => {
+        ScriptApp.newTrigger('reloadImagesInPresentation')
+          .timeBased()
+          .everyWeeks(1)
+          .onWeekDay(mapToWeekDayEnum(day))
+          .atHour(hour)
+          .nearMinute(1)
+          .inTimezone(timezone)
+          .create();
+      });
+      break;
+
+    case 'Month':
+      if (monthlyOption === 'By date') {
+        const dates = specificDate.split(',').map(Number);
+        dates.forEach((date) => {
+          ScriptApp.newTrigger('reloadImagesInPresentation')
+            .timeBased()
+            .onMonthDay(Number(date))
+            .atHour(hour)
+            .nearMinute(1)
+            .inTimezone(timezone)
+            .create();
+        });
+      } else if (monthlyOption === 'On the') {
+        ScriptApp.newTrigger('checkAndReloadImages')
+          .timeBased()
+          .everyDays(1)
+          .atHour(hour)
+          .nearMinute(1)
+          .inTimezone(timezone)
+          .create();
+      }
+      break;
+
+    default:
+      console.error('Unexpected frequency value');
+  }
 }
 
 if (module?.exports) {

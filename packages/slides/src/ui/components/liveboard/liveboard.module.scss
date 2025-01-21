@@ -1,3 +1,5 @@
+@import 'widgets/lib/common.scss';
+
 .liveboardContainer {
   height: 100%;
   width: 100%;
@@ -13,4 +15,16 @@
 .errorBanner {
   margin: 0px;
   width: 100%;
+}
+
+.dropdownContainer {
+  margin: $spacing--c $spacing--d $spacing--d;
+  gap: $spacing--b;
+}
+
+.apnastyle {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
 }

@@ -1,3 +1,5 @@
+@import 'widgets/lib/common.scss';
+
 .ts-logo {
     margin: 20px;
 }
@@ -19,15 +21,17 @@
 }
 
 .first-card {
-    background-color: #fff;
+    background-color: $white;
     margin-right: 28px;
-    border-radius: 8px;
+    border-radius: $spacing--b;
     min-width: 260px;
+    padding: $spacing--d;
 }
 
 .second-card {
-    background-color: #fff;
-    border-radius: 8px;
+    background-color: $white;
+    border-radius: $spacing--b;
+    padding: $spacing--d;
 }
 
 .title {

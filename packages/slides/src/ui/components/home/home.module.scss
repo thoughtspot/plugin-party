@@ -5,3 +5,39 @@
   width: 100%;
   padding: $spacing--f $spacing--d;
 }
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.tabIcon{
+  filter: grayscale(1);
+  color: #1d232f;
+  &:hover{
+      filter: grayscale(0);
+      color: $blue1;
+  }
+}
+
+.tabWrapper {
+  border: none;
+}
+
+.tabContainer {
+  gap: $spacing--d;
+}
+
+.tabHeader{
+  flex-basis: 26px !important;
+}
+
+.subtitle {
+  margin-top: 8px;
+  margin-bottom: 0px;
+}
+
+.updateButton {
+  margin-top: 8px;
+}
