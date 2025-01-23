@@ -422,7 +422,10 @@ function reloadImagesInCurrentSlide() {
   if (errorImages.length === 0) {
     const shapes = slide.getShapes();
     shapes.forEach((shape) => {
-      if (shape.getText()) {
+      if (
+        shape.getText() &&
+        shape.getText().asString().indexOf('Last updated:') !== -1
+      ) {
         shape.remove();
       }
     });
@@ -452,7 +455,10 @@ function reloadImagesInPresentation() {
     slides.forEach((slide) => {
       var shapes = slide.getShapes();
       shapes.forEach((shape) => {
-        if (shape.getText()) {
+        if (
+          shape.getText() &&
+          shape.getText().asString().indexOf('Last updated:') !== -1
+        ) {
           shape.remove();
         }
       });
@@ -480,6 +486,25 @@ function checkAndReloadImages() {
   }
 }
 
+function triggerWeeklyReloadImages() {
+  const scheduleData = getScheduleData();
+  const { daysOfWeek, timezone } = scheduleData;
+  const today = Utilities.formatDate(new Date(), timezone, 'u');
+  if (daysOfWeek.indexOf(today) !== -1) {
+    reloadImagesInPresentation();
+  }
+}
+
+function triggerMonthlyReloadImages() {
+  const scheduleData = getScheduleData();
+  const { specificDate, timezone } = scheduleData;
+  const today = parseInt(Utilities.formatDate(new Date(), timezone, 'd'), 10);
+  const dates = specificDate.split(',').map(Number);
+  if (dates.indexOf(today) !== -1) {
+    reloadImagesInPresentation();
+  }
+}
+
 function scheduleReloadImages(scheduleData) {
   PropertiesService.getScriptProperties().setProperty(
     'scheduleData',
@@ -489,6 +514,8 @@ function scheduleReloadImages(scheduleData) {
   deleteExistingTriggers([
     'reloadImagesInPresentation',
     'checkAndReloadImages',
+    'triggerMonthlyReloadImages',
+    'triggerWeeklyReloadImages',
   ]);
 
   const {
@@ -515,30 +542,24 @@ function scheduleReloadImages(scheduleData) {
       break;
 
     case 'Week':
-      daysOfWeek.forEach((day) => {
-        ScriptApp.newTrigger('reloadImagesInPresentation')
-          .timeBased()
-          .everyWeeks(1)
-          .onWeekDay(mapToWeekDayEnum(day))
-          .atHour(hour)
-          .nearMinute(1)
-          .inTimezone(timezone)
-          .create();
-      });
+      ScriptApp.newTrigger('triggerWeeklyReloadImages')
+        .timeBased()
+        .everyDays(1)
+        .atHour(hour)
+        .nearMinute(1)
+        .inTimezone(timezone)
+        .create();
       break;
 
     case 'Month':
       if (monthlyOption === 'By date') {
-        const dates = specificDate.split(',').map(Number);
-        dates.forEach((date) => {
-          ScriptApp.newTrigger('reloadImagesInPresentation')
-            .timeBased()
-            .onMonthDay(Number(date))
-            .atHour(hour)
-            .nearMinute(1)
-            .inTimezone(timezone)
-            .create();
-        });
+        ScriptApp.newTrigger('triggerMonthlyReloadImages')
+          .timeBased()
+          .everyDays(1)
+          .atHour(hour)
+          .nearMinute(1)
+          .inTimezone(timezone)
+          .create();
       } else if (monthlyOption === 'On the') {
         ScriptApp.newTrigger('checkAndReloadImages')
           .timeBased()
