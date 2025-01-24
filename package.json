@@ -13,7 +13,7 @@
   },
   "private": true,
   "devDependencies": {
-    "@nrwl/nx-cloud": "^15.0.0",
+    "@nrwl/nx-cloud": "15.0.0",
     "@preact/preset-vite": "^2.5.0",
     "@react-icons/all-files": "^4.1.0",
     "@testing-library/preact": "^3.2.3",
