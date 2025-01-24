@@ -131,10 +131,8 @@ export const Liveboard = () => {
       } catch (err) {
         console.error('Error fetching views and tabs:', err);
       } finally {
-        if (liveboardId === prevLiveboardId) {
-          setIsVisible(true);
-          hideLoader();
-        }
+        setIsVisible(true);
+        hideLoader();
       }
     };
     fetchData();
