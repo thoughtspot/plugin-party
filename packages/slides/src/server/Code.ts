@@ -495,6 +495,7 @@ function triggerWeeklyReloadImages() {
   }
 }
 
+// function to trigger monthly schedule based on dates
 function triggerMonthlyReloadImages() {
   const scheduleData = getScheduleData();
   const { specificDate, timezone } = scheduleData;
