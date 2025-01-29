@@ -20,7 +20,7 @@ import { getToken } from '../../services/api';
 import { updateVizType } from '../../services/services.util';
 import { useAppContext } from '../app.context';
 import { runPluginFn } from '../../../utils/plugin-utils';
-import { setToken } from '../../../utils/ppt-code';
+import { reloadImagesInCurrentSlide, setToken } from '../../../utils/ppt-code';
 
 export const Home = ({ isPowerpoint = false }) => {
   const loader = useLoader();
@@ -100,53 +100,56 @@ export const Home = ({ isPowerpoint = false }) => {
     }
   }, [isPrivileged]);
 
-  const onReloadImages = () => {
-    const reloadFn =
-      selectedManualUpdate === t.SLIDES_MANUAL_UPDATE_ALL
-        ? 'reloadImagesInPresentation'
-        : 'reloadImagesInCurrentSlide';
-    setErrorMessage({
-      visible: false,
-      message: '',
-      type: BannerType.MESSAGE,
-    });
-    setSuccessMessage({
-      visible: false,
-      message: '',
-    });
+  const onReloadImages = async () => {
     loader.show();
-    run(reloadFn)
-      .then((arg) => {
-        if (arg?.successImages?.length) {
-          const numberOfImagesUpdated = arg?.successImages?.length;
-          setSuccessMessage({
-            visible: true,
-            message: pt(t.IMAGE_UPDATE_SUCCESS_MESSAGE, {
-              NoOfUpdatedImages: numberOfImagesUpdated,
-            }),
-          });
-        }
-        if (arg?.errorImages?.length) {
-          const numberOfImagesFailed = arg?.errorImages?.length;
-          const errorCode = arg?.errorImages[0]?.errorCode;
-          const sessionInvalidMessage =
-            errorCode === 401
-              ? t.SESSION_EXPIRED_MESSAGE
-              : t.IMAGE_UPDATE_FAILURE_MESSAGE;
-          const errorMessageToDisplay =
-            errorCode === 400
-              ? pt(t.INVALID_INSERT_FAILURE_MESSAGE, {
-                  NoOfFailedImages: numberOfImagesFailed,
-                })
-              : sessionInvalidMessage;
-          setErrorMessage({
-            visible: true,
-            message: errorMessageToDisplay,
-            type: BannerType.MESSAGE,
-          });
-        }
-      })
-      .finally(() => loader.hide());
+    await reloadImagesInCurrentSlide();
+    loader.hide();
+    // const reloadFn =
+    //   selectedManualUpdate === t.SLIDES_MANUAL_UPDATE_ALL
+    //     ? 'reloadImagesInPresentation'
+    //     : 'reloadImagesInCurrentSlide';
+    // setErrorMessage({
+    //   visible: false,
+    //   message: '',
+    //   type: BannerType.MESSAGE,
+    // });
+    // setSuccessMessage({
+    //   visible: false,
+    //   message: '',
+    // });
+    // loader.show();
+    // run(reloadFn)
+    //   .then((arg) => {
+    //     if (arg?.successImages?.length) {
+    //       const numberOfImagesUpdated = arg?.successImages?.length;
+    //       setSuccessMessage({
+    //         visible: true,
+    //         message: pt(t.IMAGE_UPDATE_SUCCESS_MESSAGE, {
+    //           NoOfUpdatedImages: numberOfImagesUpdated,
+    //         }),
+    //       });
+    //     }
+    //     if (arg?.errorImages?.length) {
+    //       const numberOfImagesFailed = arg?.errorImages?.length;
+    //       const errorCode = arg?.errorImages[0]?.errorCode;
+    //       const sessionInvalidMessage =
+    //         errorCode === 401
+    //           ? t.SESSION_EXPIRED_MESSAGE
+    //           : t.IMAGE_UPDATE_FAILURE_MESSAGE;
+    //       const errorMessageToDisplay =
+    //         errorCode === 400
+    //           ? pt(t.INVALID_INSERT_FAILURE_MESSAGE, {
+    //               NoOfFailedImages: numberOfImagesFailed,
+    //             })
+    //           : sessionInvalidMessage;
+    //       setErrorMessage({
+    //         visible: true,
+    //         message: errorMessageToDisplay,
+    //         type: BannerType.MESSAGE,
+    //       });
+    //     }
+    //   })
+    //   .finally(() => loader.hide());
   };
   const handleScheduleSet = async (scheduleData) => {
     setErrorMessage({
