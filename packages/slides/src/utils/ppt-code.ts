@@ -263,33 +263,302 @@ async function getImages(links, skipCache = true) {
 }
 
 /**
+ * Adds a TS_IMAGE_LINK tag to recently added images on the current slide
+ * @param {string[]} links - Array of image URLs to tag
+ */
+async function addTagOnImage(links: string[]) {
+  try {
+    await PowerPoint.run(async (context) => {
+      const slide = context.presentation.getSelectedSlides().getItemAt(0);
+      slide.load('id');
+      const shapes = slide.shapes;
+      shapes.load('items');
+      await context.sync();
+
+      const totalShapes = shapes.items.length;
+      const totalLinks = links.length;
+
+      if (totalShapes < totalLinks) {
+        throw new Error(
+          'Not enough shapes found for the number of links provided'
+        );
+      }
+
+      // Tag the most recently added shapes with their corresponding links
+      for (let currentLink = 0; currentLink < totalLinks; currentLink++) {
+        const shapeIndex = totalShapes - totalLinks + currentLink;
+        const shape = shapes.items[shapeIndex];
+        if (!shape) {
+          throw new Error(`Shape at index ${shapeIndex} not found`);
+        }
+        shape.tags.add('TS_IMAGE_LINK', links[currentLink]);
+      }
+
+      await context.sync();
+      console.log('Tags added to images successfully');
+    });
+  } catch (error) {
+    console.error('Failed to add tags to images:', error);
+    throw error;
+  }
+}
+
+/**
+ * Helper function to insert an image into the current slide
+ * @param {string} imageData - Base64 encoded image data
+ */
+function insertImageIntoSlide(imageData: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    Office.context.document.setSelectedDataAsync(
+      imageData,
+      {
+        coercionType: Office.CoercionType.Image,
+        imageLeft: 100,
+        imageTop: 100,
+        imageHeight: 300,
+        imageWidth: 400,
+      },
+      (asyncResult) => {
+        if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+          reject(new Error(JSON.stringify(asyncResult)));
+        } else {
+          resolve(asyncResult);
+        }
+      }
+    );
+  });
+}
+
+/**
+ * Helper function to load tags for image shapes
+ */
+async function loadImageTags(shapes: any[], context: any): Promise<void> {
+  shapes.forEach((shape) => {
+    if (shape.type === PowerPoint.ShapeType.image) {
+      shape.tags.load('items');
+    }
+  });
+  await context.sync();
+}
+
+/**
+ * Helper function to replace an image while maintaining its position and size
+ */
+function replaceImage(
+  shape: any,
+  newImageData: string,
+  successImages,
+  errorImages
+): Promise<any> {
+  const oldLeft = shape.left;
+  const oldTop = shape.top;
+  const oldWidth = shape.width;
+  const oldHeight = shape.height;
+
+  shape.delete();
+
+  return new Promise((resolve, reject) => {
+    Office.context.document.setSelectedDataAsync(
+      newImageData,
+      {
+        coercionType: Office.CoercionType.Image,
+        imageLeft: oldLeft,
+        imageTop: oldTop,
+        imageWidth: oldWidth,
+        imageHeight: oldHeight,
+      },
+      async (asyncResult) => {
+        if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+          reject(new Error(JSON.stringify(asyncResult)));
+          errorImages.push({ shape, errorCode: asyncResult.error.code });
+        } else {
+          try {
+            resolve(asyncResult);
+            successImages.push(shape);
+          } catch (error) {
+            reject(error);
+          }
+        }
+      }
+    );
+  });
+}
+
+/**
  * Adds an image to the current slide.
  * @param {string} link - The image URL.
- * @returns {Promise<number>} - HTTP status code.
+ * @returns {Promise<number>} - HTTP status code (200 for success, error code otherwise).
  */
-export async function addImage(link: string) {
+export async function addImage(link: string): Promise<number> {
   try {
+    // Get base64 encoded image data
     const base64Images = await getImages([link]);
     if (base64Images[0].errorCode) {
       return base64Images[0].errorCode;
     }
-    await new Promise((resolve, reject) => {
-      Office.context.document.setSelectedDataAsync(
-        base64Images[0],
-        { coercionType: Office.CoercionType.Image },
-        (asyncResult) => {
-          if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-            reject(new Error(JSON.stringify(asyncResult)));
-          } else {
-            resolve(asyncResult);
-          }
-        }
-      );
-    });
+
+    // Insert the image into the PowerPoint slide
+    await insertImageIntoSlide(base64Images[0]);
+
+    await addTagOnImage([link]);
 
     return 200;
   } catch (error) {
     console.error('Error adding image:', error);
     return 500;
   }
+}
+
+/**
+ * Reloads all tagged images in the current slide with fresh data from their source URLs.
+ * Images must have a 'TS_IMAGE_LINK' tag containing the source URL to be reloaded.
+ */
+export async function reloadImagesInCurrentSlide() {
+  const successImages = [];
+  const errorImages = [];
+
+  await PowerPoint.run(async (context) => {
+    // Get the currently selected slide
+    const selectedSlides = context.presentation.getSelectedSlides();
+    selectedSlides.load('items');
+    await context.sync();
+
+    if (selectedSlides.items.length === 0) {
+      console.log('No slides are currently selected.');
+      return;
+    }
+
+    // Load all shapes from the current slide
+    const currentSlide = selectedSlides.items[0];
+    currentSlide.load('shapes');
+    await context.sync();
+
+    const shapes = currentSlide.shapes.items;
+    await context.sync();
+
+    // Load tags for all shapes
+    await loadImageTags(shapes, context);
+
+    // Get the TS_IMAGE_LINK tag value for each shape
+    const tsImageLinkTag: PowerPoint.Tag[] = [];
+    shapes.forEach((shape, id) => {
+      tsImageLinkTag.push(shape.tags.getItemOrNullObject('TS_IMAGE_LINK'));
+      tsImageLinkTag[id].load('key, value');
+    });
+    await context.sync();
+
+    // Create array of shapes with their corresponding image link tags
+    const imagesWithTag = await Promise.all(
+      shapes.map(async (shape, idx) => {
+        return { shape, tsImageLink: tsImageLinkTag[idx].value };
+      })
+    );
+
+    // Filter out shapes without tags
+    const imagesToReplace = imagesWithTag.filter((image) => image !== null);
+
+    // Get fresh image data for all tagged images
+    const imageLinks = imagesToReplace.map((image) => image.tsImageLink);
+    const base64Images = await getImages(imageLinks);
+
+    // Replace each image with new image
+    const promises = imagesToReplace.map((image, index) =>
+      replaceImage(image.shape, base64Images[index], successImages, errorImages)
+    );
+
+    await context.sync();
+    await Promise.all(promises);
+
+    // Reapply tags to the new images
+    await addTagOnImage(imageLinks);
+    console.log('Successfully replaced images with TS_IMAGE_LINK.');
+  });
+
+  return { errorImages, successImages };
+}
+
+/**
+ * Reloads all tagged images across all slides with fresh data from their source URLs.
+ * Images must have a 'TS_IMAGE_LINK' tag containing the source URL to be reloaded.
+ */
+export async function reloadImagesInPresentation() {
+  const errorImages = [];
+  const successImages = [];
+
+  await PowerPoint.run(async (context) => {
+    // Load all slides in the presentation
+    const slides = context.presentation.slides;
+    slides.load('items');
+    await context.sync();
+
+    // Map of slide IDs to arrays of image links
+    const slideImageLinks = await slides.items.reduce(async (acc, slide) => {
+      const links = await acc;
+      slide.load('shapes');
+      await context.sync();
+
+      // Load shapes and their tags for the current slide
+      const shapes = slide.shapes.items;
+      await loadImageTags(shapes, context);
+
+      // Get TS_IMAGE_LINK tags for all shapes
+      const tags = shapes.map((shape) => {
+        const tag = shape.tags.getItemOrNullObject('TS_IMAGE_LINK');
+        tag.load('value');
+        return tag;
+      });
+      await context.sync();
+
+      // Store valid image links for this slide
+      links[slide.id] = tags
+        .filter((tag) => !tag.isNullObject)
+        .map((tag) => tag.value);
+      return links;
+    }, Promise.resolve({} as { [key: string]: string[] }));
+
+    // Get new image for all tagged images across all slides
+    const allImageLinks = Object.values(slideImageLinks).flat();
+    const allBase64Images = await getImages(allImageLinks);
+
+    // Process each slide sequentially
+    await slides.items.reduce(async (promise, slide) => {
+      await promise;
+      // Select the current slide to work with
+      context.presentation.setSelectedSlides([slide.id]);
+      await context.sync();
+
+      const shapes = slide.shapes.items;
+      const slideLinks = slideImageLinks[slide.id];
+
+      if (slideLinks.length > 0) {
+        // Process each shape in the slide sequentially
+        await shapes.reduce(async (p, shape, shapeIndex) => {
+          const startIndex = Object.values(slideImageLinks)
+            .flat()
+            .indexOf(slideLinks[shapeIndex]);
+          await p;
+
+          // Check if this shape has a TS_IMAGE_LINK tag
+          const tag = shape.tags.getItemOrNullObject('TS_IMAGE_LINK');
+          tag.load('value');
+          await context.sync();
+
+          if (!tag.isNullObject) {
+            // Replace the image with new image
+            await replaceImage(
+              shape,
+              allBase64Images[startIndex],
+              successImages,
+              errorImages
+            );
+          }
+        }, Promise.resolve());
+
+        // Reapply tags to the new images
+        await addTagOnImage(slideLinks);
+      }
+    }, Promise.resolve());
+  });
+
+  return { successImages, errorImages };
 }

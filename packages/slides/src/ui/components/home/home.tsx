@@ -20,7 +20,11 @@ import { getToken } from '../../services/api';
 import { updateVizType } from '../../services/services.util';
 import { useAppContext } from '../app.context';
 import { runPluginFn } from '../../../utils/plugin-utils';
-import { setToken } from '../../../utils/ppt-code';
+import {
+  reloadImagesInCurrentSlide,
+  reloadImagesInPresentation,
+  setToken,
+} from '../../../utils/ppt-code';
 
 export const Home = ({ isPowerpoint = false }) => {
   const loader = useLoader();
@@ -107,11 +111,21 @@ export const Home = ({ isPowerpoint = false }) => {
     }
   }, [isPrivileged]);
 
-  const onReloadImages = () => {
+  const onReloadImages = async () => {
     const reloadFn =
       selectedManualUpdate === t.SLIDES_MANUAL_UPDATE_ALL
-        ? 'reloadImagesInPresentation'
-        : 'reloadImagesInCurrentSlide';
+        ? runPluginFn(
+            isPowerpoint,
+            run,
+            reloadImagesInPresentation,
+            'reloadImagesInPresentation'
+          )
+        : runPluginFn(
+            isPowerpoint,
+            run,
+            reloadImagesInCurrentSlide,
+            'reloadImagesInCurrentSlide'
+          );
     setErrorMessage({
       visible: false,
       message: '',
@@ -122,7 +136,7 @@ export const Home = ({ isPowerpoint = false }) => {
       message: '',
     });
     loader.show();
-    run(reloadFn)
+    reloadFn
       .then((arg) => {
         if (arg?.successImages?.length) {
           const numberOfImagesUpdated = arg?.successImages?.length;
@@ -153,7 +167,9 @@ export const Home = ({ isPowerpoint = false }) => {
           });
         }
       })
-      .finally(() => loader.hide());
+      .finally(() => {
+        loader.hide();
+      });
   };
   const handleScheduleSet = async (scheduleData) => {
     setErrorMessage({
@@ -266,28 +282,30 @@ export const Home = ({ isPowerpoint = false }) => {
             <Typography variant="p" className={styles.title} noMargin>
               {t.UPDATE_VIZ}
             </Typography>
-            <Tab
-              selectedTabId={selectedTabId}
-              className={styles.tabHeader}
-              tabHorizontalClassName={styles.tabWrapper}
-            >
-              <TabItem
-                id={updateVizType.MANUAL}
-                onTabItemClick={onManualTabClick}
-                customHeader={renderTabHeader(
-                  updateVizType.MANUAL,
-                  t.SLIDES_MANUAL_UPDATE
-                )}
-              ></TabItem>
-              <TabItem
-                id={updateVizType.SCHEDULE}
-                onTabItemClick={onScheduleTabClick}
-                customHeader={renderTabHeader(
-                  updateVizType.SCHEDULE,
-                  t.SLIDES_SCHEDULE_UPDATE
-                )}
-              ></TabItem>
-            </Tab>
+            {!isPowerpoint && (
+              <Tab
+                selectedTabId={selectedTabId}
+                className={styles.tabHeader}
+                tabHorizontalClassName={styles.tabWrapper}
+              >
+                <TabItem
+                  id={updateVizType.MANUAL}
+                  onTabItemClick={onManualTabClick}
+                  customHeader={renderTabHeader(
+                    updateVizType.MANUAL,
+                    t.SLIDES_MANUAL_UPDATE
+                  )}
+                ></TabItem>
+                <TabItem
+                  id={updateVizType.SCHEDULE}
+                  onTabItemClick={onScheduleTabClick}
+                  customHeader={renderTabHeader(
+                    updateVizType.SCHEDULE,
+                    t.SLIDES_SCHEDULE_UPDATE
+                  )}
+                ></TabItem>
+              </Tab>
+            )}
             {selectedTabId === updateVizType.MANUAL && (
               <>
                 <Typography variant="p" className={styles.subtitle}>

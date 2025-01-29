@@ -11,6 +11,9 @@ import { SuccessBanner } from 'widgets/lib/success-banner';
 import styles from './answer.module.scss';
 import { getTSAnswerLink } from '../../utils';
 import { customCSSProperties } from './answer.util';
+import { runPluginFn } from '../../../utils/plugin-utils';
+import { addImage } from '../../../utils/ppt-code';
+import { useAppContext } from '../app.context';
 
 export const Answer = () => {
   const [router] = useRouter();
@@ -20,6 +23,7 @@ export const Answer = () => {
   });
   const [success, setSuccess] = useState(false);
   const { t } = useTranslations();
+  const { isPowerpoint } = useAppContext();
   const loader = useLoader();
   const answerId = router?.matches?.id;
   const ref = useEmbedRef();
@@ -36,7 +40,7 @@ export const Answer = () => {
       loader.show();
       setErrorMessage({ ...errorMessage, visible: false });
       setSuccess(false);
-      run('addImage', link)
+      runPluginFn(isPowerpoint, run, addImage, 'addImage', link)
         .then((res) => {
           loader.hide();
           if (res === 200) {

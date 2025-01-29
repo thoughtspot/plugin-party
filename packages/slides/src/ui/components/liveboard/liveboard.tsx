@@ -237,20 +237,20 @@ export const Liveboard = () => {
         className={styles.errorBanner}
       />
       <Vertical className={styles.dropdownContainer}>
-        {personalisedViews.length > 1 && isPersonalisedViewSupported && (
-          <Dropdown
-            options={personalisedViews}
-            placeholder={selectedPersonalisedView?.title}
-            onChange={onPersonalisedViewChange}
-            title={t.VIEWS}
-          />
-        )}
         {tabs.length > 0 && (
           <Dropdown
             options={tabs}
             placeholder={selectedTabs?.title}
             onChange={onTabsChange}
             title={t.TABS}
+          />
+        )}
+        {personalisedViews.length > 1 && isPersonalisedViewSupported && (
+          <Dropdown
+            options={personalisedViews}
+            placeholder={selectedPersonalisedView?.title}
+            onChange={onPersonalisedViewChange}
+            title={t.VIEWS}
           />
         )}
       </Vertical>
