@@ -37,7 +37,7 @@
   "YOURS": "Yours",
   "ANSWERS": "Answers",
   "LIVEBOARDS": "Liveboards",
-  "INSERT_FAILURE_MESSAGE": "Insert failed, please try again.\n\n If issue persists please contact ThoughtSpot support",
+  "INSERT_FAILURE_MESSAGE": "Insert failed, please try again.\n If issue persists please contact ThoughtSpot support",
   "IMAGE_UPDATE_FAILURE_MESSAGE": "Update failed, please try again.\n\n If issue persists please contact ThoughtSpot support",
   "BROSWER_NOT_SUPPORTED": "Browser not supported",
   "BROSER_RECCOMENDATION": "This plugin is only supported on Google Chrome.",
@@ -174,5 +174,6 @@
   "VIEWS": "Views",
   "TABS": "Tabs",
   "SCHEDULE_DELETE_SUCCESSFUL_MSG":"Schedule succesfully deleted",
-  "SCHEDULE_DELETE_FAILURE_MSG":"Error deleting schedule. Please try again or contact ThoughtSpot support if the issue persists."
+  "SCHEDULE_DELETE_FAILURE_MSG":"Error deleting schedule. Please try again or contact ThoughtSpot support if the issue persists.",
+  "DAY_PICKER_ERROR": "Select day(s)"
 }

@@ -27,3 +27,17 @@
         cursor: pointer;
     }
 }
+
+.dayPickerErrorScheduler {
+    margin-top: -12px;
+    margin-bottom: $spacing--a;
+    color: #E22B3D;
+    display: flex;
+}
+
+.dayPickerErrorText {
+    color: #E22B3D;
+    margin-left: $spacing--a;
+    font-size: 14px;
+    line-height: 14px;
+}
