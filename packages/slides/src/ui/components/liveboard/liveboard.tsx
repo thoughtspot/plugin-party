@@ -24,6 +24,8 @@ import styles from './liveboard.module.scss';
 import { getOffset, getTSLBVizLink } from '../../utils';
 import { getLBTabs, getPersonalisedViews } from '../../services/api';
 import { useAppContext } from '../app.context';
+import { addImage } from '../../../utils/ppt-code';
+import { runPluginFn } from '../../../utils/plugin-utils';
 
 const prerenderdLiveboardContext = createContext<any>({});
 
@@ -31,7 +33,7 @@ export const Liveboard = () => {
   const [router] = useRouter();
   const { show: showLoader, hide: hideLoader } = useLoader();
   const { t } = useTranslations();
-  const { isPersonalisedViewSupported } = useAppContext();
+  const { isPersonalisedViewSupported, isPowerpoint } = useAppContext();
   const liveboardId = router?.matches?.id;
   const loader = useLoader();
   const { run } = useShellContext();
@@ -148,7 +150,7 @@ export const Liveboard = () => {
       loader.show();
       setErrorMessage({ ...errorMessage, visible: false });
       setSuccess(false);
-      run('addImage', link)
+      runPluginFn(isPowerpoint, run, addImage, link)
         .then((res) => {
           loader.hide();
           if (res === 200) {
