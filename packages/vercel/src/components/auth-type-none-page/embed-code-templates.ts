@@ -14,11 +14,10 @@ export const EmbedTemplates = {
   },
   IndexJS: () => {
     const codeSnippet = `import React from 'react';
-    import ReactDOM from 'react-dom/client';
+    import ReactDOM from 'react-dom';
     import App from './App';
-    const container = document.getElementById('app');
-    const root = ReactDOM.createRoot(container);
-    root.render(<App />);`;
+    
+    ReactDOM.render(<App />, document.getElementById('app'));`;
 
     return `${codeSnippet}`;
   },

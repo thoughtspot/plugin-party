@@ -3,29 +3,20 @@ import { useShellContext } from 'gsuite-shell';
 import { useLoader } from 'widgets/lib/loader';
 import { Card } from 'widgets/lib/card';
 import { useTranslations } from 'i18n';
-import {
-  getClusterUrl,
-  setClusterUrlInPowerpoint,
-} from 'slides/src/utils/ppt-code';
 import { ClusterUrl } from './cluster-url/cluster-url';
 import { TSAuthInit } from './ts-auth-init/ts-auth-init';
 import { getConfig } from './services/config';
 
-const useClusterUrl = (isPowerpoint = false) => {
+const useClusterUrl = () => {
   const [clusterUrl, setClusterUrl] = useState<any>();
   const { run } = useShellContext();
   const loader = useLoader();
   useEffect(() => {
     loader.show();
-    if (!isPowerpoint) {
-      run('getClusterUrl').then((url: any) => {
-        setClusterUrl(url);
-      });
-    } else {
-      const clusterDetails = getClusterUrl();
-      setClusterUrl(clusterDetails);
-    }
-    loader.hide();
+    run('getClusterUrl').then((url: any) => {
+      setClusterUrl(url);
+      loader.hide();
+    });
   }, [run, loader]);
   return [clusterUrl, setClusterUrl];
 };
@@ -35,11 +26,11 @@ const isNotChrome = () => {
   return !userAgent.includes('chrome') && !userAgent.includes('crios');
 };
 
-export function TSInit({ children, isPowerpoint = false }) {
+export function TSInit({ children }) {
   const { t } = useTranslations();
-  const [clusterUrl, setClusterUrl] = useClusterUrl(isPowerpoint);
+  const [clusterUrl, setClusterUrl] = useClusterUrl();
   const { run } = useShellContext();
-  if (isNotChrome() && !isPowerpoint) {
+  if (isNotChrome()) {
     return (
       <Card
         id={0}
@@ -59,11 +50,8 @@ export function TSInit({ children, isPowerpoint = false }) {
     const formattedUrl = new URL(`https://${url.replace('https://', '')}`);
     const host = formattedUrl.host;
     await getConfig(host)
-      .then(async (res) => {
-        if (!isPowerpoint) run('setClusterUrl', host);
-        else {
-          await setClusterUrlInPowerpoint(host);
-        }
+      .then((res) => {
+        run('setClusterUrl', host);
         setClusterUrl({
           url: host,
           isCandidate: false,
