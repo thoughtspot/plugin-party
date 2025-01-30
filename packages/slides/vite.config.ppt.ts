@@ -14,6 +14,12 @@ const iconSprite = fs.readFileSync(
 
 const newConfig = {
   ...config,
+  root: 'src/ui',
+  build: {
+    outDir: path.join(process.cwd(), 'build'),
+    write: true,
+    emptyOutDir: true,
+  },
   plugins: [
     preact(),
     basicSsl(),

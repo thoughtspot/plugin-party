@@ -20,7 +20,7 @@
     "vite": "^4.2.0"
   },
   "scripts": {
-    "build": "vite build",
+    "build": "vite build --config vite.config.ppt.ts",
     "tsc": "tsc -p .",
     "tsw": "tsc -p . -w",
     "claspw": "clasp push -w",
