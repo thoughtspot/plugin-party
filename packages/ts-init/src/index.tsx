@@ -3,20 +3,29 @@ import { useShellContext } from 'gsuite-shell';
 import { useLoader } from 'widgets/lib/loader';
 import { Card } from 'widgets/lib/card';
 import { useTranslations } from 'i18n';
+import {
+  getClusterUrl,
+  setClusterUrlInPowerpoint,
+} from 'slides/src/utils/ppt-code';
 import { ClusterUrl } from './cluster-url/cluster-url';
 import { TSAuthInit } from './ts-auth-init/ts-auth-init';
 import { getConfig } from './services/config';
 
-const useClusterUrl = () => {
+const useClusterUrl = (isPowerpoint = false) => {
   const [clusterUrl, setClusterUrl] = useState<any>();
   const { run } = useShellContext();
   const loader = useLoader();
   useEffect(() => {
     loader.show();
-    run('getClusterUrl').then((url: any) => {
-      setClusterUrl(url);
-      loader.hide();
-    });
+    if (!isPowerpoint) {
+      run('getClusterUrl').then((url: any) => {
+        setClusterUrl(url);
+      });
+    } else {
+      const clusterDetails = getClusterUrl();
+      setClusterUrl(clusterDetails);
+    }
+    loader.hide();
   }, [run, loader]);
   return [clusterUrl, setClusterUrl];
 };
@@ -26,11 +35,11 @@ const isNotChrome = () => {
   return !userAgent.includes('chrome') && !userAgent.includes('crios');
 };
 
-export function TSInit({ children }) {
+export function TSInit({ children, isPowerpoint = false }) {
   const { t } = useTranslations();
-  const [clusterUrl, setClusterUrl] = useClusterUrl();
+  const [clusterUrl, setClusterUrl] = useClusterUrl(isPowerpoint);
   const { run } = useShellContext();
-  if (isNotChrome()) {
+  if (isNotChrome() && !isPowerpoint) {
     return (
       <Card
         id={0}
@@ -50,8 +59,11 @@ export function TSInit({ children }) {
     const formattedUrl = new URL(`https://${url.replace('https://', '')}`);
     const host = formattedUrl.host;
     await getConfig(host)
-      .then((res) => {
-        run('setClusterUrl', host);
+      .then(async (res) => {
+        if (!isPowerpoint) run('setClusterUrl', host);
+        else {
+          await setClusterUrlInPowerpoint(host);
+        }
         setClusterUrl({
           url: host,
           isCandidate: false,
