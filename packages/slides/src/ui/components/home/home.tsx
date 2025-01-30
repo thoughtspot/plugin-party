@@ -82,7 +82,7 @@ export const Home = ({ isPowerpoint = false }) => {
     if (isPrivileged) {
       getToken().then((token) => {
         if (token.token) {
-          runPluginFn(isPowerpoint, run, setToken, token.token, token.ttl);
+          runPluginFn(isPowerpoint, run, setToken, 'setToken', token.token, token.ttl);
           setErrorMessage({
             visible: false,
             message: '',
