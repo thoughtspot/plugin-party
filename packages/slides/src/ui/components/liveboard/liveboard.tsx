@@ -150,7 +150,7 @@ export const Liveboard = () => {
       loader.show();
       setErrorMessage({ ...errorMessage, visible: false });
       setSuccess(false);
-      runPluginFn(isPowerpoint, run, addImage, link)
+      runPluginFn(isPowerpoint, run, addImage, 'addImage', link)
         .then((res) => {
           loader.hide();
           if (res === 200) {
