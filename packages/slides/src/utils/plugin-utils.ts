@@ -1,6 +1,6 @@
-export function runPluginFn(isPowerpoint, run, fn, ...args) {
+export function runPluginFn(isPowerpoint, run, fn, fnName, ...args) {
   if (isPowerpoint) {
     return fn(...args);
   }
-  return run(fn.name, ...args);
+  return run(fnName, ...args);
 }
