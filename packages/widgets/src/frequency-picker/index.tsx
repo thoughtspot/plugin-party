@@ -28,7 +28,7 @@ export const FrequencyPicker = ({
   const [frequency, setFrequency] = useState<string>(t.FREQUENCY_DAILY);
   const [time, setTime] = useState<string>('00:00');
   const [selectedDaysOfWeek, setSelectedDaysOfWeek] = useState<Set<string>>(
-    new Set<string>()
+    new Set<string>('1')
   );
   const [monthlyOption, setMonthlyOption] = useState<string>(
     t.FREQUENCY_MONTHLY_ON_THE

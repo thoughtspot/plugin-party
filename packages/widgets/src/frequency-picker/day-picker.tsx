@@ -1,3 +1,5 @@
+import { useTranslations } from 'i18n';
+import { Icon } from '../icon';
 import { getDaysOfWeek } from '../utils/frequency-picker.util';
 import { Horizontal, View } from '../layout/flex-layout';
 import { Colors, Typography } from '../typography';
@@ -19,6 +21,7 @@ export const DayPicker: React.FC<DayPickerProps> = ({
   selectedDayIds,
   setSelectedDayIds,
 }) => {
+  const { t } = useTranslations();
   const handleDayClick = (dayId: string) => {
     const newDayIds = new Set(selectedDayIds);
     if (newDayIds.has(dayId)) {
@@ -28,35 +31,48 @@ export const DayPicker: React.FC<DayPickerProps> = ({
     }
     setSelectedDayIds(newDayIds);
   };
+
+  const showError = () => {
+    return selectedDayIds.size > 0 ? null : (
+      <Typography variant="p" className={styles.dayPickerErrorScheduler}>
+        <Icon size="xs" name="rd-icon-failure" />
+        <span className={styles.dayPickerErrorText}>{t.DAY_PICKER_ERROR}</span>
+      </Typography>
+    );
+  };
+
   return (
-    <Horizontal spacing="a">
-      {getDaysOfWeek().map((day) => (
-        <View
-          data-testid={day.id}
-          key={day.id}
-          hAlignContent="center"
-          vAlignContent="center"
-          tabIndex={0}
-          role="checkbox"
-          aria-checked={selectedDayIds.has(day.id)}
-          className={
-            selectedDayIds.has(day.id)
-              ? styles.dayIsSelected
-              : styles.dayIsNotSelected
-          }
-          onClick={() => handleDayClick(day.id)}
-        >
-          <Typography
-            variant="p"
-            color={
-              selectedDayIds.has(day.id) ? Colors.accent : Colors.grayLight
+    <>
+      <Horizontal spacing="a">
+        {getDaysOfWeek().map((day) => (
+          <View
+            data-testid={day.id}
+            key={day.id}
+            hAlignContent="center"
+            vAlignContent="center"
+            tabIndex={0}
+            role="checkbox"
+            aria-checked={selectedDayIds.has(day.id)}
+            className={
+              selectedDayIds.has(day.id)
+                ? styles.dayIsSelected
+                : styles.dayIsNotSelected
             }
-            noMargin
+            onClick={() => handleDayClick(day.id)}
           >
-            {day.label}
-          </Typography>
-        </View>
-      ))}
-    </Horizontal>
+            <Typography
+              variant="p"
+              color={
+                selectedDayIds.has(day.id) ? Colors.accent : Colors.grayLight
+              }
+              noMargin
+            >
+              {day.label}
+            </Typography>
+          </View>
+        ))}
+      </Horizontal>
+      {showError()}
+    </>
   );
 };
