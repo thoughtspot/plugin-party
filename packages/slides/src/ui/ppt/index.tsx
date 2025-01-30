@@ -1,6 +1,6 @@
 import { render } from 'preact';
-import './index.scss';
-import { App } from './components/app';
+import '../index.scss';
+import { App } from '../components/app';
 
 // /* global document, Office, module, require, HTMLElement */
 
