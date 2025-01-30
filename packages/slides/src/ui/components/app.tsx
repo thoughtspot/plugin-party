@@ -5,7 +5,6 @@ import { Analytics } from '@vercel/analytics/react';
 import { I18N } from 'i18n';
 import { TSInit } from 'ts-init';
 import React from 'preact';
-import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { Routes } from '../routes';
 import { Home } from './home/home';
 import { ListPage } from './listPage/listPage';
@@ -17,18 +16,18 @@ import styles from './app.module.scss';
 
 const history: any = createMemoryHistory();
 
-export function App() {
+export function App({ isPowerpoint = false }) {
   return (
     <I18N>
       <ShellContext.Provider value={defaultShellContextOptions}>
-        <TSInit>
+        <TSInit isPowerpoint={isPowerpoint}>
           <Header history={history}></Header>
           <div className={styles.content}>
             <Analytics />
             <AppContextProvider>
               <PrerenderdLiveboardProvider>
                 <Router history={history}>
-                  <Home path={Routes.HOME} />
+                  <Home path={Routes.HOME} isPowerpoint={isPowerpoint} />
                   <ListPage path={Routes.LIST} />
                   <Liveboard path={Routes.LIVEBOARD} />
                   <Answer path={Routes.ANSWER} />

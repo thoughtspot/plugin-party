@@ -6,6 +6,7 @@ export interface AppConfigInterface {
   segmentIndex?: any;
   userID?: string;
   isPersonalisedViewSupported?: boolean;
+  isPowerpoint?: boolean;
 }
 
 export enum AppConfigActions {
@@ -13,6 +14,7 @@ export enum AppConfigActions {
   SEGMENT_INDEX,
   USER_ID,
   IS_PERSONALISED_VIEW_SUPPORTED,
+  IS_POWERPOINT,
 }
 
 const defaultAppConfigValues = {
@@ -20,6 +22,7 @@ const defaultAppConfigValues = {
   segmentIndex: listCategory.ALL,
   userID: '',
   isPersonalisedViewSupported: false,
+  isPowerpoint: false,
 };
 
 const reducer: any = (state, action) => {
@@ -44,6 +47,11 @@ const reducer: any = (state, action) => {
         ...state,
         isPersonalisedViewSupported: action.newIsPersonalisedViewSupported,
       };
+    case AppConfigActions.IS_POWERPOINT:
+      return {
+        ...state,
+        isPowerpoint: action.newIsPowerpoint,
+      };
     default:
       return state;
   }
@@ -55,8 +63,13 @@ export const AppContextProvider = ({ children }) => {
   const [state, dispatch] = React.useReducer(reducer, {
     ...defaultAppConfigValues,
   });
-  const { searchPattern, segmentIndex, userID, isPersonalisedViewSupported } =
-    state;
+  const {
+    searchPattern,
+    segmentIndex,
+    userID,
+    isPersonalisedViewSupported,
+    isPowerpoint,
+  } = state;
   const setSearchPattern = (newSearchPattern: string) => {
     dispatch({ type: AppConfigActions.SEARCH_PATTERN, newSearchPattern });
   };
@@ -77,6 +90,10 @@ export const AppContextProvider = ({ children }) => {
       newIsPersonalisedViewSupported,
     });
   };
+
+  const setIsPowerpoint = (newIsPowerpoint: boolean) => {
+    dispatch({ type: AppConfigActions.IS_POWERPOINT, newIsPowerpoint });
+  };
   return (
     <AppContext.Provider
       value={{
@@ -88,6 +105,8 @@ export const AppContextProvider = ({ children }) => {
         setUserID,
         isPersonalisedViewSupported,
         setIsPersonalisedViewSupported,
+        setIsPowerpoint,
+        isPowerpoint,
       }}
     >
       {children}

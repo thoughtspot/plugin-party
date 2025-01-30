@@ -18,11 +18,16 @@ import { Routes } from '../../routes';
 import styles from './home.module.scss';
 import { getToken } from '../../services/api';
 import { updateVizType } from '../../services/services.util';
+import { useAppContext } from '../app.context';
+import { runPluginFn } from '../../../utils/plugin-utils';
+import { setToken } from '../../../utils/ppt-code';
 
-export const Home = () => {
+export const Home = ({ isPowerpoint = false }) => {
   const loader = useLoader();
   const { run } = useShellContext();
   const { t, pt } = useTranslations();
+
+  const { setIsPowerpoint } = useAppContext();
 
   const [selectedTabId, setSelectedTabId] = useState(updateVizType.MANUAL);
   const [selectedManualUpdate, setSelectedManualUpdate] = useState(
@@ -70,13 +75,21 @@ export const Home = () => {
       }
     };
     getUserInfo();
+    setIsPowerpoint(isPowerpoint);
   }, []);
 
   useEffect(() => {
     if (isPrivileged) {
       getToken().then((token) => {
         if (token.token) {
-          run('setToken', token.token, token.ttl);
+          runPluginFn(
+            isPowerpoint,
+            run,
+            setToken,
+            'setToken',
+            token.token,
+            token.ttl
+          );
           setErrorMessage({
             visible: false,
             message: '',
