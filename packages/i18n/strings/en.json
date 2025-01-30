@@ -37,7 +37,7 @@
   "YOURS": "Yours",
   "ANSWERS": "Answers",
   "LIVEBOARDS": "Liveboards",
-  "INSERT_FAILURE_MESSAGE": "Insert failed, please try again.\n If issue persists please contact ThoughtSpot support",
+  "INSERT_FAILURE_MESSAGE": "Insert failed, please try again.\n\n If issue persists please contact ThoughtSpot support",
   "IMAGE_UPDATE_FAILURE_MESSAGE": "Update failed, please try again.\n\n If issue persists please contact ThoughtSpot support",
   "BROSWER_NOT_SUPPORTED": "Browser not supported",
   "BROSER_RECCOMENDATION": "This plugin is only supported on Google Chrome.",
