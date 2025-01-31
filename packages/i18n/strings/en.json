@@ -1,5 +1,5 @@
 {
-  "THOUGHTSPOT_INSTANCE": "ThoughtSpot instance",
+  "THOUGHTSPOT_INSTANCE": "ThoughtSpot instance URL",
   "THOUGHTSPOT_INSTANCE_MSG": "Enter the URL of your ThoughtSpot instance.<br>ex: https://team2.thoughtspot.cloud",
   "CONTINUE": "Continue",
   "START_FREE_TRIAL": "Do not have a ThoughtSpot account? Start a <a href=\"https://www.thoughtspot.com/trial\" target=\"_blank\"> free trial </a>.",
