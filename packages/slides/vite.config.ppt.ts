@@ -14,13 +14,20 @@ const iconSprite = fs.readFileSync(
 
 const newConfig = {
   ...config,
+  root: 'src/ui/ppt',
+  base: '/ppt/',
+  build: {
+    outDir: path.join(process.cwd(), 'build/ppt'),
+    write: true,
+    emptyOutDir: true,
+  },
   plugins: [
     preact(),
     basicSsl(),
     createHtmlPlugin({
       minify: true,
-      template: 'powerpoint.html',
-      entry: 'powerpoint.tsx',
+      template: 'index.html',
+      entry: 'index.tsx',
       inject: {
         data: {
           iconSprite,
