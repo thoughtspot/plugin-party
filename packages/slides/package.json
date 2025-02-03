@@ -20,7 +20,9 @@
     "vite": "^4.2.0"
   },
   "scripts": {
-    "build": "vite build",
+    "build-gslides": "vite build",
+    "build-ppt": "vite build --config vite.config.ppt.ts",
+    "build": "npm run build-gslides && npm run build-ppt",
     "tsc": "tsc -p .",
     "tsw": "tsc -p . -w",
     "claspw": "clasp push -w",
