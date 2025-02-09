@@ -77,7 +77,7 @@ export const exportAnswer = async (answerId) => {
 
 export const getToken = async () => {
   const baseUrl = getInitConfig().thoughtSpotHost;
-  const res = await fetch(`${baseUrl}/callosum/v1/session/v2/gettoken`, {
+  const res = await fetch(`${baseUrl}/callosum/v1/v2/auth/token/fetch`, {
     method: 'GET',
     headers: {
       accept: 'application/json',
@@ -86,8 +86,11 @@ export const getToken = async () => {
   });
   const data = await res.json();
   return {
-    token: data.token,
-    ttl: (data.tokenExpiryDuration - data.tokenCreatedTime) / 1000,
+    token: data.data.token,
+    ttl:
+      (data.data.expiration_time_in_millis -
+        data.data.creation_time_in_millis) /
+      1000,
   };
 };
 
