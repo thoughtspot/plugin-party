@@ -3,6 +3,8 @@
  */
 /* eslint no-var: 0 */
 
+import { enqueue } from '../services/QueueService';
+
 /**
  * Converts an ArrayBuffer to a Base64 string.
  * @param {ArrayBuffer} buffer
@@ -29,14 +31,14 @@ function saveAsync() {
       reject(new Error('Office settings API is not available'));
       return;
     }
-
     Office.context.document.settings.saveAsync(function (asyncResult) {
       if (asyncResult.status === Office.AsyncResultStatus.Succeeded) {
         resolve(asyncResult);
       } else {
-        reject(
-          new Error(`Failed to save settings: ${asyncResult.error?.message}`)
-        );
+        // we are resolving even if the save fails as we do not
+        // want to block user from getting logged in
+        reject(asyncResult.error);
+        console.error('Failed to save settings:', asyncResult.error);
       }
     });
   });
@@ -246,7 +248,7 @@ async function getImages(links, skipCache = true) {
     return [link, idx];
   });
 
-  console.log('linksToFetch', linksToFetch.length);
+  console.log('linksToFetch', linksToFetch.length, linksToFetch);
   const blobs = await getImagesRaw(linksToFetch);
   return linkRefs.map((linkRef) => {
     const link = linkRef[0];
@@ -298,7 +300,10 @@ async function addTagOnImage(links: string[]) {
       console.log('Tags added to images successfully');
     });
   } catch (error) {
-    console.error('Failed to add tags to images:', error);
+    console.error(
+      'Failed to add tags to images, please try inserting the image again. error:',
+      error
+    );
     throw error;
   }
 }
@@ -410,6 +415,21 @@ export async function addImage(link: string): Promise<number> {
 }
 
 /**
+ * Queues an image insertion operation to ensure that image insertions are executed sequentially.
+ *
+ * Office.js operations (such as inserting images and tagging them) must run sequentially,
+ * because overlapping calls (e.g., multiple PowerPoint.run calls) can lead to race conditions
+ * and unexpected behavior. By enqueuing operations, each image insertion waits for the previous
+ * one to complete before starting.
+ *
+ * @param {string} link - The image URL to insert.
+ * @returns {Promise<number>} A promise that resolves with the response code from the addImage function.
+ */
+export function addImageQueued(link: string): Promise<number> {
+  return enqueue(() => addImage(link));
+}
+
+/**
  * Reloads all tagged images in the current slide with fresh data from their source URLs.
  * Images must have a 'TS_IMAGE_LINK' tag containing the source URL to be reloaded.
  */
@@ -455,7 +475,9 @@ export async function reloadImagesInCurrentSlide() {
     );
 
     // Filter out shapes without tags
-    const imagesToReplace = imagesWithTag.filter((image) => image !== null);
+    const imagesToReplace = imagesWithTag.filter(
+      (image) => image.tsImageLink !== null && image.tsImageLink !== undefined
+    );
 
     // Get fresh image data for all tagged images
     const imageLinks = imagesToReplace.map((image) => image.tsImageLink);
@@ -520,6 +542,10 @@ export async function reloadImagesInPresentation() {
     const allImageLinks = Object.values(slideImageLinks).flat();
     const allBase64Images = await getImages(allImageLinks);
 
+    const base64ImagesMap = Object.fromEntries(
+      allImageLinks.map((imageLink, idx) => [imageLink, allBase64Images[idx]])
+    );
+
     // Process each slide sequentially
     await slides.items.reduce(async (promise, slide) => {
       await promise;
@@ -533,21 +559,16 @@ export async function reloadImagesInPresentation() {
       if (slideLinks.length > 0) {
         // Process each shape in the slide sequentially
         await shapes.reduce(async (p, shape, shapeIndex) => {
-          const startIndex = Object.values(slideImageLinks)
-            .flat()
-            .indexOf(slideLinks[shapeIndex]);
           await p;
 
           // Check if this shape has a TS_IMAGE_LINK tag
           const tag = shape.tags.getItemOrNullObject('TS_IMAGE_LINK');
           tag.load('value');
           await context.sync();
-
           if (!tag.isNullObject) {
-            // Replace the image with new image
             await replaceImage(
               shape,
-              allBase64Images[startIndex],
+              base64ImagesMap[tag.value],
               successImages,
               errorImages
             );

@@ -24,7 +24,7 @@ import styles from './liveboard.module.scss';
 import { getOffset, getTSLBVizLink } from '../../utils';
 import { getLBTabs, getPersonalisedViews } from '../../services/api';
 import { useAppContext } from '../app.context';
-import { addImage } from '../../../utils/ppt-code';
+import { addImageQueued } from '../../../utils/ppt-code';
 import { runPluginFn } from '../../../utils/plugin-utils';
 
 const prerenderdLiveboardContext = createContext<any>({});
@@ -118,17 +118,11 @@ export const Liveboard = () => {
           title: view.name,
           id: view.id,
         }));
-        const tabData = tabsData.map((tab) => {
-          return {
-            title: tab.header.display_name,
-            id: tab.header.guid,
-          };
-        });
         setPersonalisedViews((prevData) => [...prevData, ...viewsData]);
-        setTabs(tabData);
-        if (tabData.length > 0) {
-          setSelectedTabs(tabData[0]);
-          onTabsChange(tabData[0]);
+        setTabs(tabsData);
+        if (tabsData.length > 0) {
+          setSelectedTabs(tabsData[0]);
+          onTabsChange(tabsData[0]);
         }
       } catch (err) {
         console.error('Error fetching views and tabs:', err);
@@ -150,7 +144,7 @@ export const Liveboard = () => {
       loader.show();
       setErrorMessage({ ...errorMessage, visible: false });
       setSuccess(false);
-      runPluginFn(isPowerpoint, run, addImage, 'addImage', link)
+      runPluginFn(isPowerpoint, run, addImageQueued, 'addImage', link)
         .then((res) => {
           loader.hide();
           if (res === 200) {
