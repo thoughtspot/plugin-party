@@ -12,7 +12,7 @@ import styles from './answer.module.scss';
 import { getTSAnswerLink } from '../../utils';
 import { customCSSProperties } from './answer.util';
 import { runPluginFn } from '../../../utils/plugin-utils';
-import { addImage } from '../../../utils/ppt-code';
+import { addImageQueued } from '../../../utils/ppt-code';
 import { useAppContext } from '../app.context';
 
 export const Answer = () => {
@@ -40,7 +40,7 @@ export const Answer = () => {
       loader.show();
       setErrorMessage({ ...errorMessage, visible: false });
       setSuccess(false);
-      runPluginFn(isPowerpoint, run, addImage, 'addImage', link)
+      runPluginFn(isPowerpoint, run, addImageQueued, 'addImage', link)
         .then((res) => {
           loader.hide();
           if (res === 200) {
