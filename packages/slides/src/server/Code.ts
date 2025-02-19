@@ -408,6 +408,31 @@ function reloadImages(images) {
   return { errorImages, successImages };
 }
 
+function insertTimestamp(slide) {
+  const shapes = slide.getShapes();
+  const presentation = SlidesApp.getActivePresentation();
+  const pageWidth = presentation.getPageWidth();
+  const pageHeight = presentation.getPageHeight();
+
+  shapes.forEach((shape) => {
+    if (
+      shape.getText() &&
+      shape.getText().asString().indexOf('Last updated:') !== -1
+    ) {
+      shape.remove();
+    }
+  });
+
+  const timestamp = new Date().toLocaleString();
+  slide.insertTextBox(
+    `Last updated: ${timestamp}`,
+    pageWidth - 400,
+    pageHeight,
+    600,
+    10
+  );
+}
+
 /**
  * Reloads the images in the current slide.
  */
@@ -420,18 +445,7 @@ function reloadImagesInCurrentSlide() {
   const images = slide.getImages();
   const { errorImages, successImages } = reloadImages(images);
   if (errorImages.length === 0) {
-    const shapes = slide.getShapes();
-    shapes.forEach((shape) => {
-      if (
-        shape.getText() &&
-        shape.getText().asString().indexOf('Last updated:') !== -1
-      ) {
-        shape.remove();
-      }
-    });
-
-    const timestamp = new Date().toLocaleString();
-    slide.insertTextBox(`Last updated: ${timestamp}`, 250, 400, 2000, 10);
+    insertTimestamp(slide);
   }
 
   return { errorImages, successImages };
@@ -453,17 +467,7 @@ function reloadImagesInPresentation() {
   const { errorImages, successImages } = reloadImages(slideImages);
   if (errorImages.length === 0) {
     slides.forEach((slide) => {
-      var shapes = slide.getShapes();
-      shapes.forEach((shape) => {
-        if (
-          shape.getText() &&
-          shape.getText().asString().indexOf('Last updated:') !== -1
-        ) {
-          shape.remove();
-        }
-      });
-      const timestamp = new Date().toLocaleString();
-      slide.insertTextBox(`Last updated: ${timestamp}`, 250, 400, 2000, 10);
+      insertTimestamp(slide);
     });
   }
 
