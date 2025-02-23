@@ -14,4 +14,8 @@
     outline: none;
     border-bottom: 2px solid $blue1;
   }
+
+  &.error {
+    border: 1px solid $red2;
+  }
 }

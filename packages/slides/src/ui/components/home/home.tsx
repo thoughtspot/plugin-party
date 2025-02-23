@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
-import { route } from 'preact-router';
-import { useLoader } from 'widgets/lib/loader';
+import { route, useRouter } from 'preact-router';
+import { setAutoHideLoader, useLoader } from 'widgets/lib/loader';
 import { Button } from 'widgets/lib/button';
 import { Horizontal, Vertical } from 'widgets/lib/layout/flex-layout';
 import { Radio } from 'widgets/lib/radio';
@@ -135,9 +135,20 @@ export const Home = ({ isPowerpoint = false }) => {
       visible: false,
       message: '',
     });
+    setAutoHideLoader(false);
     loader.show();
     reloadFn
       .then((arg) => {
+        if (
+          arg?.successImages?.length === 0 &&
+          arg?.errorImages?.length === 0
+        ) {
+          setErrorMessage({
+            visible: true,
+            message: t.NO_IMAGES_TO_UPDATE,
+            type: BannerType.MESSAGE,
+          });
+        }
         if (arg?.successImages?.length) {
           const numberOfImagesUpdated = arg?.successImages?.length;
           setSuccessMessage({

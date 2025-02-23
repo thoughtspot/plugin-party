@@ -37,7 +37,7 @@ function saveAsync() {
       } else {
         // we are resolving even if the save fails as we do not
         // want to block user from getting logged in
-        reject(asyncResult.error);
+        resolve(asyncResult.error);
         console.error('Failed to save settings:', asyncResult.error);
       }
     });
@@ -508,6 +508,12 @@ export async function reloadImagesInPresentation() {
   const successImages = [];
 
   await PowerPoint.run(async (context) => {
+    // Store initial slide selection
+    const initialSelection = context.presentation.getSelectedSlides();
+    initialSelection.load('items');
+    await context.sync();
+    const initialSlideId = initialSelection.items[0]?.id;
+
     // Load all slides in the presentation
     const slides = context.presentation.slides;
     slides.load('items');
@@ -519,11 +525,9 @@ export async function reloadImagesInPresentation() {
       slide.load('shapes');
       await context.sync();
 
-      // Load shapes and their tags for the current slide
       const shapes = slide.shapes.items;
       await loadImageTags(shapes, context);
 
-      // Get TS_IMAGE_LINK tags for all shapes
       const tags = shapes.map((shape) => {
         const tag = shape.tags.getItemOrNullObject('TS_IMAGE_LINK');
         tag.load('value');
@@ -531,7 +535,6 @@ export async function reloadImagesInPresentation() {
       });
       await context.sync();
 
-      // Store valid image links for this slide
       links[slide.id] = tags
         .filter((tag) => !tag.isNullObject)
         .map((tag) => tag.value);
@@ -540,10 +543,14 @@ export async function reloadImagesInPresentation() {
 
     // Get new image for all tagged images across all slides
     const allImageLinks = Object.values(slideImageLinks).flat();
-    const allBase64Images = await getImages(allImageLinks);
+    const uniqueImageLinks = Array.from(new Set(allImageLinks));
+    const allBase64Images = await getImages(uniqueImageLinks);
 
     const base64ImagesMap = Object.fromEntries(
-      allImageLinks.map((imageLink, idx) => [imageLink, allBase64Images[idx]])
+      uniqueImageLinks.map((imageLink, idx) => [
+        imageLink,
+        allBase64Images[idx],
+      ])
     );
 
     // Process each slide sequentially
@@ -558,10 +565,8 @@ export async function reloadImagesInPresentation() {
 
       if (slideLinks.length > 0) {
         // Process each shape in the slide sequentially
-        await shapes.reduce(async (p, shape, shapeIndex) => {
+        await shapes.reduce(async (p, shape) => {
           await p;
-
-          // Check if this shape has a TS_IMAGE_LINK tag
           const tag = shape.tags.getItemOrNullObject('TS_IMAGE_LINK');
           tag.load('value');
           await context.sync();
@@ -575,10 +580,15 @@ export async function reloadImagesInPresentation() {
           }
         }, Promise.resolve());
 
-        // Reapply tags to the new images
         await addTagOnImage(slideLinks);
       }
     }, Promise.resolve());
+
+    // Restore initial slide selection
+    if (initialSlideId) {
+      context.presentation.setSelectedSlides([initialSlideId]);
+      await context.sync();
+    }
   });
 
   return { successImages, errorImages };

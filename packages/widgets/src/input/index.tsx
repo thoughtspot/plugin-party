@@ -12,6 +12,7 @@ export interface InputProps
   onChange?: any;
   type?: 'TEXT' | 'PASSWORD';
   initialValue?: string;
+  hasError?: boolean;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -23,11 +24,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       type,
       initialValue,
       onChange,
+      hasError = false,
       ...rest
     }: InputProps,
     ref
   ) => {
-    const classes = cx(styles.input, className);
+    const classes = cx(styles.input, className, { [styles.error]: hasError });
     return (
       <input
         value={initialValue}

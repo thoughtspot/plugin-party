@@ -4,11 +4,38 @@
   margin-right: 10px;
 }
 
-.auth-separator {
-  color: $gray4;
-  font-size: 13px;
-}
-
 .ts-logo {
   margin: 20px;
+}
+
+.login-container {
+  margin-left: $spacing--d;
+  margin-right: $spacing--d;
+}
+
+.login-title {
+  line-height: 20px;
+  font-weight: 600;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.input-container {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid $gray2;
+  background-color: transparent;
+  color: #777E8B;
+
+  &:focus {
+    border: 1px solid $blue1;
+  }
+}
+
+.sso-button {
+  background-color: transparent;
+  color: #2770EF;
+  &:hover {
+    background-color: transparent !important;
+  }
 }

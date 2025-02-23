@@ -56,6 +56,15 @@ export function TSInit({ children, isPowerpoint = false }) {
     });
   };
   const onSetUrl = async (url: string) => {
+    if (!url || url.trim() === '') {
+      setClusterUrl({
+        url: '',
+        isCandidate: true,
+        isError: true,
+      });
+      return;
+    }
+
     const formattedUrl = new URL(`https://${url.replace('https://', '')}`);
     const host = formattedUrl.host;
     await getConfig(host)

@@ -5,6 +5,8 @@ import { Colors, Typography } from 'widgets/lib/typography';
 import { useTranslations } from 'i18n';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import './login.scss';
+import { ErrorBanner } from 'widgets/lib/error-banner';
+import { Header } from '../header/header';
 
 export const Login = ({
   onBack,
@@ -28,58 +30,78 @@ export const Login = ({
   const [showCredError, setShowCredError] = useState(isCredFailed);
   useEffect(() => setShowCredError(isCredFailed), [isCredFailed]);
   const [showSamlError, setShowSamlError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState({
+    visible: false,
+    message: '',
+  });
+  useEffect(
+    () =>
+      setErrorMessage({
+        visible: isCredFailed,
+        message: t.INCORRECT_PASSWORD,
+      }),
+    [isCredFailed]
+  );
   return (
-    <Vertical spacing="f" hAlignContent="center">
-      <img
-        className="ts-logo"
-        src="https://www.thoughtspot.com/images/logo-black-with-r.svg"
-        id="ts-logo"
-        width="160"
-      ></img>
-      <Horizontal spacing="c">
-        <Button type="SECONDARY" onClick={onBack} text="←"></Button>
-        <Button
-          type="PRIMARY"
-          onClick={isSamlEnabled ? onSSO : () => setShowSamlError(true)}
-          text={t.SIGN_IN_SSO}
-        ></Button>
-      </Horizontal>
-      <div className="auth-separator">- {t.OR} -</div>
-      <Vertical spacing="c">
-        <Input
-          type="TEXT"
-          placeholder="Username"
-          id="username"
-          onFocus={() => setShowCredError(false)}
-          ref={userRef}
-          required
-        />
-        <Input
-          type="PASSWORD"
-          placeholder="Password"
-          id="password"
-          onFocus={() => setShowCredError(false)}
-          ref={passRef}
-          required
-        />
-        {showCredError && (
-          <Typography variant="h6" color={Colors.failure}>
-            {t.INCORRECT_PASSWORD}
-          </Typography>
-        )}
-        {showSamlError && (
-          <Typography variant="h6" color={Colors.failure}>
-            {t.SSO_NOT_ENABLED_ERROR}
-          </Typography>
-        )}
-        <Button
-          id="submit"
-          type="PRIMARY"
-          onClick={() =>
-            onCredSubmit(userRef.current?.value, passRef.current?.value)
-          }
-          text={t.SIGN_IN}
-        ></Button>
+    <Vertical spacing="f">
+      <Header hasBackButton={true} onBack={onBack} />
+      <ErrorBanner
+        errorMessage={errorMessage.message}
+        showBanner={errorMessage.visible}
+        onCloseIconClick={() =>
+          setErrorMessage({ ...errorMessage, visible: false })
+        }
+      />
+      <Vertical className="login-container" spacing="b">
+        <Typography variant="p" className="login-title">
+          {t.SIGN_INTO_TS}
+        </Typography>
+        <Vertical spacing="d">
+          <Vertical spacing="c">
+            <Input
+              type="TEXT"
+              placeholder="Username"
+              className="input-container"
+              id="username"
+              onFocus={() => setShowCredError(false)}
+              ref={userRef}
+              hasError={showCredError}
+              required
+            />
+            <Input
+              type="PASSWORD"
+              placeholder="Password"
+              className="input-container"
+              id="password"
+              hasError={showCredError}
+              onFocus={() => setShowCredError(false)}
+              ref={passRef}
+              required
+            />
+          </Vertical>
+          <Button
+            id="submit"
+            type="PRIMARY"
+            onClick={() =>
+              onCredSubmit(userRef.current?.value, passRef.current?.value)
+            }
+            text={t.SIGN_IN}
+          ></Button>
+          <Button
+            className="sso-button"
+            type="SECONDARY"
+            onClick={
+              isSamlEnabled
+                ? onSSO
+                : () =>
+                    setErrorMessage({
+                      visible: true,
+                      message: t.SSO_NOT_ENABLED_ERROR,
+                    })
+            }
+            text={t.SIGN_IN_SSO}
+          ></Button>
+        </Vertical>
       </Vertical>
     </Vertical>
   );

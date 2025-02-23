@@ -286,7 +286,10 @@ const PrerenderedLiveboardShell = () => {
               '.ag-header': {
                 'pointer-events': 'none !important',
               },
-              '.answer-content-module__answerContent': {
+              '.ag-center-cols-container': {
+                'pointer-events': 'none !important',
+              },
+              '[data-tour-id="chart-viz-id"]': {
                 'pointer-events': 'none !important',
               },
               '.pinboard-tab-module__tabNameEditor': {
@@ -314,6 +317,13 @@ const PrerenderedLiveboardShell = () => {
               '.pinboard-header-module__embedPinboardHeader': {
                 display: 'none !important',
               },
+              '.button-module__button[aria-label="Search data"]': {
+                display: 'none',
+              },
+              '.typography-module__body-large.typography-module__base.muted-alert-module__description.typography-module__whiteSpace':
+                {
+                  display: 'none',
+                },
             },
           },
         },

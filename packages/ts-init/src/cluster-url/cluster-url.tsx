@@ -5,6 +5,7 @@ import { Typography, Colors } from 'widgets/lib/typography';
 import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { useTranslations } from 'i18n';
 import './cluster-url.scss';
+import { Header } from '../header/header';
 
 export function ClusterUrl({
   onSetUrl,
@@ -16,15 +17,10 @@ export function ClusterUrl({
   const { t } = useTranslations();
   const inpRef = useRef<HTMLInputElement>(null);
   return (
-    <Vertical hAlignContent="center">
-      <img
-        className="ts-logo"
-        src="https://www.thoughtspot.com/images/logo-black-with-r.svg"
-        id="ts-logo"
-        width="160"
-      ></img>
-      <Vertical className="set-url-container" spacing="c" hAlignContent="start">
-        <div>{t.THOUGHTSPOT_INSTANCE}</div>
+    <Vertical hAlignContent="center" spacing="f">
+      <Header />
+      <Vertical spacing="b" hAlignContent="start">
+        <div className="title">{t.THOUGHTSPOT_INSTANCE}</div>
         {isVercelEnabled ? (
           <div
             className="ts-instance-msg"
@@ -40,6 +36,7 @@ export function ClusterUrl({
           ref={inpRef}
           className="ts-cluster-url"
           placeholder={suggestedUrl}
+          hasError={!isUrlValid}
         />
         {!isUrlValid && (
           <Typography
@@ -54,6 +51,7 @@ export function ClusterUrl({
         <Button
           onClick={() => onSetUrl(inpRef.current.value)}
           text={t.CONTINUE}
+          className="continue-button"
         ></Button>
         {!isVercelEnabled ? (
           <div
