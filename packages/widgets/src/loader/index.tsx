@@ -7,6 +7,13 @@ topbar.config({
   barThickness: 5,
 });
 
+// Flag to control whether to auto-hide the loader after fetch.
+let autoHideLoader = true;
+
+export const setAutoHideLoader = (value: boolean) => {
+  autoHideLoader = value;
+};
+
 const origFetch = window.fetch;
 window.fetch = ((input, init?) => {
   if (showLoaderOnFetch(input)) {
@@ -14,12 +21,16 @@ window.fetch = ((input, init?) => {
   }
   return origFetch(input, init).then(
     (resp) => {
-      topbar.hide();
+      if (autoHideLoader) {
+        topbar.hide();
+      }
       return resp;
     },
     (err) => {
-      topbar.hide();
-      return err;
+      if (autoHideLoader) {
+        topbar.hide();
+      }
+      throw err;
     }
   );
 }) as typeof window.fetch;

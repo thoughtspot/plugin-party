@@ -21,7 +21,7 @@ export function App({ isPowerpoint = false }) {
     <I18N>
       <ShellContext.Provider value={defaultShellContextOptions}>
         <TSInit isPowerpoint={isPowerpoint}>
-          <Header history={history}></Header>
+          <Header history={history} isPowerpoint={isPowerpoint}></Header>
           <div className={styles.content}>
             <Analytics />
             <AppContextProvider>

@@ -1,11 +1,15 @@
 @import 'widgets/lib/common.scss';
 
-.set-url-container {
-  margin: 10px;
-}
-
 .ts-cluster-url {
   width: 100%;
+  border-radius: 6px;
+  border: 1px solid $gray2;
+  background-color: transparent;
+  color: #777E8B;
+
+  &:focus {
+    border: 1px solid $blue1;
+  }
 }
 
 .invalid-url-error {
@@ -13,12 +17,8 @@
 }
 
 .free-trial-msg {
-  color: $gray4;
+  color: #777E8B;
   font-size: 12px;
-}
-
-.ts-logo {
-  margin: 20px;
 }
 
 .description {
@@ -30,4 +30,17 @@
   font-size: 12px;
   color: $gray4;
   line-height: 16px;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0%;
+}
+
+.continue-button {
+  width: 100%;
+  margin-top: $spacing--b;
+  margin-bottom: $spacing--d !important;
 }

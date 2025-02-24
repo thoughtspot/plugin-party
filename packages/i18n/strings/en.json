@@ -1,10 +1,10 @@
 {
-  "THOUGHTSPOT_INSTANCE": "ThoughtSpot instance",
+  "THOUGHTSPOT_INSTANCE": "ThoughtSpot instance URL",
   "THOUGHTSPOT_INSTANCE_MSG": "Enter the URL of your ThoughtSpot instance.<br>ex: https://team2.thoughtspot.cloud",
   "CONTINUE": "Continue",
   "START_FREE_TRIAL": "Do not have a ThoughtSpot account? Start a <a href=\"https://www.thoughtspot.com/trial\" target=\"_blank\"> free trial </a>.",
   "THOUGHTSPOT_INSTANCE_DESCRIPTION": "Need help finding out your ThoughtSpot instance?<br><a href=\"https://developers.thoughtspot.com/docs/faqs#_about_thoughtspot_everywhere\" target=\"_blank\">Click here</a>",
-  "SIGN_IN_SSO": "Sign in with SSO",
+  "SIGN_IN_SSO": "Login using Single Sign On",
   "SSO_NOT_ENABLED_ERROR": "SSO is not enabled in your cluster. Please enable it and try again.",
   "OR": "OR",
   "USERNAME": "Username",
@@ -175,5 +175,8 @@
   "TABS": "Tabs",
   "SCHEDULE_DELETE_SUCCESSFUL_MSG":"Schedule succesfully deleted",
   "SCHEDULE_DELETE_FAILURE_MSG":"Error deleting schedule. Please try again or contact ThoughtSpot support if the issue persists.",
-  "DAY_PICKER_ERROR": "Select day(s)"
+  "DAY_PICKER_ERROR": "Select day(s)",
+  "NO_IMAGES_TO_UPDATE": "Please insert image from ThoughtSpot to update images.",
+  "SIGN_INTO_TS": "Sign into ThoughtSpot",
+  "LOGOUT": "Logout"
 }

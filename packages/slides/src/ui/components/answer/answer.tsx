@@ -34,9 +34,7 @@ export const Answer = () => {
     }
     const link = getTSAnswerLink(answerId);
     run('preCacheImage', link);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    ref.current.on(Action.InsertInToSlide, (e) => {
+    const onInsertHandler = (e) => {
       loader.show();
       setErrorMessage({ ...errorMessage, visible: false });
       setSuccess(false);
@@ -60,8 +58,21 @@ export const Answer = () => {
         .catch((error) => {
           loader.hide();
         });
-    });
+    };
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    ref.current.on(Action.InsertInToSlide, onInsertHandler);
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      if (ref.current) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        ref.current.off(Action.InsertInToSlide, onInsertHandler);
+      }
+    };
   }, [ref.current]);
+
   return (
     <Vertical className={styles.answerIframe}>
       <SuccessBanner
