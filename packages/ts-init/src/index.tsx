@@ -83,7 +83,7 @@ export function TSInit({ children, isPowerpoint = false }) {
       .catch((err) => {
         setClusterUrl({
           url,
-          isCandidate: true,
+          isCandidate: false,
           isError: true,
         });
       });
