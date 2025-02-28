@@ -8,8 +8,9 @@ import { useTranslations } from 'i18n';
 import { Card } from 'widgets/lib/card';
 import cx from 'classnames';
 import { useShellContext } from 'gsuite-shell';
-import { getSessionInfo } from '@thoughtspot/visual-embed-sdk';
+import { getSessionInfo, logout } from '@thoughtspot/visual-embed-sdk';
 import { ErrorBanner, BannerType } from 'widgets/lib/error-banner';
+import { WarningBanner } from 'widgets/lib/warning-banner';
 import { SuccessBanner } from 'widgets/lib/success-banner';
 import { FrequencyPicker } from 'widgets/lib/frequency-picker';
 import { Tab, TabItem } from 'widgets/lib/tab';
@@ -49,6 +50,7 @@ export const Home = ({ isPowerpoint = false }) => {
     message: '',
   });
   const [isPrivileged, setIsPrivileged] = useState(false);
+  const [isReloading, setIsReloading] = useState(false);
 
   const onManualTabClick = () => {
     setSelectedTabId(updateVizType.MANUAL);
@@ -60,6 +62,11 @@ export const Home = ({ isPowerpoint = false }) => {
 
   const onManualUpdateChange = (e) => {
     setSelectedManualUpdate(e.target.value);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -112,6 +119,15 @@ export const Home = ({ isPowerpoint = false }) => {
   }, [isPrivileged]);
 
   const onReloadImages = async () => {
+    if (isPowerpoint && isReloading) {
+      console.log('Reload already in progress, ignoring this request');
+      return;
+    }
+
+    if (isPowerpoint) {
+      setIsReloading(true);
+    }
+
     const reloadFn =
       selectedManualUpdate === t.SLIDES_MANUAL_UPDATE_ALL
         ? runPluginFn(
@@ -139,6 +155,9 @@ export const Home = ({ isPowerpoint = false }) => {
     loader.show();
     reloadFn
       .then((arg) => {
+        if (isPowerpoint) {
+          setIsReloading(false);
+        }
         if (
           arg?.successImages?.length === 0 &&
           arg?.errorImages?.length === 0
@@ -278,6 +297,14 @@ export const Home = ({ isPowerpoint = false }) => {
         }
         showBanner={errorMessage.visible && !!errorMessage.message}
       />
+      {isPowerpoint && isReloading && (
+        <WarningBanner
+          bannerType={BannerType.MESSAGE}
+          warningMessage={t.UPDATE_IMAGE_WARNING}
+          showBanner={true}
+          onCloseIconClick={() => setIsReloading(false)}
+        />
+      )}
       {((!errorMessage.visible && !errorMessage.message) ||
         !(errorMessage.type === BannerType.CARD)) && (
         <>
@@ -288,7 +315,21 @@ export const Home = ({ isPowerpoint = false }) => {
             firstButton={t.BROWSE_TS}
             firstButtonType={'PRIMARY'}
             onFirstButtonClick={() => route(Routes.LIVEBOARDLIST)}
+            isBottomBorderHidden={isPowerpoint}
+            className={isPowerpoint ? styles.card : ''}
+            cardContainerClassName={isPowerpoint ? styles.cardContainer : ''}
           />
+          {isPowerpoint && (
+            <>
+              <Button
+                className={styles.logoutButton}
+                onClick={handleLogout}
+                text="Logout of ThoughtSpot"
+                type="SECONDARY"
+              />
+              <div className={styles.breakline}></div>
+            </>
+          )}
           <Vertical className={styles.tabContainer}>
             <Typography variant="p" className={styles.title} noMargin>
               {t.UPDATE_VIZ}

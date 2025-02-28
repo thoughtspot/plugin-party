@@ -3,7 +3,7 @@
  */
 /* eslint no-var: 0 */
 
-import { enqueue } from '../services/QueueService';
+import { enqueueUniqueLink } from '../services/QueueService';
 
 /**
  * Converts an ArrayBuffer to a Base64 string.
@@ -421,12 +421,13 @@ export async function addImage(link: string): Promise<number> {
  * because overlapping calls (e.g., multiple PowerPoint.run calls) can lead to race conditions
  * and unexpected behavior. By enqueuing operations, each image insertion waits for the previous
  * one to complete before starting.
+ * If the same link is already in the queue, the operation will be skipped.
  *
  * @param {string} link - The image URL to insert.
- * @returns {Promise<number>} A promise that resolves with the response code from the addImage function.
+ * @returns {Promise<number>} A promise that resolves with the response code from the addImage function
  */
-export function addImageQueued(link: string): Promise<number> {
-  return enqueue(() => addImage(link));
+export function addImageQueued(link: string) {
+  return enqueueUniqueLink(link, () => addImage(link));
 }
 
 /**

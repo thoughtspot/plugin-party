@@ -51,6 +51,7 @@ export const TSAuthInit: FunctionComponent<TSAuthInitProps> = ({
 }) => {
   const [authState, setAuthState] = useState(AuthState.UNDEFINED);
   const [authEE, setAuthEE] = useState<any>();
+  const [showCredError, setShowCredError] = useState(false);
   const loader = useLoader();
   useEffect(() => {
     const _authEE = initTSSAML(clusterUrl);
@@ -67,6 +68,7 @@ export const TSAuthInit: FunctionComponent<TSAuthInitProps> = ({
     });
     authEE?.once(AuthStatus.FAILURE, () => {
       setAuthState(AuthState.FAILED);
+      setShowCredError(true);
     });
   }, [authEE]);
 
@@ -75,6 +77,7 @@ export const TSAuthInit: FunctionComponent<TSAuthInitProps> = ({
   };
 
   const onCredSubmit = (username: string, password: string) => {
+    setShowCredError(false);
     const _authEE = initTSBasic(clusterUrl, username, password);
     setAuthEE(_authEE);
   };
@@ -93,7 +96,8 @@ export const TSAuthInit: FunctionComponent<TSAuthInitProps> = ({
       onBack={onBack}
       onSSO={onTriggerSSO}
       onCredSubmit={onCredSubmit}
-      isCredFailed={authState === AuthState.FAILED}
+      isCredFailed={showCredError}
+      setShowCredError={setShowCredError}
       isSamlEnabled={isSamlEnabled}
     />
   );

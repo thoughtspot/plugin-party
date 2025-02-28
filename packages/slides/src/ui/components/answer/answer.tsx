@@ -8,6 +8,7 @@ import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { useTranslations } from 'i18n';
 import { ErrorBanner } from 'widgets/lib/error-banner';
 import { SuccessBanner } from 'widgets/lib/success-banner';
+import { WarningBanner } from 'widgets/lib/warning-banner';
 import styles from './answer.module.scss';
 import { getTSAnswerLink } from '../../utils';
 import { customCSSProperties } from './answer.util';
@@ -22,6 +23,7 @@ export const Answer = () => {
     message: '',
   });
   const [success, setSuccess] = useState(false);
+  const [isInsertingImage, setIsInsertingImage] = useState(false);
   const { t } = useTranslations();
   const { isPowerpoint } = useAppContext();
   const loader = useLoader();
@@ -38,9 +40,11 @@ export const Answer = () => {
       loader.show();
       setErrorMessage({ ...errorMessage, visible: false });
       setSuccess(false);
+      setIsInsertingImage(true);
       runPluginFn(isPowerpoint, run, addImageQueued, 'addImage', link)
         .then((res) => {
           loader.hide();
+          setIsInsertingImage(false);
           if (res === 200) {
             setSuccess(true);
           } else if (res === 401) {
@@ -56,6 +60,7 @@ export const Answer = () => {
           }
         })
         .catch((error) => {
+          setIsInsertingImage(false);
           loader.hide();
         });
     };
@@ -81,6 +86,14 @@ export const Answer = () => {
         onCloseIconClick={() => setSuccess(false)}
         className={styles.succesBanner}
       />
+      {isInsertingImage && isPowerpoint && (
+        <WarningBanner
+          warningMessage={t.INSERT_IMAGE_WARNING}
+          showBanner={isInsertingImage}
+          onCloseIconClick={() => setIsInsertingImage(false)}
+          className={styles.succesBanner}
+        />
+      )}
       <ErrorBanner
         errorMessage={errorMessage.message}
         showBanner={errorMessage.visible}

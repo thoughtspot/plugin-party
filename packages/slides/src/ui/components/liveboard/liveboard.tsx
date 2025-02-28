@@ -20,6 +20,7 @@ import { Vertical } from 'widgets/lib/layout/flex-layout';
 import { useTranslations } from 'i18n';
 import { ErrorBanner } from 'widgets/lib/error-banner';
 import { SuccessBanner } from 'widgets/lib/success-banner';
+import { WarningBanner } from 'widgets/lib/warning-banner';
 import styles from './liveboard.module.scss';
 import { getOffset, getTSLBVizLink } from '../../utils';
 import { getLBTabs, getPersonalisedViews } from '../../services/api';
@@ -42,6 +43,7 @@ export const Liveboard = () => {
     message: '',
   });
   const [success, setSuccess] = useState(false);
+  const [isInsertingImage, setIsInsertingImage] = useState(false);
 
   const [personalisedViews, setPersonalisedViews] = useState([
     { title: 'Default View', id: '' },
@@ -77,7 +79,13 @@ export const Liveboard = () => {
       top: offset.top,
       left: offset.left,
     });
-  }, [errorMessage.visible, success, personalisedViews, tabs]);
+  }, [
+    errorMessage.visible,
+    success,
+    personalisedViews,
+    tabs,
+    isInsertingImage,
+  ]);
 
   const onPersonalisedViewChange = (selectedView) => {
     setSelectedPersonalisedView(selectedView);
@@ -144,17 +152,21 @@ export const Liveboard = () => {
       loader.show();
       setErrorMessage({ ...errorMessage, visible: false });
       setSuccess(false);
+      setIsInsertingImage(true);
       runPluginFn(isPowerpoint, run, addImageQueued, 'addImage', link)
         .then((res) => {
           loader.hide();
           if (res === 200) {
+            setIsInsertingImage(false);
             setSuccess(true);
           } else if (res === 401) {
+            setIsInsertingImage(false);
             setErrorMessage({
               message: t.SESSION_EXPIRED_MESSAGE,
               visible: true,
             });
           } else {
+            setIsInsertingImage(false);
             setErrorMessage({
               message: t.INSERT_FAILURE_MESSAGE,
               visible: true,
@@ -162,6 +174,7 @@ export const Liveboard = () => {
           }
         })
         .catch((error) => {
+          setIsInsertingImage(false);
           loader.hide();
         });
     },
@@ -222,6 +235,14 @@ export const Liveboard = () => {
         onCloseIconClick={() => setSuccess(false)}
         className={styles.succesBanner}
       />
+      {isInsertingImage && isPowerpoint && (
+        <WarningBanner
+          warningMessage={t.INSERT_IMAGE_WARNING}
+          showBanner={isInsertingImage}
+          onCloseIconClick={() => setIsInsertingImage(false)}
+          className={styles.succesBanner}
+        />
+      )}
       <ErrorBanner
         errorMessage={errorMessage.message}
         showBanner={errorMessage.visible}
