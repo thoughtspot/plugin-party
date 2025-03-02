@@ -144,5 +144,22 @@ export const getLBTabs = async (liveboardId: string) => {
     }
   );
   const data = await res.json();
-  return data?.tabs?.tab || [];
+  const orderedTabs = data?.tabs?.ordered_tab_id || [];
+  const tabsData = data?.tabs?.tab || [];
+
+  // Function to strip HTML tags
+  const stripHTML = (html: string) => {
+    return html.replace(/<[^>]*>/g, '');
+  };
+
+  const tabData = tabsData
+    .sort(
+      (a, b) =>
+        orderedTabs.indexOf(a.header.guid) - orderedTabs.indexOf(b.header.guid)
+    )
+    .map((tab) => ({
+      title: stripHTML(tab.header.display_name),
+      id: tab.header.guid,
+    }));
+  return tabData;
 };

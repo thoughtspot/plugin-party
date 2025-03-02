@@ -118,17 +118,11 @@ export const Liveboard = () => {
           title: view.name,
           id: view.id,
         }));
-        const tabData = tabsData.map((tab) => {
-          return {
-            title: tab.header.display_name,
-            id: tab.header.guid,
-          };
-        });
         setPersonalisedViews((prevData) => [...prevData, ...viewsData]);
-        setTabs(tabData);
-        if (tabData.length > 0) {
-          setSelectedTabs(tabData[0]);
-          onTabsChange(tabData[0]);
+        setTabs(tabsData);
+        if (tabsData.length > 0) {
+          setSelectedTabs(tabsData[0]);
+          onTabsChange(tabsData[0]);
         }
       } catch (err) {
         console.error('Error fetching views and tabs:', err);
