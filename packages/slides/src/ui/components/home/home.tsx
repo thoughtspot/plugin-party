@@ -120,7 +120,6 @@ export const Home = ({ isPowerpoint = false }) => {
 
   const onReloadImages = async () => {
     if (isPowerpoint && isReloading) {
-      console.log('Reload already in progress, ignoring this request');
       return;
     }
 
