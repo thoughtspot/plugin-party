@@ -16,6 +16,20 @@ export function ClusterUrl({
 }) {
   const { t } = useTranslations();
   const inpRef = useRef<HTMLInputElement>(null);
+
+  const handleContinue = () => {
+    if (inpRef.current) {
+      onSetUrl(inpRef.current.value);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleContinue();
+    }
+  };
+
   return (
     <Vertical hAlignContent="center" spacing="f">
       <Header />
@@ -37,6 +51,7 @@ export function ClusterUrl({
           className="ts-cluster-url"
           placeholder={suggestedUrl}
           hasError={!isUrlValid}
+          onKeyDown={handleKeyDown}
         />
         {!isUrlValid && (
           <Typography
@@ -49,7 +64,7 @@ export function ClusterUrl({
           </Typography>
         )}
         <Button
-          onClick={() => onSetUrl(inpRef.current.value)}
+          onClick={handleContinue}
           text={t.CONTINUE}
           className="continue-button"
         ></Button>
