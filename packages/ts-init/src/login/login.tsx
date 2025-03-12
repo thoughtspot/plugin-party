@@ -13,6 +13,7 @@ export const Login = ({
   onSSO,
   onCredSubmit,
   isCredFailed,
+  setShowCredError,
   isSamlEnabled,
 }) => {
   const { t } = useTranslations();
@@ -27,21 +28,18 @@ export const Login = ({
     passRef?.current?.addEventListener('keydown', onEnterPress);
     return () => passRef?.current?.removeEventListener('keydown', onEnterPress);
   });
-  const [showCredError, setShowCredError] = useState(isCredFailed);
   useEffect(() => setShowCredError(isCredFailed), [isCredFailed]);
   const [showSamlError, setShowSamlError] = useState(false);
   const [errorMessage, setErrorMessage] = useState({
     visible: false,
     message: '',
   });
-  useEffect(
-    () =>
-      setErrorMessage({
-        visible: isCredFailed,
-        message: t.INCORRECT_PASSWORD,
-      }),
-    [isCredFailed]
-  );
+  useEffect(() => {
+    setErrorMessage({
+      visible: isCredFailed,
+      message: t.INCORRECT_PASSWORD,
+    });
+  }, [isCredFailed]);
   return (
     <Vertical spacing="f">
       <Header hasBackButton={true} onBack={onBack} />
@@ -65,7 +63,7 @@ export const Login = ({
               id="username"
               onFocus={() => setShowCredError(false)}
               ref={userRef}
-              hasError={showCredError}
+              hasError={isCredFailed}
               required
             />
             <Input
@@ -73,7 +71,7 @@ export const Login = ({
               placeholder="Password"
               className="input-container"
               id="password"
-              hasError={showCredError}
+              hasError={isCredFailed}
               onFocus={() => setShowCredError(false)}
               ref={passRef}
               required
@@ -90,15 +88,7 @@ export const Login = ({
           <Button
             className="sso-button"
             type="SECONDARY"
-            onClick={
-              isSamlEnabled
-                ? onSSO
-                : () =>
-                    setErrorMessage({
-                      visible: true,
-                      message: t.SSO_NOT_ENABLED_ERROR,
-                    })
-            }
+            onClick={onSSO}
             text={t.SIGN_IN_SSO}
           ></Button>
         </Vertical>

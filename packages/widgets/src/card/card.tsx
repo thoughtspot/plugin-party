@@ -21,6 +21,7 @@ export interface CardProps {
   isFirstButtonHidden?: boolean;
   isSecondButtonHidden?: boolean;
   className?: string;
+  cardContainerClassName?: string;
   titleClassName?: string;
   subtitleClassName?: string;
   children?: any;
@@ -47,6 +48,7 @@ export const Card: React.FC<CardProps> = ({
   isFirstButtonHidden = false,
   isSecondButtonHidden = false,
   className,
+  cardContainerClassName = '',
   titleClassName,
   subtitleClassName,
   children,
@@ -73,7 +75,7 @@ export const Card: React.FC<CardProps> = ({
       })}
     >
       <Horizontal spacing="e">
-        <Vertical className={styles.cardContainer}>
+        <Vertical className={cx(styles.cardContainer, cardContainerClassName)}>
           <div
             className={cx(styles.title, titleClassName)}
             data-testid={`card-title-testid${id}`}

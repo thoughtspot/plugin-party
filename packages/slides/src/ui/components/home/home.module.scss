@@ -41,3 +41,26 @@
 .updateButton {
   margin-top: 8px;
 }
+
+.logoutButton {
+  background-color: transparent;
+  padding: 0px;
+  color: #2770EF;
+  &:hover {
+    background-color: transparent !important;
+  }
+  margin-top: 12px;
+}
+
+.breakline {
+  margin-bottom: 32px !important;
+  border-top: 1px solid #C0C6CF;
+}
+
+.cardContainer {
+  padding-bottom: 0px !important;
+}
+
+.card {
+  margin-bottom: 0px !important;
+}

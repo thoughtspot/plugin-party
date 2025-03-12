@@ -176,7 +176,9 @@
   "SCHEDULE_DELETE_SUCCESSFUL_MSG":"Schedule succesfully deleted",
   "SCHEDULE_DELETE_FAILURE_MSG":"Error deleting schedule. Please try again or contact ThoughtSpot support if the issue persists.",
   "DAY_PICKER_ERROR": "Select day(s)",
-  "NO_IMAGES_TO_UPDATE": "Please insert image from ThoughtSpot to update images.",
+  "NO_IMAGES_TO_UPDATE": "No visualizations available for update. Please insert one to proceed.",
   "SIGN_INTO_TS": "Sign into ThoughtSpot",
-  "LOGOUT": "Logout"
+  "LOGOUT": "Logout",
+  "UPDATE_IMAGE_WARNING": "Please do not navigate or make changes while updates are in progress to ensure a smooth refresh.",
+  "INSERT_IMAGE_WARNING": "Please do not navigate or make changes while insertion of image is in progress to ensure a seamless experience."
 }
