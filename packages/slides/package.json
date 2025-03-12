@@ -33,7 +33,7 @@
     "lint": "eslint src/**",
     "start": "HOST=https://localhost:5173/ npm-run-all -p dist:dev vite",
     "start-powerpoint": "HOST=https://localhost:3000/ npm-run-all -p vite-powerpoint powerpoint:debug",
-    "start-powerpoint:desktop": "HOST=https://localhost:3000/ npm-run-all -p vite-powerpoint && powerpoint:desktop",
+    "start-powerpoint:desktop": "HOST=https://localhost:3000/ npm-run-all -p vite-powerpoint powerpoint:desktop",
     "start-powerpoint:web": "HOST=https://localhost:3000/ npm-run-all -p vite-powerpoint && powerpoint:web",
     "stop-powerpoint": "office-addin-debugging stop manifest.xml",
     "vite": "vite",
